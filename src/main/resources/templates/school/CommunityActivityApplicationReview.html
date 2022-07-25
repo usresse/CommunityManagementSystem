@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CommunityActivityApplicationReview</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+
+    <style type="text/css">
+        tr {
+            height: 50px;
+        }
+
+        td {
+            width: 1700px;
+        }
+
+        .table {
+
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            let data = "[(${data})]";
+            let array = data.substring(2, data.length - 2).split("}, {");
+            console.log(array);
+
+
+            for (let key in array) {
+                let value = array[key].split(",");
+
+                let tr = $("<tr></tr>");
+                let td = [];
+                /**编号的保存*/
+                let div = $("<div></div>").attr("style", "display: none;").text(value[3].split("=")[1]);
+
+                td[1] = $("<td></td>").text(value[2].split("=")[1]);
+                td[2] = $("<td></td>").text(value[4].split("=")[1]);
+                td[3] = $("<td></td>").text(value[5].split("=")[1]);
+                td[4] = $("<td></td>").text(value[0].split("=")[1]);
+                td[5] = $("<td></td>").text(value[6].split("=")[1]);
+                td[6] = $("<td></td>").text(value[1].split("=")[1]);
+                td[7] = $("<td></td>").text(value[7].split("=")[1]);
+                td[8] = $("<td><button onclick='button(this,0)'>通过</button><button onclick='button(this,1)'>驳回</button></td>");
+
+                tr.append(div);
+                tr.append(td[1]);
+                tr.append(td[2]);
+                tr.append(td[3]);
+                tr.append(td[4]);
+                tr.append(td[5]);
+                tr.append(td[6]);
+                tr.append(td[7]);
+                tr.append(td[8]);
+
+                $(".table").append(tr);
+            }
+        });
+
+        function button(button, value) {
+            let ID = $(button).closest("tr").find("div").eq(0).text();
+
+            $.ajax({
+                url: window.location.href + "/" + value + "/" + ID,
+                success: function (dex) {
+                    alert(dex);
+                    window.location.reload();
+                }
+            });
+
+        }
+    </script>
+</head>
+<body>
+
+<table class="table" border="1px" align="center">
+    <tr>
+        <td>
+            活动题目
+        </td>
+        <td>
+            地点
+        </td>
+        <td>
+            开始时间
+        </td>
+        <td>
+            结束时间
+        </td>
+        <td>
+            最大人数
+        </td>
+        <td>
+            主办社团
+        </td>
+        <td>
+            活动介绍
+        </td>
+        <td>
+            操作
+        </td>
+    </tr>
+</table>
+</body>
+</html>

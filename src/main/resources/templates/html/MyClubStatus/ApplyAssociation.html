@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ApplyAssociation</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 80px;
+        }
+
+        td {
+            width: 600px;
+        }
+
+        table {
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        var number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
+        $(function () {
+            console.log(number);
+        });
+
+        function ApplyClick(){
+            let data = {};
+            data.associationID = "IS-" + $(".associationID").val();
+            data.associationName = $(".associationName").val();
+            data.associationIntroduce = $(".associationIntroduce").val();
+
+            for(key in data){
+                console.log(key +":" +data[key]);
+            }
+
+            console.log(window.location.href);
+
+            $.ajax({
+                url:window.location.href +"/create",
+                data:data,
+                success:function (dex){
+                    alert(dex);
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td>社团编号：IS-<input class="associationID" type="number" oninput="if(value.length>4) value=value.slice(0,4)">
+        </td>
+    <tr>
+        <td>社团名：<input class="associationName" type="text" minlength="2" maxlength="8">
+        </td>
+    </tr>
+    <tr>
+        <td>社团介绍：<input class="associationIntroduce" type="text">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="ApplyClick()">申请</button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

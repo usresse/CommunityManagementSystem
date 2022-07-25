@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>ActivityRequest</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 100px;
+        }
+
+        td {
+            width: 600px;
+            text-align: center;
+        }
+
+        textarea {
+            min-height: 20px;
+            max-height: 20px;
+
+            min-width: 250px;
+            max-width: 250px;
+        }
+
+        table {
+            text-align: center;
+        }
+
+        .Title,
+        .Place,
+        .startDate,
+        .endDate,
+        .numberOfPeople,
+        .Remark {
+            background: rgba(0, 0, 0, 0);
+        }
+    </style>
+    <script type="text/javascript">
+        var number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
+
+        $(function () {
+
+        });
+
+        function Reset() {
+            $(".Title").val("");
+            $(".Place").val("");
+            $(".startDate").val("");
+            $(".endDate").val("");
+            $(".MAXPeople").val("");
+            $(".Remark").val("");
+        }
+
+        function Submit() {
+            let data = {};
+
+            /**获取数据*/
+            data.Title = $(".Title").val();
+            data.Place = $(".Place").val();
+            data.startDate = $(".startDate").val();
+            data.endDate = $(".endDate").val();
+            data.MAXPeople = $(".MAXPeople").val();
+            data.Remark = $(".Remark").val();
+
+            /**对js对象的属性遍历*/
+            for (let key in data) {
+                if(data[key] == "" || data[key] == null){
+                    alert("有活动参数为空！");
+                    return;
+                }
+            }
+
+            console.log(data);
+
+            /**ajax发送请求*/
+            $.ajax({
+                type: "post",
+                url: window.location.href.split("ActivityRequest/")[0] + "/" + number,
+                data: data,
+                success: function (dex) {
+                    console.log(dex);
+                }
+            });
+
+        }
+    </script>
+</head>
+<body>
+<table border="1" align="center">
+    <tr>
+        <td>
+            标题<input class="Title" type="text">
+        </td>
+        <td>
+            地点<input class="Place" type="text">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            开始日期<input class="startDate" type="date">
+        </td>
+        <td>
+            结束日期<input class="endDate" type="date">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            活动人数上限<input class="MAXPeople" type="number">
+        </td>
+        <td>
+            活动介绍<textarea class="Remark"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="Submit()">提交</button>
+        </td>
+        <td>
+            <button onclick="Reset()">重置</button>
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>设置</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/date.js}"></script>
+    <script type="text/javascript" th:src="@{/js/setting.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 80px;
+        }
+
+        td {
+            width: 600px;
+        }
+
+        input {
+            border: none;
+            outline: none;
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        div {
+            display: inline-block;
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0);
+        }
+
+    </style>
+</head>
+<body>
+<table border="1" align="left">
+    <iframe width=0 height=0 frameborder=0 id="myiframe" name="myiframe"></iframe>
+    <tr>
+        <td>账号：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="studentNumber" th:text="${personalBean.getNumber()}">null</div>
+            <input class="studentNumber" minlength="6" maxlength="8" style="display: none;">
+        </td>
+        <td>用户昵称：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="nickName" th:text="${personalBean.getNickName()}">null</div>
+            <input class="nickName" minlength="3" maxlength="8" style="display: none;">
+        </td>
+    </tr>
+    <tr>
+        <td>用户密码：
+            <text class="password">********</text>
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div style="display: none" class="password"  th:text="${personalBean.getPassword()}"></div>
+            <input  class="password" type="text" minlength="6" maxlength="8" style="display: none;">
+            <!--小眼睛图片元素-->
+            <img style="display: none;" class="img" onclick="imgclick(this)" src="http://localhost:8080/img/pigsney-open.png">
+            <img style="display: none;" class="img" onclick="imgclick(this)" src="http://localhost:8080/img/pigsney-close.png">
+        </td>
+
+        <td>性别:
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="sex" th:text="${personalBean.getSex()}">1</div>
+            <select class="sex" style="display: none;">
+                <option value=1 selected="true">男</option>
+                <option value=0>女</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>学号：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="studentNumber" th:text="${personalBean.getStudentNumber()}">null</div>
+            <input class="studentNumber" minlength="9" maxlength="9" style="display: none;">
+        </td>
+        <td>生日：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="dateOfBirth" th:text="${personalBean.getDateOfBirth()}">null</div>
+            <input class="dateOfBirth" style="display: none;" type="date">
+        </td>
+    </tr>
+    <tr>
+        <td>用户加入社团：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div th:text="${personalBean.getAssociationName()}">null</div>
+        </td>
+        <td>用户社团职位：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div th:text="${personalBean.getMajor()}">null</div>
+        </td>
+    </tr>
+    <tr>
+        <td>姓名：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="name" th:text="${personalBean.getName()}">null</div>
+            <input class="name" minlength="2" maxlength="10" style="display: none;">
+        </td>
+        <td>用户专业：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="schoolMajor" th:text="${personalBean.getSchoolMajor()}">null</div>
+
+            <!--/*@thymesVar id="schoolMajor" type=""*/-->
+            <div id="schoolMajorAll" th:text="${schoolMajor}" style="display: none"></div>
+            <select class="schoolMajor" style="display: none">
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>用户电话：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="Telephone" th:text="${personalBean.getTelephone()}">null</div>
+            <input class="Telephone" minlength="11" maxlength="11" style="display: none;">
+        </td>
+        <td>用户邮箱：
+            <!--/*@thymesVar id="personalBean" type="com.example.communitymanagementsystem.Mapper.brean.PersonalBean"*/-->
+            <div class="mailbox" th:text="${personalBean.getMailbox()}">null</div>
+            <input class="mailbox" style="display: none;">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="sub()">确定</button>
+        </td>
+        <td>
+            <button onclick="tiaozhaun(this)">编辑</button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

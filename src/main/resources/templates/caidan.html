@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript"  th:src="@{/js/jquery-3.6.0.min.js}" ></script>
+    <link type="text/css" th:href="@{/css/caidan.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/caidan.js}"></script>
+</head>
+<body>
+<div class="da">
+    <div class="ti1" onclick="toggleshow('tem1')">用户管理</div>
+    <div class="tem1">
+    </div>
+</div>
+
+<div class="da">
+    <div class="ti2" onclick="toggleshow('tem2')">我的社团</div>
+    <div class="tem2">
+        <div onclick="MyClubStatus('MyClubStatus')">我的社团状态</div>
+        <div class="nul" onclick="ApplyAssociation('ApplyAssociation')">申请创建社团</div>
+        <div onclick="activity('activity')">参加社团活动</div>
+        <div onclick="activityAll('activityAll')">参加的活动</div>
+    </div>
+</div>
+
+<div class="da">
+    <div class="ti3" onclick="toggleshow('tem3')">社团管理</div>
+    <div class="tem3">
+        <div onclick="Reviewed('ToExamine')">审核信息</div>
+        <div onclick="ActivityRequest('ActivityRequest')">活动发布申请</div>
+        <div onclick="ActivityHistory('ActivityHistory')">活动历史记录</div>
+    </div>
+</div>
+
+<div class="da">
+    <div class="ti4" onclick="toggleshow('tem4')">社团公告</div>
+    <div class="tem4">
+    </div>
+</div>
+
+<div class="da">
+    <div class="ti5" onclick="iframe('setting')">设置</div>
+</div>
+
+</body>
+</html>

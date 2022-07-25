@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>社团</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        .jiemian {
+            background-color: #eeeeee;
+            width: 86%;
+            height: 600px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        img {
+            width: 400px;
+            height: 300px;
+        }
+
+        .Title {
+            margin-top: 20px;
+            margin-left: -150px;
+            width: 400px;
+            height: 300px;
+            text-align: center;
+            float: left;
+        }
+
+        .title {
+            margin-top: 100px;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .name {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        div > .img-slide {
+            display: inline-block;
+            position: absolute;
+            top: 250px;
+            left: 270px;
+        }
+
+        .neirong {
+            display: inline-block;
+            margin-left: 50px;
+            margin-top: 150px;
+            width: 500px;
+            height: 390px;
+        }
+
+        .sanjiaoleft {
+            width: 30px;
+            border: 20px solid #000;
+            border-top-color: rgba(0, 0, 0, 0);
+            border-bottom-color: rgba(0, 0, 0, 0);
+            border-left-color: rgba(0, 0, 0, 0);
+            border-right-color: #767676;
+            position: relative;
+            left: 0px;
+            top: -200px;
+        }
+
+        .sanjiaoright {
+            width: 30px;
+            border: 20px solid #000;
+            border-top-color: rgba(0, 0, 0, 0);
+            border-bottom-color: rgba(0, 0, 0, 0);
+            border-left-color: #767676;
+            border-right-color: rgba(0, 0, 0, 0);
+            position: relative;
+            left: 1010px;
+            top: -240px;
+        }
+
+        /*弹框的样式*/
+        .springtan {
+            width: 300px;
+            height: 180px;
+            background-color: #e6e6e6;
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+            margin: auto;
+            z-index: 200;
+            display: none;
+        }
+
+        .springclose {
+            width: 300px;
+            height: 30px;
+            display: inline-block;
+            background-color: #828282;
+        }
+
+        .springclose a {
+            text-decoration: none;
+            color: #ffffff;
+            position: relative;
+            left: 120px;
+            top: 2px
+        }
+
+        .springnumber {
+            position: relative;
+            left: 0px;
+            top: -27px;
+            display: inline-block;
+            color: #ffffff;
+        }
+
+        .springnumbertext {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+            margin: auto;
+            font-size: 20px;
+
+            background: rgba(0, 0, 0, 0);
+            border: solid 1px #ffffff;
+            outline: none;
+
+            max-width: 290px;
+            min-width: 290px;
+            max-height: 100px;
+            min-height: 100px;
+        }
+
+
+        .springbutton {
+            position: relative;
+            top: 100px;
+            left: 100px;
+        }
+    </style>
+    <script type="text/javascript">
+        /**效果模块js*/
+        $(function () {
+            let time = setInterval(yundong, 3000);
+
+            /* 鼠标移入图片停止自动播放，移出后自动播放 */
+            $(".img-slide").on("mouseover", function () {
+                clearInterval(time);
+            });
+
+            $(".img-slide").on("mouseout", function () {
+                time = setInterval(yundong, 3000);
+            });
+        });
+
+        function yundong() {
+            let display = $(".display");
+            let displayImg = $(".display > .img-slide");
+            // prepend
+            displayImg.eq(6).animate({
+                width: "0px"
+            }, 1000, function () {
+                display.prepend(displayImg.eq(6));
+                displayImg.eq(6).attr("style", "width: 300px;");
+            });
+        }
+
+        /**数据模块js*/
+        $(function () {
+            var data = "[(${data})]";
+            var alter = "[(${alter})]";
+            if(alter !=""){
+                alert(alter);
+            }
+            console.log(data)
+        });
+
+        /**社团详情的移动*/
+        function moveAssociation(direction) {
+            let associationID = $(".associationID").text();
+            let url = window.location.href;
+
+            if(direction > 0){
+                associationID = "1:"+associationID
+            }else {
+                associationID = "0:"+associationID
+            }
+            if(url.indexOf("move") > 0){
+                window.location.href = url.split("?")[0] + "?associationID=" + associationID;
+            }else {
+                window.location.href = url.split("?")[0] + "/move?associationID=" + associationID;
+            }
+        }
+
+        /**提交发送函数*/
+        function apply(ID) {
+            /**获取第一行编号*/
+            let number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
+
+            if ($(".springnumbertext").val() == "") {
+                alert("个人介绍不能为空！");
+                return;
+            }
+            console.log(window.location.href);
+            let data = ID + ":" + number + ":" + $(".springnumbertext").val();
+            console.log(data);
+            $.ajax({
+                    url: window.location.href.split("MyClubStatus/")[0] +
+                        "MyClubStatus/AddOrganization/apply/" + data,
+                    success: function (dex) {
+                        alert(dex);
+                        if (dex == "申请成功！") {
+                            /**地址刷新，地址替代*/
+                            window.location.replace(window.location.href.substring(0, window.location.href.indexOf("AddOrganization/")) + number);
+                        }
+                    }
+                }
+            );
+        }
+
+        /**弹窗的样式*/
+        /*关闭弹窗事件*/
+        function closePop() {
+            $(".springtan").hide();
+            $(".sanjiaoleft,.sanjiaoright,.bu>button").show();
+        }
+
+        /*开启弹窗事件*/
+        function openDiv() {
+            $(".sanjiaoleft,.sanjiaoright,.bu>button").hide();
+            /**显示个人介绍框*/
+            $(".springtan").show();
+            /**获取ID存入输入框内提供点击使用*/
+            let ID = $(".associationID").text();
+            $(".springID").text(ID);
+        }
+
+        /*确定发送事件*/
+        function appl() {
+            apply($(".springID").text());
+        }
+    </script>
+</head>
+<body>
+
+<div class="jiemian">
+
+    <div class="display" style=" float: left;width: 300px; height: 300px;overflow: hidden;">
+        <div class="img-slide">
+            <img src="/img/IS-0001/伊格赛听_叶里_谪仙_4.jpg" alt="img3"/>
+        </div>
+        <div class="img-slide">
+            <img src="/img/IS-0001/双笙 (陈元汐)_心做し_4.jpg" alt="img4"/>
+        </div>
+        <div class="img-slide">
+            <img src="/img/IS-0001/英雄联盟_Against the Current_Legends Never Die_4.jpg" alt="img5"/>
+        </div>
+        <div class="img-slide">
+            <img src="/img/IS-0001/尹昔眠_小田音乐社_奔赴星空_4.jpg" alt="img6"/>
+        </div>
+        <div class="img-slide">
+            <img src="/img/IS-0001/唐子臣_丢了你_4.jpg" alt="img7"/>
+        </div>
+        <div class="img-slide">
+            <img src="/img/IS-0001/任然_雀跃_4.jpg" alt="img2"/>
+        </div>
+
+        <div class="img-slide">
+            <img src="/img/IS-0001/雪二_渐冷_4.jpg" alt="img1"/>
+        </div>
+    </div>
+
+    <div class="Title">
+        <div class="title">
+            <!--/*@thymesVar id="data" type=""*/-->
+            <div style="display: none" class="associationID" th:text="${data.associationID}"></div>
+            <!--/*@thymesVar id="data" type=""*/-->
+            <text th:text="${data.associationName}"></text>
+        </div>
+        <div class="name">社长:
+            <!--/*@thymesVar id="data" type=""*/-->
+            <text th:text="${data.associationProprieter}"></text>
+        </div>
+    </div>
+
+    <div class="neirong">
+        <div class="介绍">宗旨：
+            <!--/*@thymesVar id="data" type=""*/-->
+            <text th:text="${data.associationIntroduce}"></text>
+        </div>
+        <br>
+        <div class="介绍">简介：</div>
+        <br>
+        <div class="介绍">特色活动：</div>
+
+        <div class="bu"><button onclick="openDiv()">申请</button><button onclick="">返回</button></div>
+    </div>
+
+    <div class="sanjiaoleft" onclick="moveAssociation(1)">
+    </div>
+
+    <div class="sanjiaoright" onclick="moveAssociation(0)">
+    </div>
+
+</div>
+
+<!--最后的弹框-->
+<div class="springtan">
+    <div class="springID" style="display: none"></div>
+    <div class="springclose">
+        <a href="javascript:void(0)" onclick="closePop()">关闭</a>
+    </div>
+    <div class="springnumber">个人介绍</div>
+    <div>
+        <textarea class="springnumbertext"></textarea>
+    </div>
+
+    <div class="springbutton">
+        <button class="appl" onclick="appl()">确定</button>
+        <button onclick="closePop()">取消</button>
+    </div>
+</div>
+
+</body>
+</html>

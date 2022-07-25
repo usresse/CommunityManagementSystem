@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>ActivityHistory</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/date.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 40px;
+        }
+
+        td {
+            width: 600px;
+            text-align: center;
+        }
+
+        option {
+            background: rgba(0, 0, 0, 0);
+        }
+
+        .Jump {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .inp {
+            width: 30px;
+        }
+
+        .total {
+            display: inline-block;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var number = $(window.parent.document.getElementsByClassName("quan")[0]).text();
+
+        /*================添加数据===========================*/
+        $(function () {
+            let table = $(".table")[0];
+
+            /*获取到对象结果会将JSON字符串自动转换成js对象*/
+            let data = [(${data})];
+            console.log(data);
+
+            /*添加总页数*/
+            $(".totalNumber")[0].innerText = data["pages"];
+
+            /*获取josn中的list中的数据*/
+            let list = data["list"]
+            console.log(list);
+
+            /*创建表中的对象标签*/
+            for (let i = 0; i < 6; i++) {
+                if (i < list.length) {
+                    /*提取Object对象中的属性提取出*/
+                    const {
+                        ID,
+                        Title,
+                        releaseDate,
+                        Place,
+                        startDate,
+                        endDate,
+                        numberOfPeople,
+                        State,
+                        Remark,
+                        associationName
+                    } = list[i];
+
+                    let tr = $("<tr></tr>");
+
+                    let td1 = $("<td></td>");
+                    let td2 = $("<td></td>");
+                    let td3 = $("<td></td>");
+                    let td4 = $("<td></td>");
+                    let td5 = $("<td></td>");
+                    let td6 = $("<td></td>");
+                    let td7 = $("<td></td>");
+                    let td8 = $("<td></td>");
+                    let td9 = $("<td></td>");
+                    let td10 = $("<td><button onclick='apply(this)'>删除记录</button></td>");
+
+                    let div = $("<div></div>").attr("style", "display: none;").text(ID);
+                    td1[0].innerText = Title;
+                    td2[0].innerText = associationName;
+                    td3[0].innerText = dateFormat(new Date(releaseDate), 'yyyy-MM-dd');
+                    td4[0].innerText = Place;
+                    td5[0].innerText = dateFormat(new Date(startDate), 'yyyy-MM-dd');
+                    if (endDate == null) {
+                        td6[0].innerText = "null";
+                    } else {
+                        td6[0].innerText = dateFormat(new Date(endDate), 'yyyy-MM-dd');
+                    }
+                    td7[0].innerText = numberOfPeople;
+                    td8[0].innerText = State;
+                    td9[0].innerText = Remark;
+
+                    tr.append(div);
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+                    tr.append(td7);
+                    tr.append(td8);
+                    tr.append(td9);
+                    tr.append(td10);
+
+                    table.append(tr[0]);
+                }
+            }
+        });
+
+        /**删除记录的点击事件*/
+        function apply(button) {
+            let ID = $(button).closest("tr").find("div").eq(0).text();
+            $.ajax({
+                url: window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/" + ID,
+                success: function (dex) {
+                    alert(dex);
+                    window.location.reload();
+                }
+            });
+        }
+
+        $(function () {
+            /**初始页面页码*/
+            let input = $("input[class=inp]");
+            let url = window.location.href.toString();
+            /*分解地址获取到请求地址的页数*/
+            let dex = url.toString().substring(url.indexOf("ActivityHistory/") + 15, url.length).split("/")[1];
+            input.val(Number(dex));
+
+            /**查询点击事件*/
+            $(".button").on("click", function () {
+                let input = $(".select").val();
+                let select = $(".sel").val();
+                let va = select + ":" + input;
+                window.location.href = window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/1/" + number + "/" + va;
+            });
+
+
+            /**防止查询后，刷新页面数据消失*/
+            let data = "[(${condition})]";
+            let condition = data.split(":")
+            if (condition.length == 2) {
+                $(".select").attr("value", condition[1]);
+                let name = "select>option[value=" + condition[0] + "]";
+                console.log(name);
+                $(name).attr("selected", true);
+            }
+        });
+
+        /**分页事件*/
+        function shu(num) {
+
+            let val = $(".select").val();
+            let select = $(".sel").val();
+
+            let va = select + ":" + val;
+
+            /*总页数数*/
+            let total = Number($(".totalNumber")[0].innerText);
+
+            /*输入框对象*/
+            let input = $("input[class=inp]");
+            console.log(input.val());
+            /*获取输入框的数字*/
+            let index = Number(input.val());
+
+            if (num == "button1" && index > 1) {
+                input.val(index - 1);
+                window.location.href = window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/" + (index - 1) + "/" + number + "/" + va;
+            } else if (num == "button2" && index < total) {
+                input.val(index + 1);
+                window.location.href = window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/" + (index + 1) + "/" + number + "/" + va;
+            }
+        }
+    </script>
+</head>
+<body>
+<table class="table" border="1">
+    <tr>
+        <td>
+            <select class="sel" style="background: rgba(0, 0, 0, 0); font-size: 20px;width: 100px;">
+                <option value="Title">标题</option>
+                <option value="Place">地点</option>
+                <option value="startDate">开始日期</option>
+                <option value="endDate">结束日期</option>
+            </select>
+        </td>
+        <td colspan="8">
+            <input class="select" style="width: 1000px; height: 30px;font-size: 20px;"/>
+        </td>
+        <td colspan="2">
+            <button class="button">查询</button>
+        </td>
+    </tr>
+    <tr>
+        <td>标题</td>
+        <td>主办社团</td>
+        <td>发布日期</td>
+        <td>地点</td>
+        <td>开始日期</td>
+        <td>结束日期</td>
+        <td>报名人数</td>
+        <td>状态</td>
+        <td>备注</td>
+        <td>操作</td>
+    </tr>
+</table>
+
+<div class="Jump">
+    <button class="button1" onclick="shu('button1')">上</button>
+    <!-- onkeyup对输入的值进行限制 -->
+    <input class="inp" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+    <button class="button2" onclick="shu('button2')">下</button>
+    <div class="total">总数：
+        <div class="totalNumber" style="display: inline-block"/>
+    </div>
+</div>
+</body>
+</html>

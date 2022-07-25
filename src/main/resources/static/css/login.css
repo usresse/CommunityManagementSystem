@@ -1,0 +1,52 @@
+/* 标题样式 */
+.ku {
+	font-size: 40px;
+	font-weight: 700;
+	letter-spacing: 30px;
+	margin-top: 100px;
+	text-align: center;
+	color: white;
+}
+
+/* 登录输入框样式 */
+.kuang {
+	width: 50%;
+	height: 50%;
+	margin: auto;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.zhong {
+	padding-top: 100px;
+	padding-bottom: 20px;
+}
+
+.text {
+	line-height: 70px;
+	text-align: center;
+}
+
+input {
+	width: 300px;
+	height: 30px;
+	font-size: 20px;
+}
+
+/* 按钮样式 */
+.botton {
+	width: 300px;
+	height: 30px;
+}
+
+/* 提示注册样式 */
+.hint {
+	margin-top: 10px;
+	font-size: 15px;
+	color: #a2a2a2;
+}
+
+.jinggao{
+	color: red;
+	font-size: 10px;
+}

@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  servlet:
+#    指定总的父路径
+    context-path: /
+
+spring:
+  datasource:
+#    创建连接数据库的数据源
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/community?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: 123456
+#    启动thymeleaf插件进行转换json数据
+  thymeleaf:
+    prefix: classpath:/templates/ #prefix：指定模板所在的目录
+    check-template-location: true #check-tempate-location: 检查模板路径是否存在
+    cache: false #cache: 是否缓存，开发模式下设置为false，避免改了模板还要重启服务器，线上设置为true，可以提高性能
+    suffix: .html
+  mvc:
+    static-path-pattern: /**
+  servlet:
+    multipart:
+#      上传/下载文件的大小设置
+      max-file-size: 10MB
+      max-request-size: 20MB
+  main:
+#    解决springboot升级后的因循环引用导致启动时报错问题
+#    ┌──->──┐
+#    |  com.github.pagehelper.autoconfigure.PageHelperAutoConfiguration
+#    └──<-──┘
+    allow-circular-references: true
+
+#分页查询配置
+pagehelper:
+#  语言指定
+  helper-dialect: mysql
+#  是否启用合理化时，如果pageNum<1会查询第一页，如果pageNum>总页数会查询最后一页
+  reasonable: true
+#  支持通过Mapper接口参数来传递分页参数，默认值false，分页插件会从查询方法的参数值中，
+#  自动根据上面 params 配置的字段中取值，查找到合适的值时就会自动分页。
+  support-methods-arguments: true
+
+
+
+mybatis:
+  #配置别名
+  type-aliases-package: com/example/communitymanagementsystem/Mapper/brean
+  #第一个/表示根目录，加载指定xml映射文件
+  mapper-locations: classpath:com/example/communitymanagementsystem/mybatis/mappers/*.xml
+  #开启驼峰映射
+  configuration:
+    map-underscore-to-camel-case: true
+    #输出sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.communitymanagementsystem.mybatis.mappers.SchoolMapper">
+    <select id="login" resultType="map">
+        select *
+        from school
+        where Number = ${number}
+    </select>
+
+    <select id="activity" resultType="map">
+        select Title,
+               Place,
+               startDate,
+               endDate,
+               MAXPeople,
+               associationName,
+               Remark,
+               ID
+        from activity,
+             association
+        where activity.hostAssociactionID = association.associationID
+          and State = "申请中"
+    </select>
+
+    <update id="requset">
+        update activity
+        set State = "${value}"
+        where ID = ${ID}
+    </update>
+
+    <select id="selectApplyAssociation" resultType="map">
+        select *
+        from schoolAgreeAssociation
+    </select>
+
+    <update id="schoolagreeassociation">
+        update schoolAgreeAssociation
+        <set>
+            <if test="result == 0">Agree = 1</if>
+            <if test="result == 1">Agree = 0</if>
+        </set>
+        where associationID = "${associationID}";
+
+        <if test="result == 0">
+            <include refid="insert"></include> "${associationID}"
+        </if>
+    </update>
+
+    <sql id="id">
+        associationID, associationName, associationProprieterNumber, associationProprieter,associationNumber,associationIntroduce
+    </sql>
+
+    <sql id="insert">
+        insert into association (<include refid="id"></include>)
+        select <include refid="id"></include> from schoolagreeassociation where associationID =
+    </sql>
+</mapper>

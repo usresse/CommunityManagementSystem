@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>activityAll</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/date.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 40px;
+        }
+
+        td {
+            width: 600px;
+            text-align: center;
+        }
+
+        option {
+            background: rgba(0, 0, 0, 0);
+        }
+    </style>
+
+    <script type="text/javascript" th:inline="javascript">
+        var number = $(window.parent.document.getElementsByClassName("quan")[0]).text();
+
+        /*================添加数据===========================*/
+        $(function () {
+            let table = $(".table")[0];
+
+            /*获取到对象结果会将JSON字符串自动转换成js对象*/
+            let data = [[${data}]];
+            console.log(data);
+
+            /*获取josn中的list中的数据*/
+            let list = data
+            console.log(list);
+
+            /*创建表中的对象标签*/
+            for (let i = 0; i < 6; i++) {
+                if (i < list.length) {
+                    /*提取Object对象中的属性提取出*/
+                    const {
+                        id,
+                        title,
+                        releaseDate,
+                        place,
+                        startDate,
+                        endDate,
+                        numberOfPeople,
+                        state,
+                        remark,
+                        associationName
+                    } = list[i];
+
+                    let tr = $("<tr></tr>");
+
+                    let td1 = $("<td></td>");
+                    let td2 = $("<td></td>");
+                    let td3 = $("<td></td>");
+                    let td4 = $("<td></td>");
+                    let td5 = $("<td></td>");
+                    let td6 = $("<td></td>");
+                    let td7 = $("<td></td>");
+                    let td8 = $("<td></td>");
+                    let td9 = $("<td></td>");
+                    let td10 = $("<td><button onclick='signOut(this)'>退出</button></td>");
+
+                    let div = $("<div></div>").attr("style", "display: none;").text(id)
+                    td1[0].innerText = title;
+                    td2[0].innerText = associationName;
+                    td3[0].innerText = dateFormat(new Date(releaseDate), 'yyyy-MM-dd');
+                    td4[0].innerText = place;
+                    td5[0].innerText = dateFormat(new Date(startDate), 'yyyy-MM-dd');
+                    if (endDate == null) {
+                        td6[0].innerText = "null";
+                    } else {
+                        td6[0].innerText = dateFormat(new Date(endDate), 'yyyy-MM-dd');
+                    }
+                    td7[0].innerText = numberOfPeople;
+                    td8[0].innerText = state;
+                    td9[0].innerText = remark;
+
+                    tr.append(div);
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+                    tr.append(td7);
+                    tr.append(td8);
+                    tr.append(td9);
+                    tr.append(td10);
+
+                    table.append(tr[0]);
+                }
+            }
+        });
+
+        function signOut(button) {
+            let ID = $(button).closest("tr").find("div").eq(0).text();
+            $.ajax({
+                url: number + "/" + ID,
+                success: function (dex) {
+                    alert(dex);
+                    window.location.reload();
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<table class="table" border="1">
+    <tr>
+        <td>标题</td>
+        <td>主办社团</td>
+        <td>发布日期</td>
+        <td>地点</td>
+        <td>开始日期</td>
+        <td>结束日期</td>
+        <td>报名人数</td>
+        <td>状态</td>
+        <td>备注</td>
+        <td>操作</td>
+    </tr>
+</table>
+</body>
+</html>

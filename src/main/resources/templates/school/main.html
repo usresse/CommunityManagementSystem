@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        div {
+            margin-top: 40px;
+            display: inline-block;
+        }
+
+        .title {
+            display: block;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 25px;
+        }
+
+        .nei {
+            display: block;
+        }
+
+        .kuang{
+            margin-left: 60px;
+        }
+
+        iframe {
+            margin: 0 auto;
+            border: none;
+            width: 1400px;
+            height: 500px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function (){
+            /**进入点击显示效果*/
+            caidan($(".caidan")[0],"CommunityApplicationReview");
+        });
+
+        /**点击菜单的点击事件*/
+        function caidan(label,url){
+            /**样式代码*/
+            $(".caidan").attr("style","");
+            $(label).attr("style","padding: 10px 10px 10px 10px;background-color: #c3c3c3;border-radius: 10px 10px 0 0;");
+            $(".nei").attr("style","background-color: #c3c3c3;");
+
+            /**页面小显示框的更改请求页面*/
+            $(".nei").attr("src",url);
+        }
+    </script>
+</head>
+<body>
+
+<div class="title">
+    学校审核
+</div>
+
+<div class="kuang">
+    <div class="caidan" onclick="caidan(this,'CommunityApplicationReview')">社团申请审核</div>
+    <div class="caidan" onclick="caidan(this,'CommunityActivityApplicationReview')">社团活动申请审核</div>
+</div>
+
+<iframe class="nei"></iframe>
+</body>
+</html>

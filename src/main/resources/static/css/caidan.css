@@ -1,0 +1,26 @@
+div {
+    margin-top: 5px;
+}
+
+.ti1,
+.ti2,
+.ti3,
+.ti4,
+.ti5 {
+    /* 字间距 */
+    /*letter-spacing:10px;*/
+    font-size: 20px;
+}
+
+.tem1,
+.tem2,
+.tem3,
+.tem4{
+    display: none;
+}
+
+.da {
+    text-align: left;
+    margin-top: 10px;
+    padding-left: 15px;
+}

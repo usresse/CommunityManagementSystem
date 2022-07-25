@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>AddOrganization</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 40px;
+        }
+
+        td {
+            width: 600px;
+            text-align: center;
+        }
+
+        .select {
+            background: rgba(0, 0, 0, 0);
+            font-size: 25px;
+            width: 300px;
+            height: 30px;
+        }
+
+        .input {
+            background: rgba(0, 0, 0, 0);
+            font-size: 25px;
+            width: 300px;
+            height: 30px;
+        }
+
+        .button2 {
+            width: 100px;
+            display: inline-block;
+
+        }
+
+        .button1 {
+            width: 100px;
+
+        }
+
+        .Jump {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .inp {
+            width: 30px;
+        }
+
+        .total {
+            display: inline-block;
+        }
+
+        /*弹框的样式*/
+        .springtan {
+            width: 300px;
+            height: 180px;
+            background-color: #e6e6e6;
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+            margin: auto;
+            z-index: 200;
+            display: none;
+        }
+
+        .springclose {
+            width: 300px;
+            height: 30px;
+            display: inline-block;
+            background-color: #828282;
+        }
+
+        .springclose a {
+            text-decoration: none;
+            color: #ffffff;
+            position: relative;
+            left: 120px;
+            top: 2px
+        }
+
+        .springnumber {
+            position: relative;
+            left: 0px;
+            top: -27px;
+            display: inline-block;
+            color: #ffffff;
+        }
+
+        .springnumbertext {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+            margin: auto;
+            font-size: 20px;
+
+            background: rgba(0, 0, 0, 0);
+            border: solid 1px #ffffff;
+            outline: none;
+
+            max-width: 290px;
+            min-width: 290px;
+            max-height: 100px;
+            min-height: 100px;
+        }
+
+
+        .springbutton {
+            position: relative;
+            top: 100px;
+            left: 100px;
+        }
+
+        .springyemain {
+            background-color: rgba(235, 235, 235, 0.0);
+            z-index: 200;
+            position: absolute;
+        }
+    </style>
+
+    <script type="text/javascript">
+        /*================添加数据===========================*/
+        $(function () {
+            let table = $(".table")[0];
+
+            /*获取到对象结果会将JSON字符串自动转换成js对象*/
+            let data = [(${data})];
+            console.log(typeof data);
+            console.log(data);
+
+            /*添加总页数*/
+            $(".totalNumber")[0].innerText = data["pages"];
+
+            /*获取josn中的list中的数据*/
+            let list = data["list"]
+            console.log(list);
+
+            /*创建表中的对象标签*/
+            for (let i = 0; i < 6; i++) {
+                if (i < list.length) {
+                    /*提取Object对象中的属性提取出*/
+                    const {
+                        associationID,
+                        associationName,
+                        associationProprieter,
+                        associationNumber,
+                        associationIntroduce
+                    } = list[i];
+
+                    let tr = $("<tr></tr>");
+                    let td1 = $("<td></td>");
+                    let td2 = $("<td></td>");
+                    let td3 = $("<td></td>");
+                    let td4 = $("<td></td>");
+                    let td5 = $("<td></td>");
+                    let td6 = $("<td></td>");
+
+                    td1[0].innerText = associationID;
+                    td2[0].innerText = associationName;
+                    td3[0].innerText = associationProprieter;
+                    td4[0].innerText = associationNumber;
+                    td5[0].innerText = associationIntroduce;
+                    let n = "apply" + i;
+                    td6.append($("<button onclick='Details(this)'>详情</button><button onclick='openDiv(this)'>申请</button>").attr("class", n))
+
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+
+                    table.append(tr[0]);
+                }
+            }
+        });
+
+        function shu(num) {
+            let select = $(".select").val();
+            let input = $(".input").val();
+
+            let va = select + ":" + input;
+            /*总页数数*/
+            let total = Number($(".totalNumber")[0].innerText);
+
+            /*输入框对象*/
+            let inp = $("input[class=inp]");
+            console.log(inp.val());
+            /*获取输入框的数字*/
+            let index = Number(inp.val());
+
+            if (num == "button1" && index > 1) {
+                inp.val(index - 1);
+                /*刷新页面更换地址==>split(index)[0]是为了分割去掉后面的查询参数*/
+                window.location.href = window.location.href.split(index)[0] + (index - 1) + "/" + va;
+            } else if (num == "button2" && index < total) {
+                inp.val(index + 1);
+                window.location.href = window.location.href.split(index)[0] + (index + 1) + "/" + va;
+            }
+        }
+
+        $(function () {
+            let inp = $("input[class=inp]");
+            let index = Number(inp.val());
+
+            let url = window.location.href.toString();
+            console.log(url);
+            /*分解地址获取到请求地址的页数*/
+            let dex = url.toString().substring(url.indexOf("AddOrganization") + 15, url.length).split("/")[1];
+            console.log(url.toString().substring(url.indexOf("AddOrganization") + 15, url.length));
+            if (Number(dex) <= 0) {
+                inp.val(1);
+            } else {
+                inp.val(Number(dex));
+            }
+
+            let button = $(".button");
+
+            button.click(function () {
+                let input = $(".input").val();
+                let select = $(".select").val();
+
+                let va = select + ":" + input;
+                console.log(window.location.href.split("AddOrganization/")[0]);
+                window.location.href = window.location.href.split("AddOrganization/")[0] + "AddOrganization/" + 0 + "/" + va;
+            });
+
+            /**防止查询后，刷新页面数据消失*/
+            let data = "[(${condition})]";
+            let condition = data.split(":")
+            console.log(condition.length);
+            if (condition.length == 2) {
+                $(".input").attr("value", condition[1]);
+                let name = "select>option[value=" + condition[0] + "]";
+                console.log(name);
+                $(name).attr("selected", true);
+            }
+        });
+
+
+        /**提交发送函数*/
+        function apply(ID) {
+            /**获取第一行编号*/
+            let number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
+            console.log(window.location.href);
+            console.log(window.location.href.split("MyClubStatus/")[0]);
+
+            if ($(".springnumbertext").val() == "") {
+                alert("个人介绍不能为空！");
+                return;
+            }
+
+            let data = ID + ":" + number + ":" + $(".springnumbertext").val();
+            console.log(data);
+            console.log(typeof data);
+            $.ajax({
+                    url: window.location.href.split("MyClubStatus/")[0] +
+                        "MyClubStatus/AddOrganization/apply/" + data,
+                    success: function (dex) {
+                        alert(dex);
+                        if (dex == "申请成功！") {
+                            /**地址刷新，地址替代*/
+                            window.location.replace(window.location.href.substring(0, window.location.href.indexOf("AddOrganization/")) + number);
+                        }
+                    }
+                }
+            );
+        }
+
+        /**弹窗的样式*/
+        /*关闭弹窗事件*/
+        function closePop() {
+            $(".springtan").hide();
+            $(".springyemain").css("width", 0);
+            $(".springyemain").css("height", 0);
+        }
+
+        /*开启弹窗事件*/
+        function openDiv(button) {
+            //获取页面的实际高度和宽度
+            var hei = $(window.parent.document).height();
+            var wid = $(window.parent.document).width();
+            /**显示个人介绍框*/
+            $(".springtan").show();
+            /**获取ID存入输入框内提供点击使用*/
+            let ID = $(button).closest("tr").find("td").eq(0).text();
+            $(".springID").text(ID);
+
+            /**设置组件不能点击下面的操作*/
+            $(".springyemain").css("width", wid);
+            $(".springyemain").css("height", hei);
+        }
+
+        /*确定发送事件*/
+        function appl() {
+            apply($(".springID").text());
+        }
+
+        /**详情页面的展示*/
+        function Details(button) {
+            let associationID = $(button).closest("tr").find("td").eq(0).text();
+            let url = window.location.href;
+            window.location.href = url.split("AddOrganization/")[0] + "AssociationApplication?associationID=" + associationID
+        }
+    </script>
+</head>
+<body>
+<div class="springyemain"></div>
+
+<table border="1" class="table">
+    <tr>
+        <td>
+            <select class="select">
+                <option value="associationID">社团ID</option>
+                <option value="associationName">社团名称</option>
+                <option value="associationProprieter">社长</option>
+            </select>
+        </td>
+        <td colspan="4">
+            <input class="input" type="text"/>
+        </td>
+        <td>
+            <button class="button">搜索</button>
+        </td>
+    </tr>
+    <tr>
+        <td>社团ID</td>
+        <td>社团名称</td>
+        <td>社长</td>
+        <td>社团人数</td>
+        <td>社团介绍</td>
+        <td>操作</td>
+    </tr>
+</table>
+<div class="Jump">
+    <button class="button1" onclick="shu('button1')">上</button>
+    <!-- onkeyup对输入的值进行限制 -->
+    <input class="inp" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+    <button class="button2" onclick="shu('button2')">下</button>
+    <div class="total">总数：
+        <div class="totalNumber" style="display: inline-block"/>
+    </div>
+</div>
+
+<!--最后的弹框-->
+<div class="springtan">
+    <div class="springID" style="display: none"></div>
+    <div class="springclose">
+        <a href="javascript:void(0)" onclick="closePop()">关闭</a>
+    </div>
+    <div class="springnumber">个人介绍</div>
+    <div>
+        <textarea class="springnumbertext"></textarea>
+    </div>
+
+    <div class="springbutton">
+        <button class="appl" onclick="appl()">确定</button>
+        <button onclick="closePop()">取消</button>
+    </div>
+</div>
+
+
+</body>
+</html>

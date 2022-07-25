@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SchoolLogin</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        .title {
+            text-align: center;
+            font-size: 30px;
+            margin-top: 200px;
+        }
+
+        .kuang {
+            margin-top: 100px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        body {
+            background-image: url("http://localhost:8080/img/school.jpg");
+        }
+
+        div {
+            margin-bottom: 30px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function (){
+            console.log()
+            if(window.location.href.split("school/").length == 2){
+                $(".form").attr("action","login");
+            }
+        })
+
+        function login() {
+            let number = $(".number").val();
+            let password = $(".password").val();
+
+            if(number != "" && password != "" && number.length ==10 && password.length ==10){
+               return true;
+            }else {
+                alert("账号或密码位数不够！");
+                return false;
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="title">
+    学校账号
+</div>
+
+
+<div class="kuang">
+    <form class="form" method="post" action="school/login">
+        <div>
+            账号：
+            <input name="number" class="number" minlength="10" maxlength="10" placeholder="账号（10位数）">
+        </div>
+        <div>
+            密码：
+            <input name="password" class="password" type="password" minlength="10" maxlength="10" placeholder="密码（10位）">
+        </div>
+        <!--/*@thymesVar id="result" type=""*/-->
+        <div class="result" th:text="${result}" style="color: red;font-size: 10px;"></div>
+        <div>
+            <button onclick="return login()">登录</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

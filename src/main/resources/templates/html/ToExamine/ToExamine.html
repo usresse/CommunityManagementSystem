@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>ToExamine</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        tr {
+            height: 50px;
+        }
+
+        td {
+            width: 500px;
+        }
+
+        .table {
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+
+        function judge(button, param) {
+            /**获取被点击的按钮同行的第一个数据*/
+            let number = $(button).closest("tr").find("div").eq(0).text();
+            let applyAssociation = $(".applyAssociation")[0].innerText;
+            console.log(applyAssociation);
+
+            /**创建数据对象*/
+            let data = {};
+            data.applyAssociation = applyAssociation;
+            data.number = number;
+
+            console.log(window.location.href.split("ToExamine/")[0]);
+            let url = window.location.href.split("ToExamine/")[0] + "ToExamine/" + "judge/" + param;
+
+            $.ajax({
+                url: url,
+                data: data,
+                success: function (dex) {
+                    if (dex == "操作成功！") {
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+
+        $(function () {
+            let data = [(${data})];
+            console.log(data);
+
+            let list = data["list"];
+            console.log(list);
+
+            let applyAssociation = list[0].applyAssociation;
+            $(".applyAssociation")[0].innerText = applyAssociation;
+
+            let table = $(".table");
+
+            for (let i = 0; i < list.length; i++) {
+                const {applyNumber, Name, schoolmajorName, applyIntroduction} = list[i]
+
+                let tr = $("<tr></tr>");
+
+                let div = $("<div></div>").attr("style", "display:none").text(applyNumber);
+                let td = $("<td></td>");
+                let td1 = $("<td></td>");
+                let td2 = $("<td></td>");
+                let td3 = $("<td><button onclick='judge(this,1)'>通过</button><button onclick='judge(this,0)'>拒绝</button></td>");
+
+
+                td.text(Name);
+                td1.text(schoolmajorName);
+                td2.text(applyIntroduction);
+
+                tr.append(div);
+                tr.append(td);
+                tr.append(td1);
+                tr.append(td2);
+                tr.append(td3);
+
+                table.append(tr);
+            }
+        })
+    </script>
+</head>
+<body>
+<!--保存社团编号-->
+<div class="applyAssociation" style="display: none"></div>
+<table class="table" border="1">
+    <tr>
+        <td>
+            申请人
+        </td>
+        <td>
+            申请人专业
+        </td>
+        <td>
+            申请信息
+        </td>
+        <td>
+            操作
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

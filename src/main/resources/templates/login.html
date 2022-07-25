@@ -1,0 +1,33 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>学生社团管理系统</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <link type="text/css" th:href="@{/css/login.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/login.js}"></script>
+</head>
+<body bgcolor="#45E8CA">
+<div class="ku">
+    社团管理系统
+</div>
+<form class="fo" action="page">
+    <div class=" kuang">
+        <div class="zhong">
+            <div class="text">
+                <input id="number" name="number" type="text" minlength="6" maxlength="8" placeholder="账号(6~8位数字)"/>
+            </div>
+            <div class="text">
+                <input id="password" name="password" minlength="6" maxlength="8" type="password"
+                       placeholder="密码(6~8为字符)"/>
+            </div>
+            <!--/*@thymesVar id="data" type="String"*/-->
+            <div class="jinggao" th:text="${data}"></div>
+        </div>
+        <button class="botton" onclick="return sum()">登录</button>
+        <br>
+        <div class="hint">如果你还没有账户，请点击 &nbsp;<a href="register">注册</a></div>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>MyClubStatus</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        div {
+            text-align: center;
+            margin-top: 20%;
+        }
+
+        h3 {
+            color: #c3c3c3;
+            font-weight: 400;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .table {
+            width: 600px;
+            height: 100px;
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            /**操作显示哪一个*/
+            let nul = $(".nul");
+            let table = $(".table");
+            let a = $(".a");
+
+            let data = "[(${data})]";
+
+            console.log(data);
+            console.log(typeof data);
+
+            if (data != null && data != "") {
+                data = data.substring(1, data.length - 1);
+                console.log(data);
+                let arry = data.split(",");
+
+                console.log(arry);
+
+                /**隐藏添加标签*/
+                nul.hide();
+                a.hide();
+
+                if (arry.length == 5) {
+                    /**向信息表中添加数据*/
+                    $(".ApplyInformationNumber")[0].innerText = arry[0].split("=")[1];
+                    $(".associationName")[0].innerText = arry[1].split("=")[1];
+                    if(Number(arry[2].split("=")[1]) == 1){
+                        $(".result")[0].innerText = "通过";
+                    }else {
+                        $(".result")[0].innerText = "不通过";
+                    }
+                    $(".associationProprieter")[0].innerText = arry[3].split("=")[1];
+                    $(".applyAssociation")[0].innerText = arry[4].split("=")[1];
+
+                    $(".resultText")[0].innerText = "结果";
+                    /**显示标签操作*/
+                    a.show();
+                    $(".button").hide();
+                    $(".result").show();
+                } else {
+                    /**向信息表中添加数据*/
+                    $(".ApplyInformationNumber")[0].innerText = arry[0].split("=")[1];
+                    $(".applyAssociation")[0].innerText = arry[3].split("=")[1];
+                    $(".associationName")[0].innerText = arry[1].split("=")[1];
+                    $(".associationProprieter")[0].innerText = arry[2].split("=")[1];
+                    $(".result").hide();
+                }
+            } else {
+                table.hide();
+            }
+
+
+        });
+
+        function del() {
+            let ApplyInformationNumber = $(".ApplyInformationNumber")[0].innerText;
+            var data = {};
+            data.ApplyInformationNumber = ApplyInformationNumber;
+
+            console.log(window.location.href);
+            $.ajax({
+                url: "DeleteApplyInformation",
+                data: data,
+                success: function (dex) {
+                    if (dex == "撤销成功！") {
+                        /**刷新本界面*/
+                        window.location.reload();
+                    } else {
+                        alert(dex);
+                    }
+
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="text">
+
+    <div class="nul">
+        <h3>我还没有参加任何社团</h3>
+    </div>
+
+    <!--/*@thymesVar id="data" type=""*/-->
+    <div style="display: none" class="ApplyInformationNumber"></div>
+
+    <table class="table" border="1" align="center">
+        <tr>
+            <td>申请社团ID</td>
+            <td>社团名称</td>
+            <td>社团社长</td>
+            <td class="resultText">操作</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="applyAssociation"></div>
+            </td>
+            <td>
+                <div class="associationName"></div>
+            </td>
+            <td>
+                <div class="associationProprieter"></div>
+            </td>
+            <td>
+                <button class="button" onclick="del()">撤销</button>
+                <div class="result"></div>
+            </td>
+        </tr>
+    </table>
+    <a class="a" href="AddOrganization/1/null">添加社团</a>
+</div>
+
+</body>
+</html>

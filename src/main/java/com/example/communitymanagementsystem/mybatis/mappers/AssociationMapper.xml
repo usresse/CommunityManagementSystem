@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.communitymanagementsystem.mybatis.mappers.AssociationMapper">
+
+    <select id="select" resultType="map">
+        select *
+        from association
+        <where>
+            <if test="key == 'associationID'">associationID = "${value}"</if>
+            <if test="key == 'associationName'">associationName = "${value}"</if>
+            <if test="key == 'associationProprieter'">associationProprieter = "${value}"</if>
+        </where>
+    </select>
+
+    <select id="selectInformation" resultType="map">
+        select Number, applyAssociation, applyResult, associationName, associationProprieter
+        from applyinformation,
+             association
+        where applyinformation.applyAssociation = association.associationID
+          and applyNumber = "${number}"
+          and applyT = 1
+    </select>
+
+    <select id="selectAll" resultType="map">
+        select *
+        from association
+    </select>
+
+    <update id="selectupdate">
+        update applyinformation
+        set applyT = 0
+        where applyNumber = "${number}"
+          and applyResult is not null
+    </update>
+
+    <insert id="create">
+        insert into applyinformation (applyAssociation, applyNumber, applyT, applyIntroduction)
+        values ("${applyAssociation}", "${applyNumber}", 1, "${applyIntroduction}")
+    </insert>
+
+    <select id="selectApply" resultType="map">
+        select *
+        from applyinformation
+        where applyNumber = "${applyNumber}"
+          and applyT = 1;
+    </select>
+
+    <delete id="delete">
+        delete
+        from applyinformation
+        where Number = ${number}
+    </delete>
+
+    <select id="reviewed" resultType="map" parameterType="String">
+        select *
+        from applyinformation,
+             personal,
+             schoolmajor
+        where applyinformation.applyNumber = personal.number
+          and personal.schoolMajor = schoolmajor.schoolmajorID
+          and applyinformation.applyAssociation = "${associationID}"
+          and applyinformation.applyResult is null
+    </select>
+
+
+    <update id="judge">
+        update applyinformation
+        <set>
+            <if test="index == 1">
+                applyResult = "1"
+            </if>
+            <if test="index == 0">
+                applyResult = "0"
+            </if>
+        </set>
+        where applyinformation.applyNumber = "${number}"
+        and applyT = 1
+    </update>
+
+    <insert id="Create">
+        insert into schoolAgreeAssociation (associationID, associationName, associationProprieterNumber,
+                                            associationProprieter,
+                                            associationNumber, associationIntroduce)
+        values ("${data.associationID}", "${data.associationName}", "${number}",
+                (select Name from personal where number = "${number}"), 1, "${data.associationIntroduce}")
+    </insert>
+
+    <select id="personal" resultType="map">
+        select *
+        from personal
+        where number = ${number}
+    </select>
+
+    <update id="KickOut">
+        update personal
+        set associationNumber = "",
+            major             = ""
+        where number = "${number}"
+    </update>
+
+    <select id="MoveAssociationApplication" resultType="map">
+        select *
+        from association
+        where associationID =(
+        <if test="data[0] ==1 ">select max(associationID) from association where "${data[1]}" >associationID
+        </if>
+        <if test="data[0] == 0">select min(associationID) from association where associationID>"${data[1]}"
+        </if>
+        )
+    </select>
+</mapper>
