@@ -1,20 +1,21 @@
 package com.example.communitymanagementsystem.controller;
 
+import com.example.communitymanagementsystem.Mapper.brean.Association;
 import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
 import com.example.communitymanagementsystem.service.inter.AssociationServer;
 import com.example.communitymanagementsystem.service.inter.Server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
-import com.sun.nio.sctp.Association;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,7 +55,7 @@ public class AssociationController {
 
         if (personalBean.getAssociationName() != null) {
             modelAndView.setViewName("html/MyClubStatus/CommunityPersonnelManagement");
-            PageInfo pageInfo = server.PagingQuery(0,null,number);
+            PageInfo pageInfo = server.PagingQuery(0, null, number);
             String data = null;
             try {
                 /*new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(对象)将对象转化成json对象*/
@@ -91,7 +92,7 @@ public class AssociationController {
                                          @PathVariable("condition") String condition,
                                          @PathVariable("number") String number) {
 
-        if(condition.split(":").length == 1){
+        if (condition.split(":").length == 1) {
             condition = null;
         }
         PageInfo pageInfo = server.PagingQuery(index, condition, number);
@@ -142,54 +143,54 @@ public class AssociationController {
     }
 
     /**
-     * @author Predator
-     * @date 2022-7-23 10:56
      * @param ： index
      * @param ： condition
      * @return org.springframework.web.servlet.ModelAndView
      * Description:社团的详情页面
+     * @author Predator
+     * @date 2022-7-23 10:56
      */
     @RequestMapping("MyClubStatus/AssociationApplication")
     public ModelAndView AssociationApplication(@RequestParam String associationID) {
         ModelAndView modelAndView = new ModelAndView();
-        Map<String,Object> data = associationServer.AssociationApplication(associationID);
-        if(data != null){
-            modelAndView.addObject("data",data);
+        Map<String, Object> data = associationServer.AssociationApplication(associationID);
+        if (data != null) {
+            modelAndView.addObject("data", data);
         }
         modelAndView.setViewName("html/MyClubStatus/AssociationApplication");
         return modelAndView;
     }
 
     /**
-     * @author Predator
-     * @date 2022-7-23 10:56
      * @param ： index
      * @param ： condition
      * @return org.springframework.web.servlet.ModelAndView
      * Description:社团的详情页面的下一个或上一个的操作
+     * @author Predator
+     * @date 2022-7-23 10:56
      */
     @RequestMapping("MyClubStatus/AssociationApplication/move")
     public ModelAndView MoveAssociationApplication(@RequestParam String associationID) {
         ModelAndView modelAndView = new ModelAndView();
-        Map<String,Object> data = associationServer.MoveAssociationApplication(associationID.split(":"));
+        Map<String, Object> data = associationServer.MoveAssociationApplication(associationID.split(":"));
 
-        for(String key : data.keySet()){
-            System.out.println(key +"=="+data.get(key));
+        for (String key : data.keySet()) {
+            System.out.println(key + "==" + data.get(key));
         }
 
-        if(data != null){
-            modelAndView.addObject("data",data);
+        if (data != null) {
+            modelAndView.addObject("data", data);
         }
         modelAndView.setViewName("html/MyClubStatus/AssociationApplication");
         return modelAndView;
     }
 
     /**
-     * @author Predator
-     * @date 2022-7-22 20:05
      * @param ： number
      * @return java.lang.String
      * Description:社长踢人操作
+     * @author Predator
+     * @date 2022-7-22 20:05
      */
     @RequestMapping("MyClubStatus/KickOut")
     @ResponseBody
@@ -303,4 +304,131 @@ public class AssociationController {
                                     @RequestParam Map<String, Object> data) {
         return associationServer.Create(number, data);
     }
+
+    /**
+     * @param ： number
+     * @param ： data
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:社团信息维护的页面跳转
+     * @author Predator
+     * @date 2022-7-27 18:30
+     */
+    @RequestMapping("CommunityInformationMaintenance/{number}")
+    public ModelAndView CommunityInformationMaintenance(@PathVariable("number") String number) {
+        ModelAndView modelAndView = new ModelAndView();
+        Association association = associationServer.CommunityInformationMaintenance(number);
+        modelAndView.addObject("association", association);
+        modelAndView.setViewName("html/MyClubStatus/CommunityInformationMaintenance");
+        return modelAndView;
+    }
+
+    /**
+     * @param ： multipartFile
+     * @param ： associationID
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:对社团风采图片的处理
+     * @author Predator
+     * @date 2022-7-31 15:50
+     */
+    @RequestMapping("CommunityInformationMaintenance/Img")
+    @ResponseBody
+    public void CommunityInformationImg(@RequestPart("file") MultipartFile multipartFile,
+                                        @RequestParam("associationID") String associationID) {
+
+        File file = new File("D:\\1学习文件\\毕业设计\\CommunityManagementSystem\\src\\main" +
+                "\\resources\\static\\img\\association\\" + associationID);
+        /*创建文件夹*/
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        /**获取文件名*/
+        String fileName = multipartFile.getOriginalFilename();
+        File file1 = new File(file, fileName);
+        try {
+            /*transferTo使用绝对路径，如果使用相对路径方法会自动生成一个父路径导致路径错误！*/
+            multipartFile.transferTo(file1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /**保存数据到数据库*/
+        associationServer.CommunityInformationImg(associationID, fileName);
+    }
+
+    /**
+     * @param ： associationID
+     * @return void
+     * Description:删除图片操作
+     * @author Predator
+     * @date 2022-8-2 21:34
+     */
+    @RequestMapping("CommunityInformationMaintenance/ImgDelete")
+    @ResponseBody
+    public String CommunityInformationImgDelete(String associationID, String imgName) {
+
+        File file = new File("D:\\1学习文件\\毕业设计\\CommunityManagementSystem\\src\\main" +
+                "\\resources\\static\\img\\association\\" + associationID);
+
+        File file1 = new File(file, imgName);
+        file1.delete();
+        return associationServer.CommunityInformationImgDelete(associationID, imgName);
+    }
+
+    /**
+     * @param ： associationID
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:移交社长页面跳转
+     * @author Predator
+     * @date 2022-7-31 22:20
+     */
+    @RequestMapping("CommunityInformationMaintenance/Handover/{associationID}")
+    public ModelAndView CommunityInformationHandover(@PathVariable("associationID") String associationID) {
+        ModelAndView modelAndView = new ModelAndView();
+        List<Map<String, Object>> list = associationServer.CommunityInformationHandover(associationID);
+        modelAndView.addObject("data", list);
+        modelAndView.addObject("associationID", associationID);
+        modelAndView.setViewName("html/MyClubStatus/associationProprieter");
+        return modelAndView;
+    }
+
+    /**
+     * @param ： select
+     * @return java.lang.String
+     * Description:移交社长的查询操作
+     * @author Predator
+     * @date 2022-8-2 13:12
+     */
+    @RequestMapping("CommunityInformationMaintenance/Handover/select")
+    @ResponseBody
+    public String CommunityInformationHandoverselect(String select) {
+        return associationServer.CommunityInformationHandoverselect(select);
+    }
+
+    /**
+     * @param ： number
+     * @param ： associationID
+     * @return java.lang.String
+     * Description:移交社长的操作
+     * @author Predator
+     * @date 2022-8-1 21:27
+     */
+    @RequestMapping("CommunityInformationMaintenance/Handover/update")
+    @ResponseBody
+    public String CommunityInformationHandoverUpdate(String number, String associationID) {
+        return associationServer.CommunityInformationHandoverUpdate(number, associationID);
+    }
+
+    /**
+     * @param ： associationID
+     * @param ： Introduce
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:维护社团数据中的保存数据
+     * @author Predator
+     * @date 2022-8-2 16:52
+     */
+    @RequestMapping("CommunityInformationMaintenance/Introduce")
+    @ResponseBody
+    public String CommunityInformationMaintenanceIntroduce(String associationID, String associationIntroduce) {
+        return associationServer.CommunityInformationMaintenanceIntroduce(associationID, associationIntroduce);
+    }
+
 }

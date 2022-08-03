@@ -20,34 +20,62 @@ import java.util.Date;
 @NoArgsConstructor
 @Component
 public class PersonalBean {
-    /**学号*/
+    /**
+     * 学号
+     */
     private Integer studentNumber;
-    /**账号*/
+    /**
+     * 账号
+     */
     private String number;
-    /**姓名*/
+    /**
+     * 姓名
+     */
     private String Name;
-    /**密码*/
+    /**
+     * 密码
+     */
     private String password;
-    /**昵称*/
+    /**
+     * 昵称
+     */
     private String nickName;
-    /**性别*/
+    /**
+     * 性别
+     */
     private Integer sex;
-    /**出生日期*/
+    /**
+     * 出生日期
+     */
     @DateTimeFormat(style = "yyyy-MM-dd")
     private Date dateOfBirth;
-    /**电话号码*/
+    /**
+     * 电话号码
+     */
     private String Telephone;
-    /**邮箱*/
+    /**
+     * 邮箱
+     */
     private String mailbox;
-    /**职业*/
+    /**
+     * 职业
+     */
     private String major;
-    /**社团名称*/
+    /**
+     * 社团名称
+     */
     private String associationName;
-    /**学校专业*/
+    /**
+     * 学校专业
+     */
     private String schoolMajor;
-    /**照片*/
+    /**
+     * 照片
+     */
     private String bold;
-    /**注册时间*/
+    /**
+     * 注册时间
+     */
     @DateTimeFormat(style = "yyyy-MM-dd")
     private Date dateOfRegistration;
 }

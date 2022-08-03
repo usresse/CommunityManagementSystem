@@ -1,8 +1,10 @@
 package com.example.communitymanagementsystem.service.implem;
 
+import com.example.communitymanagementsystem.Mapper.brean.Association;
 import com.example.communitymanagementsystem.mybatis.mappers.AssociationMapper;
 import com.example.communitymanagementsystem.mybatis.mappers.PersonalMapper;
 import com.example.communitymanagementsystem.service.inter.AssociationServer;
+import com.example.communitymanagementsystem.service.utils.UtilsServer;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,9 +250,144 @@ public class AssociationImplement implements AssociationServer {
     @Override
     public Map<String, Object> MoveAssociationApplication(String[] data) {
         Map<String, Object> map = associationMapper.MoveAssociationApplication(data);
-        if(map == null){
+        if (map == null) {
             map = associationMapper.select("associationID", data[1]).get(0);
         }
         return map;
+    }
+
+    /**
+     * @param ： number
+     * @return com.example.communitymanagementsystem.Mapper.brean.Association
+     * Description:社团信息维护
+     * @author Predator
+     * @date 2022-7-31 10:41
+     */
+    @Override
+    public Association CommunityInformationMaintenance(String number) {
+        return associationMapper.CommunityInformationMaintenance(number);
+    }
+
+    /**
+     * @param ： associationID
+     * @param ： toString
+     * @return void
+     * Description:社团信息图片的保存==>保存流程，一张一张图片触发保存的
+     * @author Predator
+     * @date 2022-7-31 21:15
+     */
+    @Override
+    public void CommunityInformationImg(String associationID, String fileName) {
+        String associationBlob = associationMapper.selectImg(associationID);
+        if (associationBlob.equals("")) {
+            associationBlob = fileName;
+        } else {
+            String[] imgName = associationBlob.split("-");
+
+            for (int i = 0; i < imgName.length; i++) {
+                if (fileName.equals(imgName[i])) {
+                    return;
+                }
+            }
+            associationBlob = associationBlob + "-" + fileName;
+        }
+        associationMapper.CommunityInformationImg(associationID, associationBlob);
+    }
+
+    /**
+     * @param ： associationID
+     * @param ： imgName
+     * @return java.lang.String
+     * Description:删除图片操作
+     * @author Predator
+     * @date 2022-8-2 21:50
+     */
+    @Override
+    public String CommunityInformationImgDelete(String associationID, String imgName) {
+        String associationBlob = associationMapper.selectImg(associationID);
+        String[] result = associationBlob.split("-");
+        int index = -1;
+        for (int i = 0; i < result.length; i++) {
+            if(imgName.equals(result[i])){
+                index = i;
+            }
+        }
+
+        if(index != -1){
+            String newAssociationBlob =  UtilsServer.CombinationRemove(result,index);
+            associationMapper.CommunityInformationImg(associationID, newAssociationBlob);
+            return "删除成功!";
+        }else {
+            return "删除照片错误！";
+        }
+
+
+    }
+
+    /**
+     * @param ： associationID
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * Description:移交社长页面显示
+     * @author Predator
+     * @date 2022-8-1 21:02
+     */
+    @Override
+    public List<Map<String, Object>> CommunityInformationHandover(String associationID) {
+        return associationMapper.CommunityInformationHandover(associationID);
+    }
+
+    /**
+     * @param ： select
+     * @return java.lang.String
+     * Description:移交社长的查询操作
+     * @author Predator
+     * @date 2022-8-2 13:12
+     */
+    @Override
+    public String CommunityInformationHandoverselect(String data) {
+        String[] da = data.split(":");
+        if (da.length == 3) {
+            Map<String, Object> map = associationMapper.CommunityInformationHandoverselect(da[0], da[1], da[2]);
+            if (map == null) {
+                return "查询没有结果！";
+            }
+            return map.get("number") + ":" + map.get("Name");
+        } else {
+            return "查询全部！";
+        }
+    }
+
+    /**
+     * @param ： number
+     * @param ： associationID
+     * @return java.lang.String
+     * Description:移交社长的操作
+     * @author Predator
+     * @date 2022-8-1 21:28
+     */
+    @Override
+    public String CommunityInformationHandoverUpdate(String number, String associationID) {
+        Integer result = associationMapper.CommunityInformationHandoverUpdate(number, associationID);
+        if (result > 0) {
+            return "成功！";
+        }
+        return "失败！";
+    }
+
+    /**
+     * @param ： associationID
+     * @param ： introduce
+     * @return java.lang.String
+     * Description:维护社团数据中的保存数据
+     * @author Predator
+     * @date 2022-8-2 16:53
+     */
+    @Override
+    public String CommunityInformationMaintenanceIntroduce(String associationID, String introduce) {
+        Integer result = associationMapper.CommunityInformationMaintenanceIntroduce(associationID, introduce);
+        if (result == 1) {
+            return "修改成功！";
+        }
+        return "修改失败！";
     }
 }

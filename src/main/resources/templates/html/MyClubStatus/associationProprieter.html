@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>associationProprieter</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <style type="text/css">
+        .tab {
+            position: relative;
+            top: 100px;
+            left: 300px;
+            width: 50%;
+            height: 50%;
+        }
+
+        .left, .right, .page, .pagenumber {
+            margin-top: 10px;
+            margin-left: 10px;
+            display: inline-block;
+            float: left;
+            position: relative;
+            left: 600px;
+            top: 100px;
+        }
+
+        /**取消input标签加减按钮*/
+        /* Chrome */
+        input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        /* Firefox */
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+    <script type="text/javascript" th:inline="javascript">
+        /**社团编号*/
+        var associationID = [[${associationID}]];
+        /**每页展示的数据条数*/
+        let pageindex = 6;
+        /**获取数据*/
+        let data = [[${data}]];
+        /**获取数据的条数*/
+        let index = data.length;
+        /**获取数据的页数*/
+        let pagenumber = Math.ceil(index / pageindex);
+
+        function localresh() {
+            $(".tab tr").eq(1).nextAll().remove();
+            $(".pagenumber").text("总页数：" + pagenumber);
+
+            let page = $(".page > input").val();
+
+            for (let i = 0; i < pageindex; i++) {
+                let index = (Number(page)-1) * pageindex + i;
+                let tr = $("<tr></tr>").append($("<td>" + data[index].number + "</td>")).append($("<td>" + data[index].Name + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
+                $(".tab").append(tr);
+            }
+        }
+
+        /**页面加载的初始数据*/
+        $(function () {
+            $(".pagenumber").text("总页数：" + pagenumber);
+            $(".page > input").val(1);
+            for (let i = 0; i < pageindex; i++) {
+                let tr = $("<tr></tr>").append($("<td>" + data[i].number + "</td>")).append($("<td>" + data[i].Name + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
+                $(".tab").append(tr);
+            }
+        });
+
+        /**进行社长移交操作*/
+        function Handover(button) {
+            let number = $(button).closest("tr").find("td").eq(0).text();
+            let data = {};
+            data.number = number;
+            data.associationID = associationID;
+
+            $.ajax({
+                url: window.location.href.split(associationID)[0] + "update",
+                data: data,
+                success: function (dex) {
+                    if (dex == "成功！") {
+                        alert("移交成功！");
+                        window.parent.location.reload();
+                    } else {
+                        alert("移交失败！");
+                    }
+                }
+            });
+        }
+
+        /**查询指定条件的社团人*/
+        function select() {
+            let data = {};
+            data.select = associationID + ":" + $(".select").val() + ":" + $(".data").val();
+            $.ajax({
+                url: window.location.href.split(associationID)[0] + "select",
+                data: data,
+                success: function (dex) {
+                    if (dex == "查询没有结果！") {
+                        alert("没有该账号！")
+                    } else if (dex == "查询全部！") {
+                        window.location.reload();
+                    } else {
+                        let result = dex.split(":");
+                        $(".tab tr").eq(1).nextAll().remove();
+
+                        let tr = $("<tr></tr>").append($("<td>" + result[0] + "</td>")).append($("<td>" + result[1] + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
+                        $(".tab").append(tr);
+                    }
+                }
+            });
+        }
+
+        function page(condition) {
+            let pag = $(".page > input").val();
+            if (condition == "left" && pag > 1) {
+                $(".page > input").val(Number(pag) - 1);
+                localresh();
+            } else if (condition == "right" && pag < pagenumber) {
+                $(".page > input").val(Number(pag) + 1);
+                localresh();
+            }
+        }
+
+        /**input页面标签的数量样式*/
+        function pageinput(input) {
+            let value = $(input).val();
+            if (value < 1) {
+                $(input).val(1);
+            } else if (value > pagenumber) {
+                $(input).val(pagenumber);
+            }
+        }
+    </script>
+</head>
+<body>
+<table class="tab" border="1px">
+    <tr>
+        <td>
+            <select class="select">
+                <option value="number">账号</option>
+                <option value="Name">姓名</option>
+            </select>
+        </td>
+        <td><input class="data"></td>
+        <td>
+            <button onclick="select()">查询</button>
+        </td>
+    </tr>
+    <tr>
+        <td>账号</td>
+        <td>姓名</td>
+        <td>操作</td>
+    </tr>
+</table>
+
+<button class="left" onclick="page('left')"> <</button>
+<div class="page"><input style="width: 50px;" onchange="pageinput(this)" type="number"></div>
+<button class="right" onclick="page('right')"> ></button>
+<text class="pagenumber"></text>
+
+</body>
+</html>

@@ -25,6 +25,7 @@ $(
         $(".img>img").dblclick(function () {
             $(".file").click();
         });
+
         let regexImageFilter = /^(?:image\/bmp|image\/gif|image\/jpg|image\/jpeg|image\/png)$/i;
         let imgReader = new FileReader();
         //文件读取器读取到文件后的回调事件

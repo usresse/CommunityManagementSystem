@@ -19,29 +19,52 @@ import java.util.Date;
 @NoArgsConstructor
 @Component
 public class ActivityBrean {
-    /**活动编号*/
+    /**
+     * 活动编号
+     */
     private Integer ID;
-    /**题目*/
+    /**
+     * 题目
+     */
     private String Title;
-    /**发布时间*/
+    /**
+     * 发布时间
+     */
     private Date releaseDate;
-    /**地点*/
+    /**
+     * 地点
+     */
     private String Place;
-    /**开始时间*/
+    /**
+     * 开始时间
+     */
     private Date startDate;
-    /**结束时间*/
+    /**
+     * 结束时间
+     */
     private Date endDate;
-    /**报名人数*/
+    /**
+     * 报名人数
+     */
     private Integer numberOfPeople;
-    /**人口上限*/
+    /**
+     * 人口上限
+     */
     private Integer MAXPeople;
-    /**状态*/
+    /**
+     * 状态
+     */
     private String State;
-    /**备注*/
+    /**
+     * 备注
+     */
     private String Remark;
-    /**主办社团ID*/
+    /**
+     * 主办社团ID
+     */
     private String hostAssociactionID;
-
-    /**社团名*/
+    /**
+     * 社团名
+     */
     private String associationName;
 }

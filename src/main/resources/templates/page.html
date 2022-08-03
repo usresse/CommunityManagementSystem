@@ -21,7 +21,9 @@
     <iframe width=0 height=0 frameborder=0 name="myiframe"></iframe>
     <!--enctype="multipart/form-data"==>提示提交数据为二进制代码-->
     <form id="form" method="post" action="settingFile" enctype="multipart/form-data" target="myiframe">
+
         <input name="file" hidden id="file" accept=".jpg,.png,.jpeg,.pdf,.gif" type="file" class="file">
+
         <!--/*@thymesVar id="number" type=""*/-->
         <input hidden style="display: none" class="num" name="number"/>
 
@@ -29,6 +31,7 @@
             <!--/*@thymesVar id="url" type=""*/-->
             <img style="border-radius:50%; overflow:hidden;" width="80px" height="80px" id="myImage" th:src="${url}">
         </div>
+
     </form>
 
     <div>

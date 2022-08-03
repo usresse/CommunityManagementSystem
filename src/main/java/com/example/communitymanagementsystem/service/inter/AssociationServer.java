@@ -1,7 +1,9 @@
 package com.example.communitymanagementsystem.service.inter;
 
+import com.example.communitymanagementsystem.Mapper.brean.Association;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,4 +35,18 @@ public interface AssociationServer {
     Map<String, Object> AssociationApplication(String associationID);
 
     Map<String, Object> MoveAssociationApplication(String[] data);
+
+    Association CommunityInformationMaintenance(String number);
+
+    void CommunityInformationImg(String associationID, String fileName);
+
+    List<Map<String, Object>> CommunityInformationHandover(String associationID);
+
+    String CommunityInformationHandoverUpdate(String number, String associationID);
+
+    String CommunityInformationHandoverselect(String data);
+
+    String CommunityInformationMaintenanceIntroduce(String associationID, String introduce);
+
+    String CommunityInformationImgDelete(String associationID, String imgName);
 }

@@ -1,5 +1,6 @@
 package com.example.communitymanagementsystem.mybatis.mappers;
 
+import com.example.communitymanagementsystem.Mapper.brean.Association;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -136,4 +137,71 @@ public interface AssociationMapper {
      * Description:社团详细左右移动操作
      */
     Map<String, Object> MoveAssociationApplication(String[] data);
+
+    /**
+     * @author Predator
+     * @date 2022-7-31 10:42
+     * @param ： number
+     * @return com.example.communitymanagementsystem.Mapper.brean.Association
+     * Description:社团信息维护
+     */
+    Association CommunityInformationMaintenance(String number);
+
+    /**
+     * @author Predator
+     * @date 2022-7-31 21:16
+     * @param ： associationID
+     * @param ： associationBlob
+     * @return void
+     * Description:社团信息中图片更新
+     */
+    void CommunityInformationImg(String associationID, String associationBlob);
+
+    /**
+     * @author Predator
+     * @date 2022-7-31 21:46
+     * @param ： associationID
+     * @return java.lang.String
+     * Description:社团信息中图片查询
+     */
+    String selectImg(String associationID);
+
+    /**
+     * @author Predator
+     * @date 2022-8-1 21:03
+     * @param ： associationID
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * Description:移交社长页面
+     */
+    List<Map<String, Object>> CommunityInformationHandover(String associationID);
+
+    /**
+     * @author Predator
+     * @date 2022-8-1 21:31
+     * @param ： number
+     * @param ： associationID
+     * @return java.lang.Integer
+     * Description:移交社长操作
+     */
+    Integer CommunityInformationHandoverUpdate(String number, String associationID);
+
+    /**
+     * @author Predator
+     * @date 2022-8-2 13:22
+     * @param ： s
+     * @param ： s1
+     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * Description:移交社长查询操作
+     */
+    Map<String, Object> CommunityInformationHandoverselect(String associationNumber,String condition, String data);
+
+    /**
+     * @author Predator
+     * @date 2022-8-2 16:55
+     * @param ： associationID
+     * @param ： introduce
+     * @return java.lang.Integer
+     * Description:维护社团数据中的保存数据
+     */
+    Integer CommunityInformationMaintenanceIntroduce(String associationID, String introduce);
 }

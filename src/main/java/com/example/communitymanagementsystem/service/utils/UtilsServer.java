@@ -68,11 +68,6 @@ public class UtilsServer {
     public static String CombinationRemove(String[] data, int index) {
         String result = null;
 
-        for(String value:data){
-            System.out.println("我的值");
-            System.out.println(value);
-        }
-
         /**将字符串转换成集合进行连接成字符串*/
         List<String> list = new ArrayList<>(Arrays.asList(data));
 

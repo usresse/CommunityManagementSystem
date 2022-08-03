@@ -92,7 +92,13 @@
     </select>
 
     <update id="KickOut">
-        update personal
+        update
+            association
+        set associationNumber = associationNumber - 1
+        where associationID = (select associationNumber from personal where number = "${number}");
+
+        update
+            personal
         set associationNumber = "",
             major             = ""
         where number = "${number}"
@@ -108,4 +114,58 @@
         </if>
         )
     </select>
+
+    <select id="CommunityInformationMaintenance" parameterType="string"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.Association">
+        select *
+        from association
+        where associationID = (select associationNumber from personal where number = "${number}")
+    </select>
+
+    <select id="selectImg" resultType="string" parameterType="string">
+        select associationBlob
+        from association
+        where associationID = "${associationID}"
+    </select>
+
+    <update id="CommunityInformationImg">
+        update association
+        set associationBlob = "${associationBlob}"
+        where associationID = "${associationID}"
+    </update>
+
+    <select id="CommunityInformationHandover" resultType="map">
+        select *
+        from personal
+        where associationNumber = "${associationID}"
+          and major != "社长"
+    </select>
+
+    <update id="CommunityInformationHandoverUpdate">
+        update personal
+        set major = "成员"
+        where number = (select associationProprieterNumber from association where associationID = "${associationID}");
+
+        update personal
+        set major = "社长"
+        where number = "${number}";
+
+        update association
+        set associationProprieterNumber = "${number}",
+            associationProprieter       = (select Name from personal where number = "${number}")
+        where associationID = "${associationID}"
+    </update>
+
+    <select id="CommunityInformationHandoverselect" resultType="map">
+        select *
+        from personal
+        where ${condition} = "${data}"
+          and associationNumber = "${associationNumber}"
+    </select>
+
+    <update id="CommunityInformationMaintenanceIntroduce">
+        update association
+        set associationIntroduce = "${introduce}"
+        where associationID = "${associationID}"
+    </update>
 </mapper>

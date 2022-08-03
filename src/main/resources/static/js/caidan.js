@@ -17,6 +17,8 @@ $(function () {
     if (data == "社长") {
         $(".ti2").hide();
         $(".tem3").prepend($(".tem2 > div").eq(0).text("社团成员管理"))
+        /**添加社团信息维护*/
+        $(".tem3").append($("<div onclick=CommunityInformationMaintenance('CommunityInformationMaintenance')></div>").text("社团信息维护"))
     }
 
     /**对社团申请的菜单隐藏*/
@@ -69,5 +71,9 @@ function ActivityHistory(url) {
 }
 
 function ApplyAssociation(url) {
+    ifram.setAttribute("src", url + "/" + number);
+}
+
+function CommunityInformationMaintenance(url){
     ifram.setAttribute("src", url + "/" + number);
 }
