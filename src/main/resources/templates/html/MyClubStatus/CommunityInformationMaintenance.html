@@ -123,6 +123,10 @@
                 }
                 //循环遍历
                 for (var i = 0; i < fileList.length; i++) {
+                    /**盘查相同照片的数据*/
+                    if(document.getElementById(fileList[i].name) != null){
+                        return;
+                    }
                     //动态添加html元素
                     var picHtml = "<div class='imageDiv' > <img id='" + fileList[i].name +
                         "' /> <div class='cover'><i class='delbtn' onclick='edit(this)'>删除</i></div></div>";
@@ -140,8 +144,7 @@
                             //IE以外浏览器
                             //获取上传图片文件的物理路径;
                             imgObjPreview.src = window.URL.createObjectURL(docObj.files[i]);
-                            console.log(window.URL.createObjectURL(docObj.files[i]));
-                            console.log(imgObjPreview)
+
                             // console.log(imgObjPreview.src);
                             // var msgHtml = '<input type="file" id="fileInput" multiple/>';
                             $("#passForm").submit();

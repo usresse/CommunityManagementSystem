@@ -56,7 +56,8 @@ public class ActivityImplement implements ActivityServer {
 
         /**用户判断是否加入社团*/
         String associationNumber = activityMapper.selectassociationNumber(number);
-        if (associationNumber.equals("")) {
+
+        if (associationNumber == null || associationNumber.equals("")) {
             return "用户请先加入社团后再申请！";
         }
 
