@@ -279,7 +279,7 @@ public class AssociationImplement implements AssociationServer {
     @Override
     public void CommunityInformationImg(String associationID, String fileName) {
         String associationBlob = associationMapper.selectImg(associationID);
-        if (associationBlob.equals("")) {
+        if (associationBlob == null || associationBlob.equals("")) {
             associationBlob = fileName;
         } else {
             String[] imgName = associationBlob.split("-");

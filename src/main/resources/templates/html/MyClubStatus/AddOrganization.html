@@ -164,7 +164,7 @@
                     td2[0].innerText = associationName;
                     td3[0].innerText = associationProprieter;
                     td4[0].innerText = associationNumber;
-                    td5[0].innerText = associationIntroduce;
+                    td5[0].innerText = associationIntroduce.split("-")[0];
                     let n = "apply" + i;
                     td6.append($("<button onclick='Details(this)'>详情</button><button onclick='openDiv(this)'>申请</button>").attr("class", n))
 
@@ -333,7 +333,7 @@
         <td>社团名称</td>
         <td>社长</td>
         <td>社团人数</td>
-        <td>社团介绍</td>
+        <td>社团宗旨</td>
         <td>操作</td>
     </tr>
 </table>

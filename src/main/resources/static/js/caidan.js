@@ -11,6 +11,10 @@ $(function () {
 
     if(data == "" || data == null || data.length == 0){
         $(".ti3").hide();
+        /**隐藏参加的社团活动申请和历史*/
+       $(".tem2").find("div").eq(2).hide()
+       $(".tem2").find("div").eq(3).hide();
+
     }
 
     /**社长菜单*/

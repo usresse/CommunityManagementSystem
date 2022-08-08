@@ -142,8 +142,39 @@
         }
     </style>
     <script type="text/javascript">
-        /**效果模块js*/
+        /**数据模块js*/
         $(function () {
+            var data = "[[${data}]]";
+            let association = data.substring(1, data.length - 1).split(", ");
+            for (let i = 0; i < association.length; i++) {
+                let ass = association[i].split("=");
+
+                /**添加介绍：宗旨，介绍，特色活动的内容*/
+                if (ass[0] == "associationIntroduce") {
+                    let className = [".purpose", ".introduction", ".featured"]
+                    for (let j = 0; j < ass[1].split("-").length; j++) {
+                        $(className[j]).append($("<text>" + ass[1].split("-")[j] + "</text>"));
+                    }
+                }
+
+                /**图片处理*/
+                if (ass[0] == "associationBlob") {
+                    let divImg = $(".display");
+                    for (let j = 0; j < ass[1].split("-").length; j++) {
+                        let string = "<div class='img-slide'><img src='/img/association/" + $(".associationID").text() + "/" + ass[1].split("-")[j] + "'alt='"+ass[1].split("-")[j]+ "'></div>";
+                        divImg.append($(string));
+                    }
+
+                    /**添加效果js函数*/
+                    effect();
+                }
+            }
+
+
+        });
+
+        /**效果模块js*/
+        function effect() {
             let time = setInterval(yundong, 3000);
 
             /* 鼠标移入图片停止自动播放，移出后自动播放 */
@@ -154,43 +185,33 @@
             $(".img-slide").on("mouseout", function () {
                 time = setInterval(yundong, 3000);
             });
-        });
+        }
 
         function yundong() {
             let display = $(".display");
             let displayImg = $(".display > .img-slide");
             // prepend
-            displayImg.eq(6).animate({
+            displayImg.eq(displayImg.length-1).animate({
                 width: "0px"
             }, 1000, function () {
-                display.prepend(displayImg.eq(6));
-                displayImg.eq(6).attr("style", "width: 300px;");
+                display.prepend(displayImg.eq(displayImg.length-1));
+                displayImg.eq(displayImg.length-1).attr("style", "width: 300px;");
             });
         }
-
-        /**数据模块js*/
-        $(function () {
-            var data = "[(${data})]";
-            var alter = "[(${alter})]";
-            if(alter !=""){
-                alert(alter);
-            }
-            console.log(data)
-        });
 
         /**社团详情的移动*/
         function moveAssociation(direction) {
             let associationID = $(".associationID").text();
             let url = window.location.href;
 
-            if(direction > 0){
-                associationID = "1:"+associationID
-            }else {
-                associationID = "0:"+associationID
+            if (direction > 0) {
+                associationID = "1:" + associationID
+            } else {
+                associationID = "0:" + associationID
             }
-            if(url.indexOf("move") > 0){
+            if (url.indexOf("move") > 0) {
                 window.location.href = url.split("?")[0] + "?associationID=" + associationID;
-            }else {
+            } else {
                 window.location.href = url.split("?")[0] + "/move?associationID=" + associationID;
             }
         }
@@ -238,9 +259,14 @@
             $(".springID").text(ID);
         }
 
-        /*确定发送事件*/
+        /**确定发送事件*/
         function appl() {
             apply($(".springID").text());
+        }
+
+        /**页面返回*/
+        function ReturnDIV(){
+            window.location.href = window.location.href.split("AssociationApplication")[0] +"AddOrganization/1/null";
         }
     </script>
 </head>
@@ -248,29 +274,8 @@
 
 <div class="jiemian">
 
+    <!--图片框-->
     <div class="display" style=" float: left;width: 300px; height: 300px;overflow: hidden;">
-        <div class="img-slide">
-            <img src="/img/IS-0001/伊格赛听_叶里_谪仙_4.jpg" alt="img3"/>
-        </div>
-        <div class="img-slide">
-            <img src="/img/IS-0001/双笙 (陈元汐)_心做し_4.jpg" alt="img4"/>
-        </div>
-        <div class="img-slide">
-            <img src="/img/IS-0001/英雄联盟_Against the Current_Legends Never Die_4.jpg" alt="img5"/>
-        </div>
-        <div class="img-slide">
-            <img src="/img/IS-0001/尹昔眠_小田音乐社_奔赴星空_4.jpg" alt="img6"/>
-        </div>
-        <div class="img-slide">
-            <img src="/img/IS-0001/唐子臣_丢了你_4.jpg" alt="img7"/>
-        </div>
-        <div class="img-slide">
-            <img src="/img/IS-0001/任然_雀跃_4.jpg" alt="img2"/>
-        </div>
-
-        <div class="img-slide">
-            <img src="/img/IS-0001/雪二_渐冷_4.jpg" alt="img1"/>
-        </div>
     </div>
 
     <div class="Title">
@@ -287,16 +292,17 @@
     </div>
 
     <div class="neirong">
-        <div class="介绍">宗旨：
-            <!--/*@thymesVar id="data" type=""*/-->
-            <text th:text="${data.associationIntroduce}"></text>
-        </div>
-        <br>
-        <div class="介绍">简介：</div>
-        <br>
-        <div class="介绍">特色活动：</div>
 
-        <div class="bu"><button onclick="openDiv()">申请</button><button onclick="">返回</button></div>
+        <div class="purpose">宗旨：</div>
+        <br>
+        <div class="introduction">简介：</div>
+        <br>
+        <div class="featured ">特色活动：</div>
+
+        <div class="bu">
+            <button onclick="openDiv()">申请</button>
+            <button onclick="ReturnDIV()">返回</button>
+        </div>
     </div>
 
     <div class="sanjiaoleft" onclick="moveAssociation(1)">

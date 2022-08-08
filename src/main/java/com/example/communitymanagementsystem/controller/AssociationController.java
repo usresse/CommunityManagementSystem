@@ -143,10 +143,9 @@ public class AssociationController {
     }
 
     /**
-     * @param ： index
-     * @param ： condition
+     * @param ： associationID
      * @return org.springframework.web.servlet.ModelAndView
-     * Description:社团的详情页面
+     * Description:社团的详情页面跳转
      * @author Predator
      * @date 2022-7-23 10:56
      */
@@ -173,10 +172,6 @@ public class AssociationController {
     public ModelAndView MoveAssociationApplication(@RequestParam String associationID) {
         ModelAndView modelAndView = new ModelAndView();
         Map<String, Object> data = associationServer.MoveAssociationApplication(associationID.split(":"));
-
-        for (String key : data.keySet()) {
-            System.out.println(key + "==" + data.get(key));
-        }
 
         if (data != null) {
             modelAndView.addObject("data", data);
