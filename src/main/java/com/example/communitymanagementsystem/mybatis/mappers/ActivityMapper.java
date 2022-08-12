@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.mybatis.mappers;
 
 import com.example.communitymanagementsystem.Mapper.brean.ActivityBrean;
+import com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -116,4 +117,13 @@ public interface ActivityMapper {
      * Description:查询活动的状态
      */
     String ActivityHistorySelect(Integer id);
+
+    /**
+     * @author Predator
+     * @date 2022-8-8 15:10
+     * @param ：
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean>
+     * Description:社团公告显示
+     */
+    List<AnnouncementBean> announcement();
 }

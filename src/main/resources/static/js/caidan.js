@@ -9,14 +9,6 @@ $(function () {
         $(".tem2>div").eq(0).text("其他成员");
     }
 
-    if(data == "" || data == null || data.length == 0){
-        $(".ti3").hide();
-        /**隐藏参加的社团活动申请和历史*/
-       $(".tem2").find("div").eq(2).hide()
-       $(".tem2").find("div").eq(3).hide();
-
-    }
-
     /**社长菜单*/
     if (data == "社长") {
         $(".ti2").hide();
@@ -24,6 +16,17 @@ $(function () {
         /**添加社团信息维护*/
         $(".tem3").append($("<div onclick=CommunityInformationMaintenance('CommunityInformationMaintenance')></div>").text("社团信息维护"))
     }
+
+    if (data == "" || data == null || data.length == 0) {
+        $(".ti3").hide();
+        /**隐藏参加的社团活动申请和历史*/
+        $(".tem2").find("div").eq(2).hide()
+        $(".tem2").find("div").eq(3).hide();
+    } else {
+        $(".tem2").append($("<div onclick=notice('notice')>社团通知</div>"))
+        $(".tem3").append($("<div onclick=notice('notice')>社团通知</div>"))
+    }
+
 
     /**对社团申请的菜单隐藏*/
     if (data != "") {
@@ -78,6 +81,14 @@ function ApplyAssociation(url) {
     ifram.setAttribute("src", url + "/" + number);
 }
 
-function CommunityInformationMaintenance(url){
+function CommunityInformationMaintenance(url) {
+    ifram.setAttribute("src", url + "/" + number);
+}
+
+function announcement(url) {
+    ifram.setAttribute("src", url);
+}
+
+function notice(url) {
     ifram.setAttribute("src", url + "/" + number);
 }

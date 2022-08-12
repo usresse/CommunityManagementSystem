@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.service.implem;
 
 import com.example.communitymanagementsystem.Mapper.brean.ActivityBrean;
+import com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean;
 import com.example.communitymanagementsystem.mybatis.mappers.ActivityMapper;
 import com.example.communitymanagementsystem.service.inter.ActivityServer;
 import com.example.communitymanagementsystem.service.utils.UtilsServer;
@@ -216,4 +217,15 @@ public class ActivityImplement implements ActivityServer {
         return "删除失败";
     }
 
+    /**
+     * @author Predator
+     * @date 2022-8-8 15:10
+     * @param ：
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean>
+     * Description:社团公告
+     */
+    @Override
+    public List<AnnouncementBean> announcement() {
+        return activityMapper.announcement();
+    }
 }

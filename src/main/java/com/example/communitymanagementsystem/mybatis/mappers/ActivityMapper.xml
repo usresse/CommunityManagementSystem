@@ -91,4 +91,11 @@
         from activity
         where ID = ${ID}
     </select>
+
+    <select id="announcement" resultType="com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean">
+        select *
+        from association,
+             announcement
+        where association.associationID = announcement.announcementID
+    </select>
 </mapper>

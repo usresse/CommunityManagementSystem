@@ -88,4 +88,9 @@
         where number = "${number}"
     </update>
 
+    <select id="noticeSelect" resultType="string">
+        select associationNumber
+        from personal
+        where number = "${number}"
+    </select>
 </mapper>

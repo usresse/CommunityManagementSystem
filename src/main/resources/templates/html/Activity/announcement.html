@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>announcement</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <style type="text/css">
+        .title {
+            text-align: center;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+
+        .details > div {
+            margin-left: 15%;
+            width: 900px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            background-color: #00EBC0;
+            padding-left: 50px;
+            margin-top: 10px;
+        }
+
+        .ti {
+            font-size: 20px;
+        }
+
+        .nei {
+            color: #666666;
+            margin-top: 5px;
+        }
+
+        .date {
+            font-size: 10px;
+            color: #999999;
+            margin-top: 20px;
+            margin-left: 700px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            /**获取数据*/
+            let data = "[[${data}]]".substring(18, "[[${data}]]".length - 2).split("), AnnouncementBean(");
+
+            for (let da in data) {
+                let i = data[da].split(", ");
+
+                let nei = i[3].split("=")[1];
+                let last = "";
+
+                /**内容的省略判断*/
+                if (nei.length > 20) {
+                    last = nei.substring(20, nei.length);
+                    nei = nei.substring(0, 20) + "...";
+                }
+                let str = "<div>" +
+                    "<div class='ti'>" + i[1].split("=")[1] + "</div>" +
+                    "<div class='nei'>" + nei + "</div>" +
+                    "<div class='last' style='display: none'>" + last + "</div>" +
+                    "<div class='date'>发布日期:" + i[4].split("=")[1] + "</div></div>"
+
+                $(".details").append($(str));
+            }
+
+            /**添加点击事件*/
+            $(".details > div").on("click", function () {
+
+                /**移除其他公告消息*/
+                $(".details >div").remove();
+
+                /**组合被省略的内容消息*/
+                let nei = $(this).find(".nei").text();
+                nei = nei.substring(0, nei.length - 3) + $(this).find(".last").text();
+                let index = nei.length;
+                let lineindex = 53;
+                while (index > lineindex) {
+                    let first = nei.substring(0, lineindex);
+                    let last = nei.substring(lineindex, index);
+                    nei = first + "</br>" + last;
+                    index = last.length;
+                }
+                $(this).find(".nei").html(nei);
+
+                /**添加*/
+                $(".details").append($(this));
+
+                /**添加返回按钮*/
+                $(".details").append($("<button style='margin-top: 10px; margin-left: 1000px' onclick='fanhui()'>返回</button>"));
+            });
+        });
+
+        /**返回操作*/
+        function fanhui() {
+            window.location.reload();
+        }
+    </script>
+</head>
+<body>
+<div class="title">公告</div>
+<div class="details">
+</div>
+</body>
+</html>

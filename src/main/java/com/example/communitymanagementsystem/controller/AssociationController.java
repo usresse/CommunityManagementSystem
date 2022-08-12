@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.controller;
 
-import com.example.communitymanagementsystem.Mapper.brean.Association;
+import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
+import com.example.communitymanagementsystem.Mapper.brean.NoticeBean;
 import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
 import com.example.communitymanagementsystem.service.inter.AssociationServer;
 import com.example.communitymanagementsystem.service.inter.Server;
@@ -311,8 +312,8 @@ public class AssociationController {
     @RequestMapping("CommunityInformationMaintenance/{number}")
     public ModelAndView CommunityInformationMaintenance(@PathVariable("number") String number) {
         ModelAndView modelAndView = new ModelAndView();
-        Association association = associationServer.CommunityInformationMaintenance(number);
-        modelAndView.addObject("association", association);
+        AssociationBean associationbean = associationServer.CommunityInformationMaintenance(number);
+        modelAndView.addObject("association", associationbean);
         modelAndView.setViewName("html/MyClubStatus/CommunityInformationMaintenance");
         return modelAndView;
     }
@@ -424,6 +425,22 @@ public class AssociationController {
     @ResponseBody
     public String CommunityInformationMaintenanceIntroduce(String associationID, String associationIntroduce) {
         return associationServer.CommunityInformationMaintenanceIntroduce(associationID, associationIntroduce);
+    }
+
+    /**
+     * @author Predator
+     * @date 2022-8-11 13:20
+     * @param ：
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:社团公告查询
+     */
+    @RequestMapping("notice/{number}")
+    public ModelAndView notice(@PathVariable("number") String number){
+        ModelAndView modelAndView = new ModelAndView();
+        List<NoticeBean> list =  associationServer.noticeSelect(number);
+        modelAndView.addObject("data",list);
+        modelAndView.setViewName("html/MyClubStatus/notice");
+        return modelAndView;
     }
 
 }

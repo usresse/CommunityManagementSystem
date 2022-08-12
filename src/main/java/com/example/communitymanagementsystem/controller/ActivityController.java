@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.controller;
 
 import com.example.communitymanagementsystem.Mapper.brean.ActivityBrean;
+import com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean;
 import com.example.communitymanagementsystem.service.inter.ActivityServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -153,14 +154,14 @@ public class ActivityController {
         String[] data = condition.split(":");
         PageInfo pageInfo = null;
 
-        pageInfo = activity.ActivityHistory(index, number,data);
+        pageInfo = activity.ActivityHistory(index, number, data);
         try {
             modelAndView.addObject("data",
                     new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pageInfo));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        modelAndView.addObject("condition",condition);
+        modelAndView.addObject("condition", condition);
         modelAndView.setViewName("html/activity/ActivityHistory");
         return modelAndView;
     }
@@ -177,4 +178,22 @@ public class ActivityController {
     public String ActivityHistoryDel(@PathVariable("ID") Integer ID) {
         return activity.ActivityHistoryDel(ID);
     }
+
+
+    /**
+     * @param ：
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:社团公告
+     * @author Predator
+     * @date 2022-8-8 12:24
+     */
+    @RequestMapping("/announcement")
+    public ModelAndView announcement() {
+        ModelAndView modelAndView = new ModelAndView();
+        List<AnnouncementBean> list = activity.announcement();
+        modelAndView.addObject("data",list);
+        modelAndView.setViewName("html/activity/announcement");
+        return modelAndView;
+    }
+
 }

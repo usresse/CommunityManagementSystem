@@ -112,4 +112,12 @@ public interface PersonalMapper {
     Integer judgeUpdate(String number, String applyAssociation);
 
 
+    /**
+     * @author Predator
+     * @date 2022-8-11 14:02
+     * @param ： number
+     * @return java.lang.String
+     * Description:
+     */
+    String noticeSelect(String number);
 }

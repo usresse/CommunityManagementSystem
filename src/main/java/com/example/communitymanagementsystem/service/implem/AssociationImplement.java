@@ -1,6 +1,9 @@
 package com.example.communitymanagementsystem.service.implem;
 
-import com.example.communitymanagementsystem.Mapper.brean.Association;
+import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
+import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
+import com.example.communitymanagementsystem.Mapper.brean.NoticeBean;
+import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
 import com.example.communitymanagementsystem.mybatis.mappers.AssociationMapper;
 import com.example.communitymanagementsystem.mybatis.mappers.PersonalMapper;
 import com.example.communitymanagementsystem.service.inter.AssociationServer;
@@ -264,7 +267,7 @@ public class AssociationImplement implements AssociationServer {
      * @date 2022-7-31 10:41
      */
     @Override
-    public Association CommunityInformationMaintenance(String number) {
+    public AssociationBean CommunityInformationMaintenance(String number) {
         return associationMapper.CommunityInformationMaintenance(number);
     }
 
@@ -389,5 +392,19 @@ public class AssociationImplement implements AssociationServer {
             return "修改成功！";
         }
         return "修改失败！";
+    }
+
+    /**
+     * @author Predator
+     * @date 2022-8-11 13:43
+     * @param ： numebr===》查询人的ID
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.NoticeBean>
+     * Description:社团公告查询
+     */
+    @Override
+    public List<NoticeBean> noticeSelect(String number) {
+        String associationNumber = personalMapper.noticeSelect(number);
+        List<NoticeBean> list = associationMapper.noticeSelect(associationNumber);
+        return list;
     }
 }

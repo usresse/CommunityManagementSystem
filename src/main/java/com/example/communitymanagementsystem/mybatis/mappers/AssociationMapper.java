@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.mybatis.mappers;
 
-import com.example.communitymanagementsystem.Mapper.brean.Association;
+import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
+import com.example.communitymanagementsystem.Mapper.brean.NoticeBean;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -145,7 +146,7 @@ public interface AssociationMapper {
      * @return com.example.communitymanagementsystem.Mapper.brean.Association
      * Description:社团信息维护
      */
-    Association CommunityInformationMaintenance(String number);
+    AssociationBean CommunityInformationMaintenance(String number);
 
     /**
      * @author Predator
@@ -204,4 +205,13 @@ public interface AssociationMapper {
      * Description:维护社团数据中的保存数据
      */
     Integer CommunityInformationMaintenanceIntroduce(String associationID, String introduce);
+
+    /**
+     * @author Predator
+     * @date 2022-8-11 13:47
+     * @param ： associationName
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.NoticeBean>
+     * Description:社团公告查询
+     */
+    List<NoticeBean> noticeSelect(String associationName);
 }

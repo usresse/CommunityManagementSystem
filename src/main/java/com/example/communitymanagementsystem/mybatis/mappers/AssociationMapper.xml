@@ -116,7 +116,7 @@
     </select>
 
     <select id="CommunityInformationMaintenance" parameterType="string"
-            resultType="com.example.communitymanagementsystem.Mapper.brean.Association">
+            resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
         select *
         from association
         where associationID = (select associationNumber from personal where number = "${number}")
@@ -168,4 +168,10 @@
         set associationIntroduce = "${introduce}"
         where associationID = "${associationID}"
     </update>
+
+    <select id="noticeSelect" resultType="com.example.communitymanagementsystem.Mapper.brean.NoticeBean">
+        select *
+        from notice
+        where noticeID = "${associationName}"
+    </select>
 </mapper>

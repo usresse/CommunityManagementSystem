@@ -108,10 +108,16 @@ public class HandleController {
             /**判断照片是否已经存在，存在则直接将名字保存到数据库*/
             File file1 = new File(file, fileName);
             if (file1.exists()) {
-                return server.updataBold(fileName, number);
+                return "头像更新成功！";
             }
 
             try {
+                /**删除之前的照片*/
+                File[] files = file.listFiles();
+                for (File fi : files) {
+                    fi.delete();
+                }
+
                 /*transferTo使用绝对路径，如果使用相对路径方法会自动生成一个父路径导致路径错误！*/
                 multipartFile.transferTo(file1);
                 return server.updataBold(fileName, number);
@@ -121,7 +127,6 @@ public class HandleController {
         }
         return "头像上传失败！";
     }
-
 
 
 }

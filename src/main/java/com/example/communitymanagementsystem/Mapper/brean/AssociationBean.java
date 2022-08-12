@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-public class Association {
+public class AssociationBean {
     /**
      * 社团编号
      */

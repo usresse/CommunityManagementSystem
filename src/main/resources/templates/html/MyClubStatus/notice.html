@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>notice</title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <style type="text/css">
+        .title {
+            text-align: center;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .details > div {
+            margin-left: 15%;
+            width: 900px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            background-color: #00EBC0;
+            padding-left: 50px;
+            margin-top: 10px;
+        }
+
+        .ti {
+            font-size: 20px;
+        }
+
+        .nei {
+            color: #666666;
+        }
+
+        .date {
+            font-size: 10px;
+            color: #999999;
+            margin-top: 20px;
+            margin-left: 700px;
+        }
+
+        .administration {
+            margin-top: 10px;
+            margin-left: 900px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+
+            /**影藏发布社团公告按钮*/
+            let major = $(".major" , parent.document).text();
+            if(major == "" || major == "成员"){
+                $(".administration").hide();
+            }
+
+            /**获取数据*/
+            let data = "[[${data}]]".substring(12,"[[${data}]]".length-2).split("), NoticeBean(");
+            for (let da in data) {
+                let i = data[da].split(", ");
+                let str = "<div><div class='ti'>" + i[2].split("=")[1] + "</div><div class='nei'>"+i[4].split("=")[1]+"</div><div class='date'>发布日期:"+i[3].split("=")[1] +"</div></div>"
+                $(".details").append($(str).prepend($("<div class='ID' style='display: none'>"+i[0].split("=")[1] +"</div>")));
+            }
+
+            /**添加点击事件*/
+            $(".details > div").on("click", function () {
+                console.log($(this));
+            });
+        });
+
+        /**管理员发布通知*/
+        function administration() {
+            $(".details > div").remove();
+            let html = "<div></div>"
+            $(".details").append($());
+        }
+    </script>
+</head>
+<body>
+<div class="title">通知</div>
+<div class="details">
+</div>
+<div class="administration">
+    <button onclick="administration()">发布通知</button>
+</div>
+</body>
+</html>

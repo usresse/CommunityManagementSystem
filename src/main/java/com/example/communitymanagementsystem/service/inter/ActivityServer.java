@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.service.inter;
 
 import com.example.communitymanagementsystem.Mapper.brean.ActivityBrean;
+import com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -29,4 +30,5 @@ public interface ActivityServer {
 
     String ActivityHistoryDel(Integer ID);
 
+    List<AnnouncementBean> announcement();
 }
