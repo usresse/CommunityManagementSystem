@@ -4,7 +4,18 @@
     <select id="login" resultType="map">
         select *
         from school
-        where Number = ${number}
+        where Number = #{number}
+    </select>
+
+    <select id="select" resultType="java.lang.Integer">
+        select schoolmajorID
+        from schoolmajor
+        where schoolmajorName = #{name}
+    </select>
+
+    <select id="selectAll" resultType="com.example.communitymanagementsystem.Mapper.brean.SchoolMajorBean">
+        select *
+        from schoolmajor
     </select>
 
     <select id="activity" resultType="map">
@@ -39,10 +50,10 @@
             <if test="result == 0">Agree = 1</if>
             <if test="result == 1">Agree = 0</if>
         </set>
-        where associationID = "${associationID}";
+        where associationID = #{associationID};
 
         <if test="result == 0">
-            <include refid="insert"></include> "${associationID}"
+            <include refid="insert"></include> #{associationID}
         </if>
     </update>
 

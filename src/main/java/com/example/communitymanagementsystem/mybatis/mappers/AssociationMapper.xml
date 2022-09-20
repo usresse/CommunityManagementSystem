@@ -6,9 +6,9 @@
         select *
         from association
         <where>
-            <if test="key == 'associationID'">associationID = "${value}"</if>
-            <if test="key == 'associationName'">associationName = "${value}"</if>
-            <if test="key == 'associationProprieter'">associationProprieter = "${value}"</if>
+            <if test="key == 'associationID'">associationID = #{value}</if>
+            <if test="key == 'associationName'">associationName = #{value}</if>
+            <if test="key == 'associationProprieter'">associationProprieter = #{value}</if>
         </where>
     </select>
 
@@ -17,7 +17,7 @@
         from applyinformation,
              association
         where applyinformation.applyAssociation = association.associationID
-          and applyNumber = "${number}"
+          and applyNumber = #{number}
           and applyT = 1
     </select>
 
@@ -29,149 +29,185 @@
     <update id="selectupdate">
         update applyinformation
         set applyT = 0
-        where applyNumber = "${number}"
+        where applyNumber = #{number}
           and applyResult is not null
     </update>
 
     <insert id="create">
         insert into applyinformation (applyAssociation, applyNumber, applyT, applyIntroduction)
-        values ("${applyAssociation}", "${applyNumber}", 1, "${applyIntroduction}")
+        values (#{applyAssociation}, #{applyNumber}, 1, #{applyIntroduction})
     </insert>
 
-    <select id="selectApply" resultType="map">
+    <select id="MyClubStatusSelectApplyinformationBean"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean">
         select *
         from applyinformation
-        where applyNumber = "${applyNumber}"
-          and applyT = 1;
+        where applyNumber = #{number}
+          and applyT = 1
     </select>
 
-    <delete id="delete">
+    <select id="MyClubStatusSelectAssociationBean"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
+        select *
+        from association
+        where associationID = #{applyAssociation}
+    </select>
+
+    <delete id="DeleteApplyInformation">
         delete
         from applyinformation
-        where Number = ${number}
+        where Number = #{ApplyInformationNumber}
     </delete>
 
-    <select id="reviewed" resultType="map" parameterType="String">
+    <select id="reviewedApplyInformationBeanSelect"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean">
         select *
-        from applyinformation,
-             personal,
-             schoolmajor
-        where applyinformation.applyNumber = personal.number
-          and personal.schoolMajor = schoolmajor.schoolmajorID
-          and applyinformation.applyAssociation = "${associationID}"
-          and applyinformation.applyResult is null
+        from applyinformation
+        where applyAssociation = #{associationNumber}
+          and applyResult is null
     </select>
-
 
     <update id="judge">
         update applyinformation
         <set>
-            <if test="index == 1">
-                applyResult = "1"
-            </if>
-            <if test="index == 0">
-                applyResult = "0"
-            </if>
+            <choose>
+                <when test="result">
+                    applyResult = "1"
+                </when>
+                <otherwise>
+                    applyResult = "0"
+                </otherwise>
+            </choose>
         </set>
-        where applyinformation.applyNumber = "${number}"
-        and applyT = 1
+        where Number = #{ID}
     </update>
 
-    <insert id="Create">
-        insert into schoolAgreeAssociation (associationID, associationName, associationProprieterNumber,
-                                            associationProprieter,
-                                            associationNumber, associationIntroduce)
-        values ("${data.associationID}", "${data.associationName}", "${number}",
-                (select Name from personal where number = "${number}"), 1, "${data.associationIntroduce}")
-    </insert>
-
-    <select id="personal" resultType="map">
+    <select id="judgeSelect" resultType="com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean">
         select *
-        from personal
-        where number = ${number}
+        from applyinformation
+        where Number = #{ID}
     </select>
+
+    <update id="judgeUpdate">
+        update association
+        set associationNumber = associationNumber + 1
+        where associationID = #{applyAssociation}
+    </update>
 
     <update id="KickOut">
         update
             association
         set associationNumber = associationNumber - 1
-        where associationID = (select associationNumber from personal where number = "${number}");
+        where associationID = (select associationNumber from personal where number = #{number});
 
         update
             personal
         set associationNumber = "",
             major             = ""
-        where number = "${number}"
+        where number = #{number}
     </update>
 
-    <select id="MoveAssociationApplication" resultType="map">
+    <select id="MoveAssociationApplication" resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
         select *
         from association
         where associationID =(
-        <if test="data[0] ==1 ">select max(associationID) from association where "${data[1]}" >associationID
+        <if test="index ==1 ">select max(associationID) from association where #{associationID} > associationID
         </if>
-        <if test="data[0] == 0">select min(associationID) from association where associationID>"${data[1]}"
+        <if test="index == 0">select min(associationID) from association where associationID > #{associationID}
         </if>
         )
     </select>
 
-    <select id="CommunityInformationMaintenance" parameterType="string"
+    <select id="CommunityInformationMaintenanceSelect" parameterType="string"
             resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
         select *
         from association
-        where associationID = (select associationNumber from personal where number = "${number}")
+        where associationID = (select associationNumber from personal where number = #{number})
     </select>
 
     <select id="selectImg" resultType="string" parameterType="string">
         select associationBlob
         from association
-        where associationID = "${associationID}"
+        where associationID = #{associationID}
     </select>
 
     <update id="CommunityInformationImg">
         update association
-        set associationBlob = "${associationBlob}"
-        where associationID = "${associationID}"
+        set associationBlob = #{associationBlob}
+        where associationID = #{associationID}
     </update>
-
-    <select id="CommunityInformationHandover" resultType="map">
-        select *
-        from personal
-        where associationNumber = "${associationID}"
-          and major != "社长"
-    </select>
 
     <update id="CommunityInformationHandoverUpdate">
         update personal
-        set major = "成员"
-        where number = (select associationProprieterNumber from association where associationID = "${associationID}");
+        set major = "3"
+        where number = (select associationProprieterNumber from association where associationID = #{associationID});
 
         update personal
-        set major = "社长"
-        where number = "${number}";
+        set major = "1"
+        where number = #{number};
 
         update association
-        set associationProprieterNumber = "${number}",
-            associationProprieter       = (select Name from personal where number = "${number}")
-        where associationID = "${associationID}"
+        set associationProprieterNumber = #{number},
+            associationProprieter       = (select Name from personal where number = #{number})
+        where associationID = #{associationID}
     </update>
-
-    <select id="CommunityInformationHandoverselect" resultType="map">
-        select *
-        from personal
-        where ${condition} = "${data}"
-          and associationNumber = "${associationNumber}"
-    </select>
 
     <update id="CommunityInformationMaintenanceIntroduce">
         update association
-        set associationIntroduce = "${introduce}"
-        where associationID = "${associationID}"
+        set associationIntroduce = #{introduce}
+        where associationID = #{associationID}
     </update>
 
     <select id="noticeSelect" resultType="com.example.communitymanagementsystem.Mapper.brean.NoticeBean">
         select *
         from notice
-        where noticeID = "${associationName}"
+        where noticeID = #{noticeID}
+        order by noticeDate desc
     </select>
+
+    <insert id="noticeAdd">
+        insert into notice(noticeID, noticeName, noticeDate, notice)
+        values (#{noticeID}, #{noticeName}, #{noticeDate}, #{notice})
+    </insert>
+
+    <delete id="noticeDelete">
+        delete
+        from notice
+        where ID = #{id}
+    </delete>
+
+    <select id="majorSelect" resultType="java.lang.String">
+        select associationPositionID
+        from associationposition
+        where associationPositionName = #{value}
+    </select>
+
+    <select id="AddOrganizationSelectNo"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
+        select *
+        from association
+    </select>
+
+
+    <select id="AddOrganizationSelectCondition"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
+        select *
+        from association
+        where ${key} = #{value}
+    </select>
+
+    <select id="AssociationSelect"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.SchoolAgreeAssociationBean">
+        select *
+        from schoolagreeassociation
+        where associationProprieterNumber = #{number}
+    </select>
+
+    <insert id="CreateAssociation"
+            parameterType="com.example.communitymanagementsystem.Mapper.brean.SchoolAgreeAssociationBean">
+        insert into schoolagreeassociation(associationID, associationName, associationProprieterNumber,
+                                           associationProprieter, associationIntroduce, associationReason)
+        values (#{associationID}, #{associationName}, #{associationProprieterNumber},
+                #{associationProprieter}, #{associationIntroduce}, #{associationReason})
+    </insert>
 </mapper>

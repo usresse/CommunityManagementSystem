@@ -76,7 +76,6 @@
         }
 
         .img {
-            border: solid 1px black;
             width: 550px;
             height: 300px;
             overflow: hidden;
@@ -85,7 +84,6 @@
 
         .association {
             float: left;
-            border: solid 1px black;
             font-size: 15px;
             width: 700px;
             height: 500px;
@@ -98,9 +96,9 @@
 
         textarea {
             width: 600px;
-            height: 100px;
+            height: 80px;
             resize: none;
-            font-size: 20px;
+            font-size: 15px;
             background-color: rgba(0, 0, 0, 0);
         }
 
@@ -108,8 +106,6 @@
     <script type="text/javascript" th:inline="javascript">
         //图片上传预览功能
         var userAgent = navigator.userAgent; //用于判断浏览器类型
-        var number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
-
         $(function () {
             $(".file").change(function () {
                 //获取选择图片的对象
@@ -124,7 +120,7 @@
                 //循环遍历
                 for (var i = 0; i < fileList.length; i++) {
                     /**盘查相同照片的数据*/
-                    if(document.getElementById(fileList[i].name) != null){
+                    if (document.getElementById(fileList[i].name) != null) {
                         return;
                     }
                     //动态添加html元素
@@ -162,59 +158,67 @@
             });
         });
 
+        // var personalBean = parent.window.personalBean;
+        var _data = {};
+
+        var _AssociationBean = {}
         /**********************获取数据，拆分放入视图**************************************************/
         $(function () {
-            /**获取数据*/
-            var association = new Object();
-            association = [[${association}]]
-            const {
-                associationID,
-                associationName,
-                associationProprieterNumber,
-                associationProprieter,
-                associationNumber,
-                associationBlob,
-                associationIntroduce
-            } = association;
-            /**存数据到视图*/
-            $(".associationID").text(associationID);
-            $(".formAssociationID").val(associationID);
+            _data.number = parent.window.personalBean["number"];
+            $.ajax({
+                url: "CommunityInformationMaintenanceSelect",
+                data: _data,
+                type: "get",
+                async: false,
+                success: function (data) {
+                    _AssociationBean = data;
+                }
+            })
 
-            $(".associationProprieter").text(associationProprieter);
-            let introduce = associationIntroduce.split("-");
+            console.log(_AssociationBean);
+
+            /**存数据到视图*/
+            $(".associationName").text(_AssociationBean["associationName"]);
+
+            $(".associationID").text(_AssociationBean["associationID"]);
+            $(".formAssociationID").val(_AssociationBean["associationID"]);
+
+            $(".associationProprieter").text(_AssociationBean["associationProprieter"]);
+            let introduce = _AssociationBean["associationIntroduce"].split("-");
             $(".purpose").text(introduce[0])
             $(".introduction").text(introduce[1])
             $(".activities").text(introduce[2])
 
             /**图片显示*/
-            let imgblod = associationBlob.split("-");
-            if (associationBlob != "") {
+            let imgblod = _AssociationBean["associationBlob"].split("-");
+            if (_AssociationBean["associationBlob"] != "") {
                 for (let i = 0; i < imgblod.length; i++) {
                     let picHtml = "<div class='imageDiv' > <img id='" + imgblod[i] + "' /> <div class='cover'><i class='delbtn' onclick='elete(this)'>删除</i></div></div>";
                     $(".picDiv").prepend(picHtml);
-                    $(document.getElementById(imgblod[i])).attr("src", "/img/association/" + associationID + "/" + imgblod[i]).attr("width", "160px").attr("height", "130px");
+                    $(document.getElementById(imgblod[i])).attr("src", "/img/association/" + _AssociationBean["associationID"] + "/" + imgblod[i]).attr("width", "160px").attr("height", "130px");
                 }
             }
         });
 
         /**删除图片操作*/
         function elete(assembly) {
-            let data = {};
-            data.associationID = $(".formAssociationID").val();
-            data.imgName = $(assembly).parent().prev().attr("id");
+            _data.associationID = _AssociationBean["associationID"]
+            _data.imgName = $(assembly).parent().prev().attr("id");
             $.ajax({
-                url:window.location.href.split(number)[0]+"ImgDelete",
-                data:data,
-                success:function (dex){
-                    if(dex == "删除成功!"){
+                url: "CommunityInformationMaintenance/ImgDelete",
+                data: _data,
+                success: function (dex) {
+                    if (dex == "删除成功!") {
                         $(assembly).parents(".imageDiv").remove();
                     }
                 }
             });
         }
 
-        /****************编辑按钮****************************************************/
+        /****************编辑双击事件****************************************************/
         function edit(text) {
+            $(".button").show();
+
             if ($(text).is("text")) {
                 $(text).replaceWith($("<textarea></textarea>").attr("class", $(text).attr("class")).text($(text).text()));
             } else {
@@ -223,10 +227,9 @@
         }
 
 
-        /***************保存数据提交****************************************************/
+        /***************保存数据提交按钮事件****************************************************/
         function define() {
-            let data = {};
-            data.associationID = $(".formAssociationID").val();
+            _data.associationID = $(".formAssociationID").val();
 
             /**判断组件是text标签还是textarea标签*/
             function judge(assembly) {
@@ -238,18 +241,15 @@
                 }
             }
 
-            let purpose = judge($(".purpose"));
-            let introduction = judge($(".introduction"));
-            let activities = judge($(".activities"));
-
-            data.associationIntroduce = purpose + "-" + introduction + "-" + activities;
+            _data.associationIntroduce = judge($(".purpose")) + "-" + judge($(".introduction")) + "-" + judge($(".activities"));
             $.ajax({
-                url: window.location.href.split(number)[0] + "Introduce",
-                data: data,
+                url: "CommunityInformationMaintenance/Introduce",
+                data: _data,
+                type:"get",
                 success: function (dex) {
                     if (dex == "修改成功！") {
                         alert("修改数据成功！");
-                        window.location.reload();
+                        window.location.replace("CommunityInformationMaintenance");
                     } else {
                         alert("修改数据失败！");
                     }
@@ -259,15 +259,15 @@
 
         /***************移交社长按钮***************************/
         function transfer() {
-            console.log(window.location.href.split(number)[0] + "Handover/" + $(".formAssociationID").val())
-            window.location.href = window.location.href.split(number)[0] + "Handover/" + $(".formAssociationID").val();
+            window.location.replace("Handover")
         }
+
     </script>
 </head>
 <body>
 <div class="img">
     <iframe name="iframeform" style="display: none"></iframe>
-    <form method="post" action="Img" id="passForm" enctype="multipart/form-data" multipart="" target="iframeform">
+    <form method="post" action="CommunityInformationMaintenance/Img" id="passForm" enctype="multipart/form-data" multipart="" target="iframeform">
         <input style="display: none" name="associationID" class="formAssociationID">
         <!--点击预览图片-->
         <div id="Pic_pass">
@@ -290,29 +290,39 @@
 
 <div class="association">
     <div>
+        <div style="display: inline-block" class="title">社团名称：</div>
+        <text class="associationName"></text>
+    </div>
+    <br>
+    <div>
         <div style="display: inline-block" class="title">社团编号：</div>
         <text class="associationID"></text>
     </div>
+    <br>
     <div>
         <div style="float:left" class="title">社长：</div>
         <text class="associationProprieter"></text>
         <button onclick="transfer()">移交社长</button>
     </div>
     <br>
+    <br>
     <div>
         <div class="title" ondblclick="edit(this)">宗旨：</div>
         <text class="purpose" ondblclick="edit(this)"></text>
     </div>
+    <br>
     <div>
         <div class="title" ondblclick="edit(this)">简介：</div>
         <text class="introduction" ondblclick="edit(this)"></text>
     </div>
+    <br>
     <div>
         <div class="title" ondblclick="edit(this)">特色活动：</div>
         <text class="activities" ondblclick="edit(this)"></text>
     </div>
+    <br>
     <div>
-        <button onclick="define()">保存修改数据</button>
+        <button class="button" onclick="define()" style="display: none">保存修改数据</button>
     </div>
 </div>
 </body>

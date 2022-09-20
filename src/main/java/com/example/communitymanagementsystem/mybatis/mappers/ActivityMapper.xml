@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
 <mapper namespace="com.example.communitymanagementsystem.mybatis.mappers.ActivityMapper">
-    <select id="activity" resultType="com.example.communitymanagementsystem.Mapper.brean.ActivityBrean">
+
+    <select id="selectActivityNO" resultType="com.example.communitymanagementsystem.Mapper.brean.ActivityBrean">
         select *
-        from activity,
-        association
-        where activity.hostAssociactionID = association.associationID
-        and State = "正在进行"
-        <if test="data.length==2">
-            <if test="data[0] == 'hostAssociactionID'">
-                and ${data[0]}= (select associationID from association where associationName = "${data[1]}")
-            </if>
-            <if test="data[0] != 'hostAssociactionID'">
-                and ${data[0]} = "${data[1]}"
-            </if>
-        </if>
+        from activity
+        where State = "正在进行"
+    </select>
+
+    <select id="selectActivityCondition" resultType="com.example.communitymanagementsystem.Mapper.brean.ActivityBrean">
+        select *
+        from activity
+        where State = "正在进行"
+          and ${key} = #{value}
     </select>
 
     <insert id="ActivityRequest">
         insert into activity
         (Title, Place, startDate, endDate, numberOfPeople, MAXPeople, hostAssociactionID, State, Remark)
-        values (${data.Title}, ${data.Place}, "${data.startDate}", "${data.endDate}", 0, ${data.MAXPeople},
-                (select associationNumber from personal where number = "${number}"), "申请中",
-                ${data.Remark})
+        values (#{Title}, #{Place}, #{startDate}, #{endDate}, 0, #{MAXPeople},
+                #{hostAssociactionID}, "申请中", #{Remark})
     </insert>
 
-    <select id="select" resultType="string">
+    <select id="activityStringID" resultType="string">
         select activityStringID
         from personal
         where number = "${number}"
@@ -43,7 +41,7 @@
             <if test="con == 0">numberOfPeople = numberOfPeople - 1</if>
             <if test="con == 1">numberOfPeople = numberOfPeople + 1</if>
         </set>
-        where ID = ${ID}
+        where ID = #{ID}
     </update>
 
     <select id="activityAll" resultType="com.example.communitymanagementsystem.Mapper.brean.ActivityBrean">
@@ -51,7 +49,7 @@
         from activity,
              association
         where activity.hostAssociactionID = association.associationID
-          and ID = ${ID}
+          and ID = #{ID}
     </select>
 
     <select id="selectPeople" resultType="boolean">
@@ -59,37 +57,34 @@
         from activity
         where MAXPeople = numberOfPeople
           and numberOfPeople != 0
-          and ID = ${ID}
-    </select>
-
-    <select id="selectActivity" resultType="map">
-        select *
-        from activity,
-        association
-        where activity.hostAssociactionID = association.associationID
-        and associationProprieterNumber = "${number}"
-        <if test="data.length==2">
-            and ${data[0]} = "${data[1]}"
-        </if>
+          and ID = #{ID}
     </select>
 
     <delete id="delete">
         delete
         from activity
-        where ID = ${ID}
+        where ID = #{ID}
           and State != "正在进行"
     </delete>
 
-    <select id="selectassociationNumber" resultType="string">
-        select associationNumber
-        from personal
-        where number = "${number}"
-    </select>
-
-    <select id="ActivityHistorySelect" resultType="string">
+    <select id="ActivityHistoryDel" resultType="string">
         select State
         from activity
-        where ID = ${ID}
+        where ID = #{ID}
+    </select>
+
+    <select id="activityHistorySelectNo" resultType="com.example.communitymanagementsystem.Mapper.brean.ActivityBrean">
+        select *
+        from activity
+        where hostAssociactionID = #{hostAssociactionID}
+    </select>
+
+    <select id="activityHistorySelectCondition"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.ActivityBrean">
+        select *
+        from activity
+        where hostAssociactionID = #{hostAssociactionID}
+          and ${key} = #{value}
     </select>
 
     <select id="announcement" resultType="com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean">

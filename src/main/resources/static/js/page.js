@@ -1,8 +1,12 @@
-$(
-    function () {
+$(function () {
+        /**获取数据并转化为对象*/
+
+        $(".user").text(personalBean["nickName"]);
+        $(".quan").text(personalBean["number"]);
+
         /**照片的获取效果，如果为空则没有*/
         let number = $(".quan")[0].innerHTML;
-        let bold = $(".img>img").attr("src");
+        let bold = personalBean["bold"];
         let url;
         if (bold == "" || bold == null || bold == "null") {
             url = "img/img.png";
@@ -15,7 +19,7 @@ $(
         $(".num").val(number);
 
         /**用户昵称的更改*/
-        let name = $(".user")[0].innerText;
+        let name = $(".user").text();
         if (name == null || name == "") {
             $(".user")[0].innerText = number;
         }
@@ -40,12 +44,12 @@ $(
             if (regexImageFilter.test(file.type)) {
                 //读取文件转换成URL把图片转为Base64编码
                 imgReader.readAsDataURL(file);
-                console.log("提交");
+
                 $("#form").submit();
             } else {
                 layer.alert("请选择图片");
             }
         });
-        /**************************************************************************************/
     }
 )
+

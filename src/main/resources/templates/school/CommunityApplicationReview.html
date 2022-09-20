@@ -7,63 +7,70 @@
     <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
 
     <style type="text/css">
-        tr{
+        tr {
             height: 50px;
         }
-        td{
+
+        td {
             width: 1700px;
         }
-        .table{
+
+        .table {
             text-align: center;
         }
     </style>
     <script type="text/javascript">
-            $(function (){
-                let data = "[(${data})]";
-                console.log(data);
-                let array = data.substring(2, data.length - 2).split("}, {");
-                console.log(array);
+        $(function () {
+            let data = "[(${data})]";
+            console.log(data);
+            let array = data.substring(2, data.length - 2).split("}, {");
+            console.log(array);
 
 
-                for (let key in array) {
-                    let value = array[key].split(",");
+            for (let key in array) {
+                let value = array[key].split(",");
 
-                    let tr = $("<tr></tr>");
-                    let td = [];
+                let tr = $("<tr></tr>");
+                let td = [];
 
-                    td[1] = $("<td></td>").text(value[5].split("=")[1]);
-                    td[2] = $("<td></td>").text(value[2].split("=")[1]);
-                    td[3] = $("<td></td>").text(value[0].split("=")[1]);
-                    td[4] = $("<td></td>").text(value[4].split("=")[1]);
-                    td[5] = $("<td></td>").text(value[1].split("=")[1]);
-                    td[6] = $("<td><button onclick='button(this,0)'>通过</button><button onclick='button(this,1)'>驳回</button></td>");
+                td[1] = $("<td></td>").text(value[5].split("=")[1]);
+                td[2] = $("<td></td>").text(value[2].split("=")[1]);
+                td[3] = $("<td></td>").text(value[0].split("=")[1]);
+                td[4] = $("<td></td>").text(value[4].split("=")[1]);
+                td[5] = $("<td></td>").text(value[1].split("=")[1]);
 
-                    tr.append(td[1]);
-                    tr.append(td[2]);
-                    tr.append(td[3]);
-                    tr.append(td[4]);
-                    tr.append(td[5]);
-                    tr.append(td[6]);
-
-                    $(".table").append(tr);
+                let associationReason = "";
+                if (value[3].split("=")[0] == " associationReason") {
+                    associationReason = value[3].split("=")[1];
+                } else {
+                    associationReason = "";
                 }
-            });
+                td[6] = $("<td></td>").text(associationReason);
+                td[7] = $("<td><button onclick='button(this,0)'>通过</button><button onclick='button(this,1)'>驳回</button></td>");
 
-            function button(button,value) {
-                let associationID = $(button).closest("tr").find("td").eq(0).text();
-                console.log(window.location.href)
-                $.ajax({
-                    url: window.location.href+"/"+value+"/"+associationID,
-                    success:function (dex){
-                        if(dex == "操作成功！"){
-                            alert(dex);
-                            window.location.reload();
-                        }else {
-                            alert(dex);
-                        }
-                    }
-                })
+                for (let i in td) {
+                    tr.append(td[i]);
+                }
+
+                $(".table").append(tr);
             }
+        });
+
+        function button(button, value) {
+            let associationID = $(button).closest("tr").find("td").eq(0).text();
+            console.log(window.location.href)
+            $.ajax({
+                url: window.location.href + "/" + value + "/" + associationID,
+                success: function (dex) {
+                    if (dex == "操作成功！") {
+                        alert(dex);
+                        window.location.reload();
+                    } else {
+                        alert(dex);
+                    }
+                }
+            })
+        }
     </script>
 </head>
 <body>
@@ -83,6 +90,9 @@
         </td>
         <td>
             社团介绍
+        </td>
+        <td>
+            社申请理由
         </td>
         <td>
             操作

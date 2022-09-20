@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.communitymanagementsystem.mybatis.mappers.SettingMapper">
+    <select id="selectAssociationNumber" resultType="java.lang.String">
+        select associationName
+        from association
+        where associationID = #{associationNumber}
+    </select>
+
+    <select id="selectMajor" resultType="java.lang.String">
+        select associationPositionName
+        from associationposition
+        where associationPositionID = #{major}
+    </select>
+
+    <select id="personal" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
+        select *
+        from personal
+        where number = #{number}
+    </select>
+
+</mapper>

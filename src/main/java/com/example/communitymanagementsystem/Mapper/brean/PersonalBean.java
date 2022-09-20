@@ -1,10 +1,12 @@
 package com.example.communitymanagementsystem.Mapper.brean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
+
 
 import java.util.Date;
 
@@ -47,7 +49,7 @@ public class PersonalBean {
     /**
      * 出生日期
      */
-    @DateTimeFormat(style = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
     /**
      * 电话号码
@@ -58,13 +60,19 @@ public class PersonalBean {
      */
     private String mailbox;
     /**
-     * 职业
+     * 社团职位
      */
     private String major;
+
     /**
-     * 社团名称
+     * 社团编号
      */
-    private String associationName;
+    private String associationNumber;
+
+    /**
+     * 自己添加活动的ID组合
+     */
+    private String activityStringID;
     /**
      * 学校专业
      */
@@ -76,6 +84,6 @@ public class PersonalBean {
     /**
      * 注册时间
      */
-    @DateTimeFormat(style = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date dateOfRegistration;
 }

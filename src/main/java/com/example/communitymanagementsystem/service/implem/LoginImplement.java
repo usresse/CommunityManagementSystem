@@ -3,8 +3,11 @@ package com.example.communitymanagementsystem.service.implem;
 import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
 import com.example.communitymanagementsystem.mybatis.mappers.PersonalMapper;
 import com.example.communitymanagementsystem.service.inter.LoginServer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,16 +33,32 @@ public class LoginImplement implements LoginServer {
      * @date 2022-7-3 15:33
      */
     @Override
-    public PersonalBean All(String number, String password) {
-        PersonalBean personalBrean = PersonalMapper.select(number);
-        if(personalBrean == null){
-             personalBrean = PersonalMapper.selectAll(number);
+    public ModelAndView Validity(String number, String password) {
+        PersonalBean personalBean = PersonalMapper.selectAll(number);
+
+        ModelAndView modelAndView = new ModelAndView();
+        /**跳转页面*/
+        StringBuilder view = new StringBuilder();
+
+        if (personalBean != null && personalBean.getPassword().equals(password.trim())) {
+            view.append("page");
+        } else {
+            modelAndView.addObject("data", "账号不存在或密码错误，请重新输入！");
+            view.append("login");
         }
-        if (personalBrean != null && personalBrean.getPassword().equals(password.trim())) {
-            return personalBrean;
+
+        try {
+            modelAndView.addObject("personalBean",
+                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(personalBean));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
-        return null;
+
+        modelAndView.setViewName(view.toString());
+
+        return modelAndView;
     }
+
 
     /**
      * @param ： loginBean
@@ -49,20 +68,21 @@ public class LoginImplement implements LoginServer {
      * @date 2022-7-3 15:34
      */
     @Override
-    public Boolean insert(PersonalBean personalBean) {
+    public String insert(PersonalBean personalBean) {
         if (PersonalMapper.selectAll(personalBean.getNumber()) == null) {
-            /**获取当前时间的字符串格式*/
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            personalBean.setDateOfRegistration(new Date());
 
-            int result = PersonalMapper.insert(personalBean, simpleDateFormat.format(new Date()));
+            int result = PersonalMapper.insert(personalBean);
+
             if (result != 0) {
-                return true;
+                return "创建成功！";
             } else {
-                return false;
+                return "创建失败！";
             }
         } else {
-            return false;
+            return "账号已经存在！";
         }
 
     }
+
 }

@@ -1,5 +1,7 @@
 package com.example.communitymanagementsystem.service.inter;
 
+import com.example.communitymanagementsystem.Mapper.brean.SchoolMajorBean;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +15,8 @@ import java.util.Map;
 public interface SchoolServer {
 
     Boolean login(Map<String, Object> map);
+
+    List<SchoolMajorBean> selectschoolMajor();
 
     List<Map<String,Object>> activity();
 

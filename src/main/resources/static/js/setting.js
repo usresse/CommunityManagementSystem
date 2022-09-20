@@ -1,30 +1,147 @@
-/*编辑按钮的标签转换操作*/
-function tiaozhaun(boot) {
+var personalBean = parent.window.personalBean;
+
+var schoolMajor;
+
+/**性别和日期的解析    所有专业单选框的创建插入*/
+$(function () {
+    for (let key in personalBean) {
+        let _name = "div[class='" + key + "']";
+        let value = personalBean[key];
+
+        if (key == "sex" && value == null) {
+            $(".sex > option").eq(0).show();
+            $(".sex").eq(1).change(selected);
+        }
+
+        if (value != null) {
+            switch (key) {
+                //学号
+                case "studentNumber":
+                //姓名
+                case "name":
+                //账号
+                case "number":
+                //密码
+                case "password":
+                //练习电话
+                case "telephone":
+                //邮箱
+                case "mailbox":
+                //学校专业
+                case "schoolMajor":
+                //账号昵称
+                case "nickName":
+                    $(_name).text(value)
+                    break;
+                //性别
+                case "sex":
+                    if (value == '0') {
+                        $(_name).text("女");
+                    } else {
+                        $(_name).text("男");
+                    }
+                    break;
+                //出生日期
+                case "dateOfBirth":
+                    let dateOfBirth = personalBean["dateOfBirth"];
+                    if (dateOfBirth == null || dateOfBirth == "" || dateOfBirth == "null") {
+
+                    } else {
+                        $(".dateOfBirth").eq(0).text(dateFormat(dateOfBirth, 'yyyy-MM-dd'))
+                    }
+                    break;
+                //社团职位
+                case "major":
+                //社团ID
+                case "associationNumber":
+                    $.ajax({
+                        url:key,
+                        data:personalBean,
+                        type:"get",
+                        success: function (data){
+                            $("#"+key+"").text(data);
+                        }
+                    })
+                    break;
+            }
+        }
+    }
+
+    $.ajax({
+        url: "schoolMajor",
+        type: "get",
+        async: false,
+        success: function (data) {
+            schoolMajor = data;
+        }
+    });
+
+    for (let i = 0; i < schoolMajor.length; i++) {
+        let arry = schoolMajor[i];
+
+        /**插入value值为专业编号*/
+        let option = $("<option></option>").val(arry["schoolmajorID"]);
+        /**添加选项的内容*/
+        option.text(arry["schoolmajorName"]);
+        /**将选项添加到页面*/
+        $(".selectSchoolMajor").append(option);
+
+        /**对第一次查询显示的专业进行编译*/
+        if ($(".schoolMajor").text() == arry["schoolmajorID"]) {
+            $(".schoolMajor").text(arry["schoolmajorName"]);
+        }
+    }
+
+});
+
+
+/**小眼睛显示密码*/
+function imgclick(img) {
+    $("img[class='img']").show();
+    let type = $("input[class='password']").attr("type");
+    if (type == "text") {
+        $("input[class='password']").attr("type", "password");
+    } else {
+        $("input[class='password']").attr("type", "text");
+    }
+    $(img).hide();
+}
+
+/**处理当性别为空时更改空选项*/
+function selected() {
+    $('.sex').eq(1).find("option").eq(0).attr('style', 'display:none')
+}
+
+/**编辑按钮的标签转换操作*/
+function tiaozhaun() {
+    $("button[disabled]").attr("disabled", false);
+
     let div = $("div[class]");
     let input = $("input[class],select[class]");
+
     /**判断是否重复点击*/
     if (div.eq(1).is(':hidden')) {
         return;
     }
 
     for (let i = 0; i < div.length; i++) {
-        let value = div[i].innerText;
+        let value = div.eq(i).text();
+
         if (i == 3) {
             if (value == "男") {
-                $("select>option[value=1]").attr("selected", true);
-            } else {
-                $("select>option[value=0]").attr("selected", true);
+                $(".sex").eq(1).find("option").eq(1).attr("selected", true);
+            } else if (value == "女") {
+                $(".sex").eq(1).find("option").eq(2).attr("selected", true);
             }
         } else {
             input.eq(i).val(value);
         }
-
         /**对学生专业的单选框初始选项的而处理*/
         if (i == 7) {
-            let major = $("select[class='schoolMajor']>option");
+            let major = $(".selectSchoolMajor>option");
             for (let i = 0; i < major.length; i++) {
-                if (major[i].innerText == value) {
-                    major[i].setAttribute("selected", true);
+                if (major.eq(i).text() == value) {
+                    major.eq(i).attr("selected", true);
                 }
             }
         }
@@ -38,15 +155,37 @@ function tiaozhaun(boot) {
     imgclick($("img[class='img']")[0]);
 }
 
-/*确定按钮的提交数据操作*/
+/**确定按钮的提交数据操作*/
 function sub() {
     let input = $("input[class],select[class]");
     let data = {};
-    let number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
 
     for (let i = 0; i < input.length; i++) {
         let NameClass = input.eq(i).attr("class");
         let value = input.eq(i).val();
+
+        /**当数据为空时设置为null值*/
+        if (value == "") {
+            value = null;
+        }
+
+        /**判断性别的选框设置*/
+        if (i == 3) {
+            value = input.eq(i).find("option:selected").val();
+        }
+
+        /**对时间的格式化*/
+        if (i == 5) {
+            value = dateFormat(new Date(value), 'yyyy-MM-dd');
+        }
+
+        /**对学校专业的选框设置*/
+        if (i == 7) {
+            NameClass = "schoolMajor";
+            value = input.eq(i).find("option:selected").val();
+        }
+
+        /**对电话号码的值限制*/
         if (i == 8) {
             let reg_phone = /^(13[0-9]|14[01456879]|15[0-3,5-9]|16[2567]|17[0-8]|18[0-9]|19[0-3,5-9])\d{8}$/;
             if (!reg_phone.test(value)) {
@@ -54,9 +193,11 @@ function sub() {
                 return;
             }
         }
+
+        /**创建Objeat对象的属性*/
         data[NameClass] = value;
     }
-    data["number"] = number;
+
     /*构建ajax向settingInsert传送数据*/
     $.ajax({
         url: "settingInsert",
@@ -64,91 +205,10 @@ function sub() {
         data: data,
         success: function (dex) {
             alert(dex);
-            if (dex == "保存数据成功！") {
+            if (dex == "修改成功!") {
                 /**刷新本页面*/
-                location.reload();
+                window.location.reload();
             }
         }
     });
-}
-
-
-/**对于上传图片的效果操作*********************************************************************************************************/
-/*绑定监听器事件*/
-$(function () {
-    /*选中照片后上传照片到展示区*/
-    function getFile(file) {
-        if (!file) {
-            return;
-        }
-        /*const声明的常量必须初始化
-        const 定义常量的值不能通过再赋值修改，也不能再次声明==》只能赋值一次
-        const {files}指向的是内部的files属性提取出来成为files常量名
-        */
-        const {files} = file.target;
-
-        if (files.length <= 0) return;
-
-        const fileReader = new FileReader();
-        /*因为可以上传多个图片所以要加【0】取出值*/
-        fileReader.readAsDataURL(files[0]);
-
-        /*function (event) ==>也可以使用*/
-        fileReader.onload = (event) => {
-            const {result} = event.target;
-            $("#myImage").attr("src", result);
-        };
-    }
-
-    $(".file").on("change", getFile);
-});
-/***********************************************************************************************************/
-/**性别和日期的解析    所有专业单选框的创建插入*/
-$(function () {
-    /**性别的数据解析*/
-    let sex = $(".sex")[0].innerText;
-    if (sex == '0') {
-        $(".sex")[0].innerText = "女";
-    } else {
-        $(".sex")[0].innerText = "男";
-    }
-
-    /**生日日期格式化*/
-    let dateOfBirth = $(".dateOfBirth")[0].innerText;
-    if (dateOfBirth == null || dateOfBirth == "" || dateOfBirth == "null") {
-
-    } else {
-        $(".dateOfBirth")[0].innerText = dateFormat(dateOfBirth, 'yyyy-MM-dd');
-    }
-
-    /**所有专业单选框的创建插入*/
-    let major = $("div[class='schoolMajor']")[0].innerText;
-    console.log(major);
-    let all = $("#schoolMajorAll")[0].innerText;
-    let select = $("select[class='schoolMajor']")
-    all = all.toString().substring(2, all.toString().length - 2);
-    all = all.split("}, {");
-    for (let i = 0; i < all.length; i++) {
-        let arry = all[i].split(",");
-        /**插入value值为专业编号*/
-        let option = $("<option></option>").val(arry[0].split("=")[1]);
-        option[0].innerText = arry[1].split("=")[1];
-        select.append(option);
-        /**对第一次查询显示的专业进行编译*/
-        if (major == arry[0].split("=")[1]) {
-            $("div[class='schoolMajor']")[0].innerText = arry[1].split("=")[1];
-        }
-    }
-});
-
-/**小眼睛显示密码*/
-function imgclick(img) {
-    $("img[class='img']").show();
-    let type = $("input[class='password']").attr("type");
-    if (type == "text") {
-        $("input[class='password']").attr("type", "password");
-    } else {
-        $("input[class='password']").attr("type", "text");
-    }
-    $(img).hide();
 }

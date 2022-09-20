@@ -1,7 +1,8 @@
 package com.example.communitymanagementsystem.controller;
 
 import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
-import com.example.communitymanagementsystem.service.inter.Server;
+import com.example.communitymanagementsystem.Mapper.brean.SchoolMajorBean;
+import com.example.communitymanagementsystem.service.inter.HandleServer;
 import com.example.communitymanagementsystem.service.utils.UtilsServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * \* @author: Predator
@@ -23,9 +23,8 @@ import java.util.Map;
  */
 @Controller
 public class HandleController {
-
     @Autowired
-    private Server server;
+    private HandleServer handleServer;
 
     /**
      * @param ：
@@ -34,16 +33,23 @@ public class HandleController {
      * @author Predator
      * @date 2022-7-3 18:30
      */
-    @RequestMapping("/setting/{number}")
-    public ModelAndView setting(@PathVariable("number") String number) {
+    @RequestMapping("/setting")
+    public ModelAndView setting() {
         ModelAndView modelAndView = new ModelAndView("html/setting");
-        PersonalBean personalBean = server.select(number);
-        /**查询专业*/
-        List<Map<String, Object>> list = server.selectschoolMajor();
-        /**插入专业数据，方便前端找数据构建专业单选框*/
-        modelAndView.addObject("schoolMajor", list);
-        modelAndView.addObject("personalBean", personalBean);
         return modelAndView;
+    }
+
+    /**
+     * @author Predator
+     * @date 2022-9-5 20:23
+     * @param ：
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.SchoolMajorBean>
+     * Description:学校专业的数据查询
+     */
+    @GetMapping("schoolMajor")
+    @ResponseBody
+    public List<SchoolMajorBean> schoolMajor() {
+        return handleServer.selectschoolMajor();
     }
 
     /**
@@ -53,19 +59,11 @@ public class HandleController {
      * @author Predator
      * @date 2022-7-3 18:30
      */
-    @RequestMapping("setting/settingInsert")
-    @ResponseBody
-    public String settingInsert(@RequestParam Map<String, Object> map) {
 
-        for (String key : map.keySet()) {
-            System.out.println(key + "_" + map.get(key));
-        }
-        Boolean result = server.updata(map);
-        if (result) {
-            return "保存数据成功！";
-        } else {
-            return "保存失败！";
-        }
+    @PostMapping ("settingInsert")
+    @ResponseBody
+    public String settingInsert(PersonalBean personalBean) {
+       return handleServer.updata(personalBean);
     }
 
     /**
@@ -120,7 +118,7 @@ public class HandleController {
 
                 /*transferTo使用绝对路径，如果使用相对路径方法会自动生成一个父路径导致路径错误！*/
                 multipartFile.transferTo(file1);
-                return server.updataBold(fileName, number);
+                return handleServer.updataBold(fileName, number);
             } catch (IOException e) {
                 e.printStackTrace();
             }

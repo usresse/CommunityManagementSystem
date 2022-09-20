@@ -1,12 +1,10 @@
 package com.example.communitymanagementsystem.controller;
 
+import com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean;
 import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
 import com.example.communitymanagementsystem.Mapper.brean.NoticeBean;
-import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
+import com.example.communitymanagementsystem.Mapper.brean.SchoolAgreeAssociationBean;
 import com.example.communitymanagementsystem.service.inter.AssociationServer;
-import com.example.communitymanagementsystem.service.inter.Server;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * \* @author: Predator
@@ -32,115 +29,106 @@ public class AssociationController {
     @Autowired
     private AssociationServer associationServer;
 
-    @Autowired
-    private Server server;
-
     /**
-     * @param ：
      * @return org.springframework.web.servlet.ModelAndView
-     * Description:我的社团状态
+     * Description:我的状态的页面选择
+     * @param： number
      * @author Predator
-     * @date 2022-7-9 10:49
+     * @date 2022-9-12 16:04
      */
     @RequestMapping("/MyClubStatus/{number}")
     public ModelAndView MyClubStatus(@PathVariable("number") String number) {
-
-        ModelAndView modelAndView = new ModelAndView();
-        PersonalBean personalBean = server.select(number);
-
-        if (personalBean == null) {
-            /**测试用的输出*/
-            System.out.println("personalBean对象为空");
-            return modelAndView;
-        }
-
-        if (personalBean.getAssociationName() != null) {
-            modelAndView.setViewName("html/MyClubStatus/CommunityPersonnelManagement");
-            PageInfo pageInfo = server.PagingQuery(0, null, number);
-            String data = null;
-            try {
-                /*new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(对象)将对象转化成json对象*/
-                data = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pageInfo);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            modelAndView.addObject("data", data);
-        } else {
-            modelAndView.setViewName("html/MyClubStatus/MyClubStatus");
-            /**查询自己申请过社团的消息*/
-            Map<String, Object> information = associationServer.select(number);
-
-            //System.out.println("数据：");
-            //for(String key :information.keySet()){
-            //    System.out.println(key +" == " + information.get(key));
-            //}
-
-            modelAndView.addObject("data", information);
-        }
-
-        return modelAndView;
+        return associationServer.MyClubStatus(number);
     }
 
     /**
-     * @param ： number
-     * @return java.lang.String
-     * Description: 对于社团人员管理页面查询所有====>内部的
+     * @param number
+     * @return com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean
+     * Description:我的状态页面的数据ApplyInformationBean申请历史信息数据获取
+     * @title MyClubStatusSelectApplyinformationBean
      * @author Predator
-     * @date 2022-7-5 15:09
+     * @date 2022-9-12 17:36
      */
-    @RequestMapping("MyClubStatus/CommunityPersonnelManagement/{index}/{condition}/{number}")
-    public ModelAndView CommunityPersonn(@PathVariable("index") Integer index,
-                                         @PathVariable("condition") String condition,
-                                         @PathVariable("number") String number) {
-
-        if (condition.split(":").length == 1) {
-            condition = null;
-        }
-        PageInfo pageInfo = server.PagingQuery(index, condition, number);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("html/MyClubStatus/CommunityPersonnelManagement");
-        String data = null;
-        try {
-            /*new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(对象)将对象转化成json对象*/
-            data = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pageInfo);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        modelAndView.addObject("condition", condition);
-        modelAndView.addObject("data", data);
-        return modelAndView;
+    @GetMapping("/MyClubStatus/MyClubStatusSelect/ApplyInformationBean")
+    @ResponseBody
+    public ApplyInformationBean MyClubStatusSelectApplyInformationBean(String number) {
+        return associationServer.MyClubStatusSelectApplyInformationBean(number);
     }
+
+    /**
+     * @param applyAssociation
+     * @return com.example.communitymanagementsystem.Mapper.brean.AssociationBean
+     * Description:我的状态页面的数据AssociationBean社团数据
+     * @title MyClubStatusSelect
+     * @author Predator
+     * @date 2022-9-12 16:46
+     */
+    @GetMapping("/MyClubStatus/MyClubStatusSelect/AssociationBean")
+    @ResponseBody
+    public AssociationBean MyClubStatusSelectAssociationBean(String applyAssociation) {
+        return associationServer.MyClubStatusSelectAssociationBean(applyAssociation);
+    }
+
+    /**
+     * @param ： data
+     * @return java.lang.String
+     * Description:申请社团的消息撤销
+     * @author Predator
+     * @date 2022-7-11 22:01
+     */
+    @RequestMapping("MyClubStatus/DeleteApplyInformation")
+    @ResponseBody
+    public String DeleteApplyInformation(Integer ApplyInformationNumber) {
+        Boolean result = associationServer.DeleteApplyInformation(ApplyInformationNumber);
+        if (result) {
+            return "撤销成功！";
+        }
+        return "撤销失败！";
+    }
+
+    /**
+     * @param associationNumber
+     * @param index
+     * @param key
+     * @param value
+     * @return com.github.pagehelper.PageInfo
+     * Description:获取一个社团的用户信息和查询某个用户
+     * @title CommunityPersonSelect
+     * @author Predator
+     * @date 2022-9-12 16:18
+     */
+    @GetMapping("MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect")
+    @ResponseBody
+    public PageInfo CommunityPersonSelect(String associationNumber, Integer index, String key, String value) {
+        return associationServer.CommunityPersonSelect(associationNumber, index, key, value);
+    }
+
 
     /**
      * @param ：
      * @return org.springframework.web.servlet.ModelAndView
-     * Description:社团查询操作
+     * Description:加入社团的页面跳转
      * @author Predator
      * @date 2022-7-9 10:49
      */
-    @RequestMapping("MyClubStatus/AddOrganization/{index}/{condition}")
-    public ModelAndView AddOrganization(@PathVariable("index") Integer index,
-                                        @PathVariable("condition") String condition) {
+    @RequestMapping("MyClubStatus/AddOrganization")
+    public ModelAndView AddOrganization() {
         ModelAndView modelAndView = new ModelAndView();
-        String[] data = condition.split(":");
-        PageInfo pageInfo = null;
-
-        if (data.length == 1) {
-            pageInfo = associationServer.selectAll(index);
-        } else {
-            System.out.println(data[0] + "==" + data[1]);
-            pageInfo = associationServer.select(index, data);
-        }
-
-        try {
-            modelAndView.addObject("data",
-                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pageInfo));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        modelAndView.addObject("condition", condition);
         modelAndView.setViewName("html/MyClubStatus/AddOrganization");
         return modelAndView;
+    }
+
+    /***
+     * @author Predator
+     * @date 2022-9-8 17:13
+     * @param ： null
+     * @return
+     * Description:加入社团的社团数据查询
+     **/
+    @GetMapping("MyClubStatus/AddOrganization/select")
+    @ResponseBody
+    public PageInfo AddOrganizationSelect(Integer index, String key, String value) {
+        return associationServer.AddOrganizationSelect(index, key, value);
     }
 
     /**
@@ -153,13 +141,26 @@ public class AssociationController {
     @RequestMapping("MyClubStatus/AssociationApplication")
     public ModelAndView AssociationApplication(@RequestParam String associationID) {
         ModelAndView modelAndView = new ModelAndView();
-        Map<String, Object> data = associationServer.AssociationApplication(associationID);
-        if (data != null) {
-            modelAndView.addObject("data", data);
+        if (associationID != null || "".equals(associationID)) {
+            modelAndView.setViewName("html/MyClubStatus/AssociationApplication");
         }
-        modelAndView.setViewName("html/MyClubStatus/AssociationApplication");
         return modelAndView;
     }
+
+    /**
+     * @param associationID
+     * @return com.example.communitymanagementsystem.Mapper.brean.AssociationBean
+     * Description:社团的详情页面的数据查询
+     * @title AssociationApplication
+     * @author Predator
+     * @date 2022-9-17 13:51
+     */
+    @GetMapping("MyClubStatus/AssociationApplicationSelect")
+    @ResponseBody
+    public AssociationBean AssociationApplicationSelect(String associationID) {
+        return associationServer.AssociationApplicationSelect(associationID);
+    }
+
 
     /**
      * @param ： index
@@ -169,16 +170,26 @@ public class AssociationController {
      * @author Predator
      * @date 2022-7-23 10:56
      */
-    @RequestMapping("MyClubStatus/AssociationApplication/move")
-    public ModelAndView MoveAssociationApplication(@RequestParam String associationID) {
-        ModelAndView modelAndView = new ModelAndView();
-        Map<String, Object> data = associationServer.MoveAssociationApplication(associationID.split(":"));
+    @GetMapping("MyClubStatus/AssociationApplicationMove")
+    @ResponseBody
+    public AssociationBean MoveAssociationApplication(String associationID, Integer index) {
+        return associationServer.MoveAssociationApplication(index, associationID);
+    }
 
-        if (data != null) {
-            modelAndView.addObject("data", data);
-        }
-        modelAndView.setViewName("html/MyClubStatus/AssociationApplication");
-        return modelAndView;
+    /**
+     * @param applyAssociation
+     * @param number
+     * @param applyIntroduction
+     * @return java.lang.String
+     * Description:申请社团的消息创建
+     * @title applyInformation
+     * @author Predator
+     * @date 2022-9-18 10:56
+     */
+    @RequestMapping("MyClubStatus/AddOrganization/apply")
+    @ResponseBody
+    public String applyInformation(String applyAssociation, String number, String applyIntroduction) {
+        return associationServer.create(applyAssociation, number, applyIntroduction);
     }
 
     /**
@@ -194,83 +205,49 @@ public class AssociationController {
         return associationServer.KickOut(number);
     }
 
-    /**
-     * @param ： data ==>格式：社团编号+用户账号+个人介绍（中间以“：”间隔）
-     * @return java.lang.String
-     * Description:申请社团的消息创建
-     * @author Predator
-     * @date 2022-7-11 22:01
-     */
-    @RequestMapping("MyClubStatus/AddOrganization/apply/{data}")
-    @ResponseBody
-    public String applyInformation(@PathVariable("data") String data) {
-        String[] dat = data.split(":");
-        System.out.println(data);
-        String aBoolean = associationServer.create(dat);
-        if (aBoolean == null) {
-            return "申请成功！";
-        } else {
-            return aBoolean;
-        }
-    }
-
-    /**
-     * @param ： data
-     * @return java.lang.String
-     * Description:申请社团的消息撤销
-     * @author Predator
-     * @date 2022-7-11 22:01
-     */
-    @RequestMapping("MyClubStatus/DeleteApplyInformation")
-    @ResponseBody
-    public String DeleteApplyInformation(Integer ApplyInformationNumber) {
-
-        Boolean result = associationServer.delete(ApplyInformationNumber);
-        if (result) {
-            return "撤销成功！";
-        }
-        return "撤销失败！";
-    }
-
 
     /**
      * @param ： index
      * @param ： number
      * @return org.springframework.web.servlet.ModelAndView
-     * Description:社长查看申请加入本社团的申请消息
+     * Description:社长查看申请加入本社团的申请消息页面跳转
      * @author Predator
      * @date 2022-7-13 12:24
      */
-    @RequestMapping("ToExamine/{index}/{number}")
-    public ModelAndView Reviewed(@PathVariable("index") Integer index, @PathVariable("number") String number) {
+    @RequestMapping("ToExamine")
+    public ModelAndView Reviewed() {
         ModelAndView modelAndView = new ModelAndView();
-        PageInfo pageInfo = associationServer.reviewed(number, index);
-        try {
-            modelAndView.addObject("data",
-                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pageInfo));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
         modelAndView.setViewName("html/ToExamine/ToExamine");
         return modelAndView;
     }
 
     /**
+     * @param associationNumber
+     * @return com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean
+     * Description:社长查看申请加入本社团的申请消息数据获取
+     * @title ReviewedApplyInformationBeanSelect
+     * @author Predator
+     * @date 2022-9-12 21:25
+     */
+    @GetMapping("ToExamine/ReviewedApplyInformationBeanSelect")
+    @ResponseBody
+    public List<ApplyInformationBean> ReviewedApplyInformationBeanSelect(String associationNumber) {
+        return associationServer.reviewedApplyInformationBeanSelect(associationNumber);
+    }
+
+
+    /**
      * @param ： index
      * @param ： number
      * @return org.springframework.web.servlet.ModelAndView
-     * Description:判断操作
+     * Description:社长对申请加入本社团的申请消息判断操作
      * @author Predator
      * @date 2022-7-13 12:24
      */
-    @RequestMapping("ToExamine/judge/{index}")
+    @RequestMapping("ToExamine/judge")
     @ResponseBody
-    public String judge(@PathVariable("index") Integer index, String applyAssociation, String number) {
-        Boolean result = associationServer.judge(index, applyAssociation, number);
-        if (result) {
-            return "操作成功！";
-        }
-        return "操作失败！";
+    public void judge(Integer ID, Boolean result) {
+        associationServer.judge(ID, result);
     }
 
     /**
@@ -280,11 +257,26 @@ public class AssociationController {
      * @author Predator
      * @date 2022-7-17 21:55
      */
-    @RequestMapping("ApplyAssociation/{number}")
-    public ModelAndView ApplyAssociation(@PathVariable("number") String number) {
+    @RequestMapping("ApplyAssociation")
+    public ModelAndView ApplyAssociation() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("html/MyClubStatus/ApplyAssociation");
         return modelAndView;
+    }
+
+    /**
+     * @param
+     * @return java.lang.String
+     * Description:创建社团查询是否申请过
+     * @title AssociationSelect
+     * @author Predator
+     * @date 2022-9-14 13:03
+     */
+    @RequestMapping("ApplyAssociation/select")
+    @ResponseBody
+    public SchoolAgreeAssociationBean AssociationSelect(String number) {
+        System.out.println("number = " + number);
+        return associationServer.AssociationSelect(number);
     }
 
     /**
@@ -292,13 +284,12 @@ public class AssociationController {
      * @return org.springframework.web.servlet.ModelAndView
      * Description:创建社团操作
      * @author Predator
-     * @date 2022-7-17 21:55
+     * @date 2022-7-17 21:55 @RequestParam
      */
-    @RequestMapping("ApplyAssociation/{number}/create")
+    @RequestMapping("ApplyAssociation/create")
     @ResponseBody
-    public String CreateAssociation(@PathVariable("number") String number,
-                                    @RequestParam Map<String, Object> data) {
-        return associationServer.Create(number, data);
+    public String CreateAssociation(SchoolAgreeAssociationBean schoolAgreeAssociationBean) {
+        return associationServer.CreateAssociation(schoolAgreeAssociationBean);
     }
 
     /**
@@ -309,13 +300,17 @@ public class AssociationController {
      * @author Predator
      * @date 2022-7-27 18:30
      */
-    @RequestMapping("CommunityInformationMaintenance/{number}")
-    public ModelAndView CommunityInformationMaintenance(@PathVariable("number") String number) {
+    @RequestMapping("CommunityInformationMaintenance")
+    public ModelAndView CommunityInformationMaintenance() {
         ModelAndView modelAndView = new ModelAndView();
-        AssociationBean associationbean = associationServer.CommunityInformationMaintenance(number);
-        modelAndView.addObject("association", associationbean);
         modelAndView.setViewName("html/MyClubStatus/CommunityInformationMaintenance");
         return modelAndView;
+    }
+
+    @GetMapping("CommunityInformationMaintenanceSelect")
+    @ResponseBody
+    public AssociationBean CommunityInformationMaintenanceSelect(String number) {
+        return associationServer.CommunityInformationMaintenanceSelect(number);
     }
 
     /**
@@ -330,6 +325,8 @@ public class AssociationController {
     @ResponseBody
     public void CommunityInformationImg(@RequestPart("file") MultipartFile multipartFile,
                                         @RequestParam("associationID") String associationID) {
+
+        System.out.println("multipartFile = " + multipartFile + ", associationID = " + associationID);
 
         File file = new File("D:\\1学习文件\\毕业设计\\CommunityManagementSystem\\src\\main" +
                 "\\resources\\static\\img\\association\\" + associationID);
@@ -351,11 +348,13 @@ public class AssociationController {
     }
 
     /**
-     * @param ： associationID
-     * @return void
+     * @param associationID
+     * @param imgName
+     * @return java.lang.String
      * Description:删除图片操作
+     * @title CommunityInformationImgDelete
      * @author Predator
-     * @date 2022-8-2 21:34
+     * @date 2022-9-19 17:29
      */
     @RequestMapping("CommunityInformationMaintenance/ImgDelete")
     @ResponseBody
@@ -371,32 +370,30 @@ public class AssociationController {
 
     /**
      * @param ： associationID
+     * @param ： Introduce
+     * @return org.springframework.web.servlet.ModelAndView
+     * Description:维护社团数据中的保存数据
+     * @author Predator
+     * @date 2022-8-2 16:52
+     */
+    @GetMapping("CommunityInformationMaintenance/Introduce")
+    @ResponseBody
+    public String CommunityInformationMaintenanceIntroduce(String associationID, String associationIntroduce) {
+        return associationServer.CommunityInformationMaintenanceIntroduce(associationID, associationIntroduce);
+    }
+
+    /**
+     * @param ： associationID
      * @return org.springframework.web.servlet.ModelAndView
      * Description:移交社长页面跳转
      * @author Predator
      * @date 2022-7-31 22:20
      */
-    @RequestMapping("CommunityInformationMaintenance/Handover/{associationID}")
-    public ModelAndView CommunityInformationHandover(@PathVariable("associationID") String associationID) {
+    @RequestMapping("CommunityInformationMaintenance/Handover")
+    public ModelAndView CommunityInformationHandover() {
         ModelAndView modelAndView = new ModelAndView();
-        List<Map<String, Object>> list = associationServer.CommunityInformationHandover(associationID);
-        modelAndView.addObject("data", list);
-        modelAndView.addObject("associationID", associationID);
         modelAndView.setViewName("html/MyClubStatus/associationProprieter");
         return modelAndView;
-    }
-
-    /**
-     * @param ： select
-     * @return java.lang.String
-     * Description:移交社长的查询操作
-     * @author Predator
-     * @date 2022-8-2 13:12
-     */
-    @RequestMapping("CommunityInformationMaintenance/Handover/select")
-    @ResponseBody
-    public String CommunityInformationHandoverselect(String select) {
-        return associationServer.CommunityInformationHandoverselect(select);
     }
 
     /**
@@ -414,33 +411,56 @@ public class AssociationController {
     }
 
     /**
-     * @param ： associationID
-     * @param ： Introduce
+     * @param ：
      * @return org.springframework.web.servlet.ModelAndView
-     * Description:维护社团数据中的保存数据
+     * Description:社团公告查询页面跳转
      * @author Predator
-     * @date 2022-8-2 16:52
+     * @date 2022-8-11 13:20
      */
-    @RequestMapping("CommunityInformationMaintenance/Introduce")
-    @ResponseBody
-    public String CommunityInformationMaintenanceIntroduce(String associationID, String associationIntroduce) {
-        return associationServer.CommunityInformationMaintenanceIntroduce(associationID, associationIntroduce);
+    @RequestMapping("notice")
+    public ModelAndView notice() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("html/MyClubStatus/notice");
+        return modelAndView;
     }
 
     /**
+     * @param ： number
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.NoticeBean>
+     * Description:社团公告查询内容
      * @author Predator
-     * @date 2022-8-11 13:20
-     * @param ：
-     * @return org.springframework.web.servlet.ModelAndView
-     * Description:社团公告查询
+     * @date 2022-9-3 22:15
      */
-    @RequestMapping("notice/{number}")
-    public ModelAndView notice(@PathVariable("number") String number){
-        ModelAndView modelAndView = new ModelAndView();
-        List<NoticeBean> list =  associationServer.noticeSelect(number);
-        modelAndView.addObject("data",list);
-        modelAndView.setViewName("html/MyClubStatus/notice");
-        return modelAndView;
+    @GetMapping("notice/select")
+    @ResponseBody
+    public List<NoticeBean> noticeSelect(String number) {
+        return associationServer.noticeSelect(number);
+    }
+
+    /**
+     * @param ：
+     * @return java.lang.String
+     * Description:发布通知
+     * @author Predator
+     * @date 2022-8-12 14:30
+     */
+    @GetMapping("notice/noticeAdd")
+    @ResponseBody
+    public String noticeAdd(NoticeBean noticeBean, String number) {
+        return associationServer.noticeAdd(noticeBean, number);
+    }
+
+    /**
+     * @param ： ID
+     * @return java.lang.String
+     * Description:删除通知
+     * @author Predator
+     * @date 2022-8-31 9:53
+     */
+    @RequestMapping("notice/noticeDelete")
+    @ResponseBody
+    public String noticeDelete(String ID) {
+        return associationServer.noticeDelete(ID);
     }
 
 }

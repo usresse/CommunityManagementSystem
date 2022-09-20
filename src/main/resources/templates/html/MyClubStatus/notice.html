@@ -30,6 +30,9 @@
 
         .nei {
             color: #666666;
+            margin-top: 10px;
+            width: 850px;
+            word-wrap: break-word;
         }
 
         .date {
@@ -43,36 +46,181 @@
             margin-top: 10px;
             margin-left: 900px;
         }
+
+        .noticeTitle {
+            width: 200px;
+            height: 25px;
+            font-size: 18px;
+        }
+
+        textarea {
+            max-height: 250px;
+            max-width: 800px;
+            min-height: 250px;
+            min-width: 800px;
+
+            font-size: 15px;
+        }
     </style>
 
     <script type="text/javascript">
+        /**获取用户的ID*/
+        var personalBean = parent.window.personalBean;
+
+        /**循环显示数量*/
+        let index = 3;
+
+        /**ajax请求的参数对象*/
+        let _data = {};
+        _data.number = personalBean["number"];
+
+        /**存储获取返回值的变量*/
+        var _list;
+
         $(function () {
+            /**请求数据*/
+            $.ajax({
+                url: "notice/select",
+                data: _data,
+                type: "get",
+                async: false, /**将异步请求设置为同步====》之后获取的数据就可以赋值出成员变量了*/
+                success: function (list) {
+                    _list = list;
+                    if (list.length >= 3) {
+                        index = 3;
+                    }
+                }
+            });
 
             /**影藏发布社团公告按钮*/
-            let major = $(".major" , parent.document).text();
-            if(major == "" || major == "成员"){
+            let major = personalBean["major"];
+            if (major == "" || major == "3") {
                 $(".administration").hide();
             }
 
-            /**获取数据*/
-            let data = "[[${data}]]".substring(12,"[[${data}]]".length-2).split("), NoticeBean(");
-            for (let da in data) {
-                let i = data[da].split(", ");
-                let str = "<div><div class='ti'>" + i[2].split("=")[1] + "</div><div class='nei'>"+i[4].split("=")[1]+"</div><div class='date'>发布日期:"+i[3].split("=")[1] +"</div></div>"
-                $(".details").append($(str).prepend($("<div class='ID' style='display: none'>"+i[0].split("=")[1] +"</div>")));
+            initial();
+        });
+
+        /**初始循环*/
+        function initial() {
+            for (let key = 0; key < index; key++) {
+                /**做省略*/
+                let nei = "";
+                if (_list[key]["notice"].length > 20) {
+                    nei = _list[key]["notice"].substring(0, 20) + "...";
+                } else {
+                    nei = _list[key]["notice"];
+                }
+
+                let str = "<div>" +
+                    "<div class='ID' style='display: none'>" + _list[key]["id"] + "</div>" +
+                    "<div class='ti'>" + _list[key]["noticeName"] + "</div>" +
+                    "<div class='nei'>" + nei + "</div>" +
+                    "<div class='date'>发布日期:" + _list[key]["noticeDate"] + "</div>" +
+                    "</div>"
+
+                $(".details").append($(str));
             }
 
             /**添加点击事件*/
             $(".details > div").on("click", function () {
-                console.log($(this));
+
+                /**清除*/
+                $(".details > div").remove();
+
+                let ID = $(this).find(".ID").text();
+
+                let nei;
+                for (let key in _list) {
+                    if (ID == _list[key]["id"]) {
+                        nei = _list[key]["notice"];
+                    }
+                }
+
+                /**添加公告*/
+                $(this).find(".nei").html(nei);
+                $(".details").append($(this));
+
+                /**按钮*/
+                $(".fabu .historyRecord").hide();
+
+                $(".fanhui").show();
+
+                $(".delete").show();
             });
-        });
+        }
 
         /**管理员发布通知*/
         function administration() {
             $(".details > div").remove();
-            let html = "<div></div>"
-            $(".details").append($());
+            let html = "<div>" +
+                "<div style='font-size: 18px'>主题：<input class='noticeTitle' placeholder='最多16个字' maxlength='16' minlength='1'></div>" +
+                "<div style='margin-top: 10px'>内容：</div><div><textarea></textarea></div>" +
+                "</div>";
+
+            $(".details").append($(html));
+
+            $(".administration > button").attr("onclick", 'release()');
+            $(".administration").append($("<button onclick='fanhui()'>返回</button>"))
+        }
+
+        /**发布通知函数*/
+        function release() {
+            let noticeName = $(".noticeTitle").val();
+            let notice = $(".details > div > div > textarea").val();
+
+            if (notice == null || notice == "" || noticeName == null || noticeName == "") {
+                alert("通知内容不能没有");
+                return 0;
+            } else {
+                _data.noticeName = noticeName;
+                _data.notice = notice;
+            }
+            $.ajax({
+                url: 'notice/noticeAdd',
+                data: _data,
+                type: "get",
+                success: function (dex) {
+                    if (dex == "发布成功！") {
+                        alert(dex);
+                        window.location.reload();
+                    } else {
+                        alert(dex);
+                    }
+                }
+            });
+        }
+
+        /**返回点击函数*/
+        function fanhui() {
+            window.location.reload();
+        }
+
+        /**历史记录*/
+        function historyRecord() {
+            index = _list.length;
+            $(".details > div").remove();
+            initial();
+            $(".historyRecord").hide();
+            $(".fanhui").show();
+        }
+
+        /**删除记录*/
+        function del() {
+            _data.ID = $(".ID").text();
+
+            $.ajax({
+                url: 'noticeDelete',
+                data: _data,
+                success: function (dex) {
+                    if (dex == "删除成功！") {
+                        alert(dex);
+                        window.location.reload();
+                    } else {
+                        alert(dex);
+                    }
+                }
+            });
         }
     </script>
 </head>
@@ -81,7 +229,10 @@
 <div class="details">
 </div>
 <div class="administration">
-    <button onclick="administration()">发布通知</button>
+    <button class="fabu" onclick="administration()">发布通知</button>
+    <button class="historyRecord" onclick="historyRecord()">历史记录</button>
+    <button class="delete" onclick="del()" style="display: none">删除</button>
+    <button class="fanhui" onclick='fanhui()' style="display: none">返回</button>
 </div>
 </body>
 </html>

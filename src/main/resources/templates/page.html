@@ -5,18 +5,21 @@
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
     <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/layer/3.5.1/layer.js"></script>
     <script type="text/javascript" th:src="@{/js/page.js}"></script>
+
+    <script type="text/javascript">
+        /**获取数据*/
+        var personalBean = {};
+        personalBean = [(${personalBean})];
+    </script>
+
     <link type="text/css" th:href="@{/css/page.css}" rel="stylesheet"/>
     <title>社团管理系统</title>
 </head>
+
 <body bgcolor="#45E8CA">
-
-<!--/*@thymesVar id="major" type=""*/-->
-<div class="major" style="display: none" th:text="${major}"></div>
-
 <div id="kuang">
     <div id="title">学生社团信息管理系统</div>
 </div>
-
 <div class="headPortrait">
     <iframe width=0 height=0 frameborder=0 name="myiframe"></iframe>
     <!--enctype="multipart/form-data"==>提示提交数据为二进制代码-->
@@ -29,16 +32,14 @@
 
         <div class="img">
             <!--/*@thymesVar id="url" type=""*/-->
-            <img style="border-radius:50%; overflow:hidden;" width="80px" height="80px" id="myImage" th:src="${url}">
+            <img style="border-radius:50%; overflow:hidden;" width="80px" height="80px" id="myImage">
         </div>
-
     </form>
-
     <div>
-        <!--/*@thymesVar id="nickName" type=""*/-->
-        <div class="user" th:text="${nickName}">昵称:</div>
-        <!--/*@thymesVar id="number" type=""*/-->
-        <div class="quan" th:text="${number}">账号:</div>
+
+        <div class="user" >昵称:</div>
+
+        <div class="quan">账号:</div>
     </div>
 
     <iframe id="caidan" scrolling="no" src="caidan"></iframe>

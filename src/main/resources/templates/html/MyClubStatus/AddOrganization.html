@@ -124,148 +124,132 @@
     </style>
 
     <script type="text/javascript">
-        /*================添加数据===========================*/
+        var personalBean = parent.window.personalBean;
+
+        var _list;
+
+        var _data = {};
+
         $(function () {
-            let table = $(".table")[0];
+            /**获取数据*/
+            _data.index = 1;
+            $.ajax({
+                url: "AddOrganization/select",
+                data: _data,
+                type: "get",
+                async: false,
+                success: function (data) {
+                    _list = data;
+                }
+            });
 
-            /*获取到对象结果会将JSON字符串自动转换成js对象*/
-            let data = [(${data})];
-            console.log(typeof data);
-            console.log(data);
+            init();
 
+            $("input[class=inp]").val(_list["pageNum"]);
+
+            /**添加查询选项*/
+            $(".button").click(function () {
+                /**获取选项*/
+                _data.key = $(".select").val();
+                /**获取输入的值*/
+                _data.value = $(".input").val();
+
+                updateData();
+            });
+
+        });
+
+        function init() {
+            let table = $(".table > tbody");
+            table.html("")
             /*添加总页数*/
-            $(".totalNumber")[0].innerText = data["pages"];
+            $(".totalNumber").text(_list["pages"]);
 
             /*获取josn中的list中的数据*/
-            let list = data["list"]
-            console.log(list);
+            let list = _list["list"]
 
             /*创建表中的对象标签*/
             for (let i = 0; i < 6; i++) {
                 if (i < list.length) {
                     /*提取Object对象中的属性提取出*/
-                    const {
-                        associationID,
-                        associationName,
-                        associationProprieter,
-                        associationNumber,
-                        associationIntroduce
-                    } = list[i];
+                    let associationBean = list[i];
 
                     let tr = $("<tr></tr>");
-                    let td1 = $("<td></td>");
-                    let td2 = $("<td></td>");
-                    let td3 = $("<td></td>");
-                    let td4 = $("<td></td>");
-                    let td5 = $("<td></td>");
-                    let td6 = $("<td></td>");
+                    let td = [];
 
-                    td1[0].innerText = associationID;
-                    td2[0].innerText = associationName;
-                    td3[0].innerText = associationProprieter;
-                    td4[0].innerText = associationNumber;
-                    td5[0].innerText = associationIntroduce.split("-")[0];
+                    for (let j = 0; j < 6; j++) {
+                        td[j] = $("<td></td>");
+                    }
+
+                    td[0].text(associationBean["associationID"]);
+                    td[1].text(associationBean["associationName"]);
+                    td[2].text(associationBean["associationProprieter"]);
+                    td[3].text(associationBean["associationNumber"]);
+                    td[4].text(associationBean["associationIntroduce"].split("-")[0]);
                     let n = "apply" + i;
-                    td6.append($("<button onclick='Details(this)'>详情</button><button onclick='openDiv(this)'>申请</button>").attr("class", n))
+                    td[5].append($("<button onclick='Details(this)'>详情</button><button onclick='openDiv(this)'>申请</button>").attr("class", n))
 
-                    tr.append(td1);
-                    tr.append(td2);
-                    tr.append(td3);
-                    tr.append(td4);
-                    tr.append(td5);
-                    tr.append(td6);
+                    for (let j = 0; j < 6; j++) {
+                        tr.append(td[j]);
+                    }
 
-                    table.append(tr[0]);
+                    table.append(tr);
                 }
-            }
-        });
-
-        function shu(num) {
-            let select = $(".select").val();
-            let input = $(".input").val();
-
-            let va = select + ":" + input;
-            /*总页数数*/
-            let total = Number($(".totalNumber")[0].innerText);
-
-            /*输入框对象*/
-            let inp = $("input[class=inp]");
-            console.log(inp.val());
-            /*获取输入框的数字*/
-            let index = Number(inp.val());
-
-            if (num == "button1" && index > 1) {
-                inp.val(index - 1);
-                /*刷新页面更换地址==>split(index)[0]是为了分割去掉后面的查询参数*/
-                window.location.href = window.location.href.split(index)[0] + (index - 1) + "/" + va;
-            } else if (num == "button2" && index < total) {
-                inp.val(index + 1);
-                window.location.href = window.location.href.split(index)[0] + (index + 1) + "/" + va;
             }
         }
 
-        $(function () {
-            let inp = $("input[class=inp]");
-            let index = Number(inp.val());
+        function shu(num) {
+            _data.key = $(".select").val();
+            _data.value = $(".input").val();
 
-            let url = window.location.href.toString();
-            console.log(url);
-            /*分解地址获取到请求地址的页数*/
-            let dex = url.toString().substring(url.indexOf("AddOrganization") + 15, url.length).split("/")[1];
-            console.log(url.toString().substring(url.indexOf("AddOrganization") + 15, url.length));
-            if (Number(dex) <= 0) {
-                inp.val(1);
-            } else {
-                inp.val(Number(dex));
+            /*总页数数*/
+            let total = _list["pages"];
+
+            let input = $("input[class=inp]");
+
+            let index = _list["pageNum"];
+
+            if (num == "button1" && index > 1) {
+                input.val(index - 1);
+                _data.index = index - 1;
+                updateData();
+            } else if (num == "button2" && index < total) {
+                input.val(index + 1);
+                _data.index = index + 1;
+                updateData();
             }
+        }
 
-            let button = $(".button");
-
-            button.click(function () {
-                let input = $(".input").val();
-                let select = $(".select").val();
-
-                let va = select + ":" + input;
-                console.log(window.location.href.split("AddOrganization/")[0]);
-                window.location.href = window.location.href.split("AddOrganization/")[0] + "AddOrganization/" + 0 + "/" + va;
+        /**数据更新*/
+        function updateData() {
+            $.ajax({
+                url: "AddOrganization/select",
+                data: _data,
+                type: "get",
+                async: false,
+                success: function (data) {
+                    _list = data;
+                    init();
+                }
             });
-
-            /**防止查询后，刷新页面数据消失*/
-            let data = "[(${condition})]";
-            let condition = data.split(":")
-            console.log(condition.length);
-            if (condition.length == 2) {
-                $(".input").attr("value", condition[1]);
-                let name = "select>option[value=" + condition[0] + "]";
-                console.log(name);
-                $(name).attr("selected", true);
-            }
-        });
-
+        }
 
         /**提交发送函数*/
-        function apply(ID) {
-            /**获取第一行编号*/
-            let number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
-            console.log(window.location.href);
-            console.log(window.location.href.split("MyClubStatus/")[0]);
-
+        function apply() {
             if ($(".springnumbertext").val() == "") {
                 alert("个人介绍不能为空！");
                 return;
             }
-
-            let data = ID + ":" + number + ":" + $(".springnumbertext").val();
-            console.log(data);
-            console.log(typeof data);
+            _data.applyIntroduction = $(".springnumbertext").val();
+            _data.number = personalBean["number"];
             $.ajax({
-                    url: window.location.href.split("MyClubStatus/")[0] +
-                        "MyClubStatus/AddOrganization/apply/" + data,
+                    url: "AddOrganization/apply",
+                    data:_data,
                     success: function (dex) {
                         alert(dex);
                         if (dex == "申请成功！") {
                             /**地址刷新，地址替代*/
-                            window.location.replace(window.location.href.substring(0, window.location.href.indexOf("AddOrganization/")) + number);
+                            window.location.replace("/MyClubStatus/"+_data.number);
                         }
                     }
                 }
@@ -287,25 +271,20 @@
             var wid = $(window.parent.document).width();
             /**显示个人介绍框*/
             $(".springtan").show();
-            /**获取ID存入输入框内提供点击使用*/
-            let ID = $(button).closest("tr").find("td").eq(0).text();
-            $(".springID").text(ID);
+            /**将社团编号存入*/
+            _data.applyAssociation = $(button).closest("tr").find("td").eq(0).text();
 
             /**设置组件不能点击下面的操作*/
             $(".springyemain").css("width", wid);
             $(".springyemain").css("height", hei);
         }
 
-        /*确定发送事件*/
-        function appl() {
-            apply($(".springID").text());
-        }
-
         /**详情页面的展示*/
         function Details(button) {
-            let associationID = $(button).closest("tr").find("td").eq(0).text();
-            let url = window.location.href;
-            window.location.href = url.split("AddOrganization/")[0] + "AssociationApplication?associationID=" + associationID
+            _data.associationID = $(button).closest("tr").find("td").eq(0).text();
+
+            /**页面跳转*/
+            window.location.replace("AssociationApplication?associationID=" + _data.associationID);
         }
     </script>
 </head>
@@ -313,6 +292,7 @@
 <div class="springyemain"></div>
 
 <table border="1" class="table">
+    <thead>
     <tr>
         <td>
             <select class="select">
@@ -322,7 +302,7 @@
             </select>
         </td>
         <td colspan="4">
-            <input class="input" type="text"/>
+            <input class="input" type="text" maxlength="8"/>
         </td>
         <td>
             <button class="button">搜索</button>
@@ -336,6 +316,10 @@
         <td>社团宗旨</td>
         <td>操作</td>
     </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
 </table>
 <div class="Jump">
     <button class="button1" onclick="shu('button1')">上</button>
@@ -353,13 +337,13 @@
     <div class="springclose">
         <a href="javascript:void(0)" onclick="closePop()">关闭</a>
     </div>
-    <div class="springnumber">个人介绍</div>
+    <div class="springnumber">申请理由</div>
     <div>
         <textarea class="springnumbertext"></textarea>
     </div>
 
     <div class="springbutton">
-        <button class="appl" onclick="appl()">确定</button>
+        <button class="appl" onclick="apply()">确定</button>
         <button onclick="closePop()">取消</button>
     </div>
 </div>

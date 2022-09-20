@@ -1,6 +1,7 @@
 package com.example.communitymanagementsystem.service.inter;
 
 import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * \* @author: Predator
@@ -10,7 +11,7 @@ import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
  * \
  */
 public interface LoginServer {
-    PersonalBean All(String number, String password);
+    ModelAndView Validity(String number, String password);
 
-    Boolean insert(PersonalBean personalBean);
+    String insert(PersonalBean personalBean);
 }

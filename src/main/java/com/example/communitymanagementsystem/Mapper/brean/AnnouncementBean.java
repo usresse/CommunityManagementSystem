@@ -20,17 +20,13 @@ import java.util.Date;
 @Component
 public class AnnouncementBean {
     /**
+     * 公告ID
+     */
+    private Integer id;
+    /**
      * 社团ID
      */
     private String announcementID;
-    /**
-     * 社团名字
-     */
-    private String associationName;
-    /**
-     * 社长名字
-     */
-    private String associationProprieter;
     /**
      * 公告内容
      */

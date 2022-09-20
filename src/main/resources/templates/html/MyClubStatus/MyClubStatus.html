@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <title>MyClubStatus</title>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-    <style type="text/css">
+    <style>
         div {
             text-align: center;
             margin-top: 20%;
@@ -26,77 +26,83 @@
         }
     </style>
     <script type="text/javascript">
+        var personalBean = parent.window.personalBean;
+
+        /**信息对象*/
+        var _ApplyInformationBean = {};
+
+        /**社团对象*/
+        var _AssociationBean = {};
+
+        var _data = {}
+
         $(function () {
             /**操作显示哪一个*/
             let nul = $(".nul");
             let table = $(".table");
             let a = $(".a");
 
-            let data = "[(${data})]";
+            _data.number = personalBean["number"];
 
-            console.log(data);
-            console.log(typeof data);
+            $.ajax({
+                url: "MyClubStatusSelect/ApplyInformationBean",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    _ApplyInformationBean = data;
+                    _data.applyAssociation = data.applyAssociation;
+                }
+            });
 
-            if (data != null && data != "") {
-                data = data.substring(1, data.length - 1);
-                console.log(data);
-                let arry = data.split(",");
+            $.ajax({
+                url: "MyClubStatusSelect/AssociationBean",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    _AssociationBean = data;
+                }
+            });
 
-                console.log(arry);
 
+            if ($.isEmptyObject(_ApplyInformationBean)) {
+                table.hide();
+            } else {
                 /**隐藏添加标签*/
                 nul.hide();
                 a.hide();
 
-                if (arry.length == 5) {
-                    /**向信息表中添加数据*/
-                    $(".ApplyInformationNumber")[0].innerText = arry[0].split("=")[1];
-                    $(".associationName")[0].innerText = arry[1].split("=")[1];
-                    if(Number(arry[2].split("=")[1]) == 1){
-                        $(".result")[0].innerText = "通过";
-                    }else {
-                        $(".result")[0].innerText = "不通过";
-                    }
-                    $(".associationProprieter")[0].innerText = arry[3].split("=")[1];
-                    $(".applyAssociation")[0].innerText = arry[4].split("=")[1];
+                /**向信息表中添加数据*/
+                $(".applyAssociation").text(_AssociationBean.associationID);
+                $(".associationName").text(_AssociationBean.associationName);
+                $(".associationProprieter").text(_AssociationBean.associationName)
 
-                    $(".resultText")[0].innerText = "结果";
-                    /**显示标签操作*/
-                    a.show();
+                if (_ApplyInformationBean.applyResult == 1) {
+
+                } else if (_ApplyInformationBean.applyResult == 0) {
                     $(".button").hide();
-                    $(".result").show();
+                    a.show();
+                    $(".result").text("不通过");
                 } else {
-                    /**向信息表中添加数据*/
-                    $(".ApplyInformationNumber")[0].innerText = arry[0].split("=")[1];
-                    $(".applyAssociation")[0].innerText = arry[3].split("=")[1];
-                    $(".associationName")[0].innerText = arry[1].split("=")[1];
-                    $(".associationProprieter")[0].innerText = arry[2].split("=")[1];
-                    $(".result").hide();
+                    $(".resultText").text("操作");
                 }
-            } else {
-                table.hide();
-            }
 
+            }
 
         });
 
         function del() {
-            let ApplyInformationNumber = $(".ApplyInformationNumber")[0].innerText;
-            var data = {};
-            data.ApplyInformationNumber = ApplyInformationNumber;
-
-            console.log(window.location.href);
+            _data.ApplyInformationNumber = _ApplyInformationBean.number;
             $.ajax({
                 url: "DeleteApplyInformation",
-                data: data,
+                data: _data,
                 success: function (dex) {
                     if (dex == "撤销成功！") {
-                        /**刷新本界面*/
-                        window.location.reload();
+                        $(".table").hide();
+                        $(".nul").show();
+                        $(".a").show();
                     } else {
                         alert(dex);
                     }
-
                 }
             });
         }
@@ -109,15 +115,12 @@
         <h3>我还没有参加任何社团</h3>
     </div>
 
-    <!--/*@thymesVar id="data" type=""*/-->
-    <div style="display: none" class="ApplyInformationNumber"></div>
-
     <table class="table" border="1" align="center">
         <tr>
             <td>申请社团ID</td>
             <td>社团名称</td>
             <td>社团社长</td>
-            <td class="resultText">操作</td>
+            <td class="resultText">结果</td>
         </tr>
         <tr>
             <td>
@@ -135,7 +138,7 @@
             </td>
         </tr>
     </table>
-    <a class="a" href="AddOrganization/1/null">添加社团</a>
+    <a class="a" href="AddOrganization">添加社团</a>
 </div>
 
 </body>

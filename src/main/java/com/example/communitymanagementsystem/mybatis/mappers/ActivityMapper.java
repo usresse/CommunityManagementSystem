@@ -16,24 +16,36 @@ import java.util.Map;
  */
 @Mapper
 public interface ActivityMapper {
-    /**
-     * @author Predator
-     * @date 2022-7-7 16:16
-     * @param ：
-     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.ActivityBrean>
-     * Description:查询活动管理
-     */
-    List<ActivityBrean> activity(String[] data);
 
     /**
      * @author Predator
-     * @date 2022-7-14 18:22
+     * @date 2022-9-7 17:18
+     * @param ： hostAssociactionID
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.ActivityBrean>
+     * Description:查询某一个社团的活动信息
+     */
+    List<ActivityBrean> selectActivityNO();
+
+    /**
+     * @author Predator
+     * @date 2022-9-7 17:18
+     * @param ： hostAssociactionID
+     * @param ： key
+     * @param ： value
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.ActivityBrean>
+     * Description:根据条件查询某一个社团的活动
+     */
+    List<ActivityBrean> selectActivityCondition(String key,String value);
+
+    /**
+     * @author Predator
+     * @date 2022-9-2 21:28
      * @param ： number
      * @param ： data
      * @return java.lang.Integer
      * Description:社团申请活动
      */
-    Integer ActivityRequest(Integer number, Map<String, Object> data);
+    Integer ActivityRequest(ActivityBrean activityBrean);
 
     /**
      * @author Predator
@@ -42,7 +54,7 @@ public interface ActivityMapper {
      * @return java.lang.String
      * Description:查询personal表的活动id字符串
      */
-    String select(String number);
+    String activityStringID(String number);
 
     /**
      * @author Predator
@@ -84,15 +96,6 @@ public interface ActivityMapper {
 
     /**
      * @author Predator
-     * @date 2022-7-17 15:28
-     * @param ： number
-     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
-     * Description:社团申请活动历史记录
-     */
-    List<Map<String, Object>> selectActivity(String number,String[] data);
-
-    /**
-     * @author Predator
      * @date 2022-7-17 15:53
      * @param ： id
      * @return int
@@ -100,14 +103,6 @@ public interface ActivityMapper {
      */
     int delete(Integer ID);
 
-    /**
-     * @author Predator
-     * @date 2022-7-20 18:52
-     * @param ： number
-     * @return java.lang.String
-     * Description:查询社团编号，是否加入社团，加入社团后才能申请活动
-     */
-    String selectassociationNumber(String number);
 
     /**
      * @author Predator
@@ -116,7 +111,29 @@ public interface ActivityMapper {
      * @return java.lang.String
      * Description:查询活动的状态
      */
-    String ActivityHistorySelect(Integer id);
+    String ActivityHistoryDel(Integer id);
+
+    /**
+     * @param hostAssociactionID
+     * @title ActivityHistorySelect
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.ActivityBrean>
+     * Description:社团活动历史无条件数据获取
+     * @author Predator
+     * @date 2022-9-15 17:40
+     */
+    List<ActivityBrean> activityHistorySelectNo(String hostAssociactionID);
+
+    /**
+     * @param hostAssociactionID
+     * @param key
+     * @param value
+     * @title ActivityHistorySelectCondition
+     * @return java.lang.Object
+     * Description:社团活动历史有条件数据获取
+     * @author Predator
+     * @date 2022-9-15 17:48
+     */
+    List<ActivityBrean> activityHistorySelectCondition(String hostAssociactionID, String key, String value);
 
     /**
      * @author Predator

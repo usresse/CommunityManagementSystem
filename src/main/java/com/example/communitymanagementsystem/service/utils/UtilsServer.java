@@ -1,7 +1,9 @@
 package com.example.communitymanagementsystem.service.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -81,5 +83,16 @@ public class UtilsServer {
             result += "-" + list.get(i);
         }
         return result;
+    }
+
+    /**
+     * @author Predator
+     * @date 2022-9-3 14:51
+     * @param ： date
+     * @return java.lang.String
+     * Description:将日期转化成字符串
+     */
+    public static String DateOfString(Date date){
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }
 }

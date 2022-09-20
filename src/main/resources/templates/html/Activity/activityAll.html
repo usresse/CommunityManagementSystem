@@ -21,86 +21,96 @@
     </style>
 
     <script type="text/javascript" th:inline="javascript">
-        var number = $(window.parent.document.getElementsByClassName("quan")[0]).text();
+        var personalBean = parent.window.personalBean;
+
+        var number = personalBean["number"];
+
+        var list;
+
+        var _data = {}
 
         /*================添加数据===========================*/
         $(function () {
-            let table = $(".table")[0];
+            /**获取数据*/
+            _data.number = number;
 
-            /*获取到对象结果会将JSON字符串自动转换成js对象*/
-            let data = [[${data}]];
-            console.log(data);
+            $.ajax({
+                url: "/activityAll/select",
+                data: _data,
+                type: "get",
+                async: false,
+                success: function (data) {
+                    list = data;
+                }
+            });
 
-            /*获取josn中的list中的数据*/
-            let list = data
-            console.log(list);
+            init();
+        });
+
+        /**内容的插入*/
+        function init() {
+            /**获取表格中的tbody*/
+            let table = $(".table > tbody");
+            /**清空表格中的数据*/
+            table.html("");
 
             /*创建表中的对象标签*/
             for (let i = 0; i < 6; i++) {
                 if (i < list.length) {
-                    /*提取Object对象中的属性提取出*/
-                    const {
-                        id,
-                        title,
-                        releaseDate,
-                        place,
-                        startDate,
-                        endDate,
-                        numberOfPeople,
-                        state,
-                        remark,
-                        associationName
-                    } = list[i];
+                    let activity = list[i];
 
                     let tr = $("<tr></tr>");
+                    let td = [];
 
-                    let td1 = $("<td></td>");
-                    let td2 = $("<td></td>");
-                    let td3 = $("<td></td>");
-                    let td4 = $("<td></td>");
-                    let td5 = $("<td></td>");
-                    let td6 = $("<td></td>");
-                    let td7 = $("<td></td>");
-                    let td8 = $("<td></td>");
-                    let td9 = $("<td></td>");
-                    let td10 = $("<td><button onclick='signOut(this)'>退出</button></td>");
-
-                    let div = $("<div></div>").attr("style", "display: none;").text(id)
-                    td1[0].innerText = title;
-                    td2[0].innerText = associationName;
-                    td3[0].innerText = dateFormat(new Date(releaseDate), 'yyyy-MM-dd');
-                    td4[0].innerText = place;
-                    td5[0].innerText = dateFormat(new Date(startDate), 'yyyy-MM-dd');
-                    if (endDate == null) {
-                        td6[0].innerText = "null";
-                    } else {
-                        td6[0].innerText = dateFormat(new Date(endDate), 'yyyy-MM-dd');
+                    /**创建标签*/
+                    for (let j = 0; j < 10; j++) {
+                        td[j] = $("<td></td>");
                     }
-                    td7[0].innerText = numberOfPeople;
-                    td8[0].innerText = state;
-                    td9[0].innerText = remark;
+
+                    let div = $("<div></div>").attr("style", "display: none;").text(activity["id"])
+                    td[0].text(activity["title"]);
+
+                    _data.associationNumber = activity["hostAssociactionID"];
+                    $.ajax({
+                        url: "/associationNumber",
+                        data: _data,
+                        type: "get",
+                        success: function (data) {
+                            td[1].text(data);
+                        }
+                    });
+
+                    td[2].text(dateFormat(new Date(activity["releaseDate"]), 'yyyy-MM-dd'));
+                    td[3].text(activity["place"]);
+                    td[4].text(dateFormat(new Date(activity["startDate"]), 'yyyy-MM-dd'));
+                    if (activity["endDate"] == null) {
+                        td[5].text("null");
+                    } else {
+                        td[5].text(dateFormat(new Date(activity["endDate"]), 'yyyy-MM-dd'));
+                    }
+                    td[6].text(activity["numberOfPeople"]);
+                    td[7].text(activity["state"]);
+                    td[8].text(activity["remark"]);
+
+                    td[9] = $("<td><button onclick='signOut(this)'>退出</button></td>");
+
+                    /**添加*/
+                    for (let j = 0; j < 10; j++) {
+                        tr.append(td[j]);
+                    }
 
                     tr.append(div);
-                    tr.append(td1);
-                    tr.append(td2);
-                    tr.append(td3);
-                    tr.append(td4);
-                    tr.append(td5);
-                    tr.append(td6);
-                    tr.append(td7);
-                    tr.append(td8);
-                    tr.append(td9);
-                    tr.append(td10);
-
-                    table.append(tr[0]);
+                    table.append(tr);
                 }
             }
-        });
+        }
 
         function signOut(button) {
-            let ID = $(button).closest("tr").find("div").eq(0).text();
+            _data.ID = $(button).closest("tr").find("div").eq(0).text();
             $.ajax({
-                url: number + "/" + ID,
+                url: "/activityAllSignOut",
+                data:_data,
+                type:"post",
                 success: function (dex) {
                     alert(dex);
                     window.location.reload();
@@ -111,6 +121,7 @@
 </head>
 <body>
 <table class="table" border="1">
+    <thead>
     <tr>
         <td>标题</td>
         <td>主办社团</td>
@@ -123,6 +134,11 @@
         <td>备注</td>
         <td>操作</td>
     </tr>
+    </thead>
+
+    <tbody>
+
+    </tbody>
 </table>
 </body>
 </html>

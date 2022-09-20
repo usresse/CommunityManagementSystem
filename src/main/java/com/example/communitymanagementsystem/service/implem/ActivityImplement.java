@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,17 +28,21 @@ public class ActivityImplement implements ActivityServer {
     private ActivityMapper activityMapper;
 
     /**
-     * @param ：
+     * @param ： index
      * @return com.github.pagehelper.PageInfo
-     * Description:学校社团活动查询类
+     * Description:
      * @author Predator
-     * @date 2022-7-7 15:43
+     * @date 2022-9-6 16:09
      */
     @Override
-    public PageInfo activity(Integer index, String[] data) {
+    public PageInfo selectActivity(Integer index, String key, String value) {
         PageHelper.startPage(index, 6);
-        List<ActivityBrean> list = activityMapper.activity(data);
-
+        List<ActivityBrean> list = null;
+        if (value == null || "".equals(value)) {
+            list = activityMapper.selectActivityNO();
+        } else {
+            list = activityMapper.selectActivityCondition(key, value);
+        }
         PageInfo pageInfo = new PageInfo<>(list, 50);
         return pageInfo;
     }
@@ -47,29 +50,20 @@ public class ActivityImplement implements ActivityServer {
     /**
      * @param ： number
      * @param ： id
-     * @return boolean
+     * @return java.lang.String
      * Description:申请活动操作===>活动ID格式 id-id-id的字符串
      * @author Predator
-     * @date 2022-7-16 10:10
+     * @date 2022-9-2 21:26
      */
     @Override
-    public String updata(String number, Integer id) {
-
-        /**用户判断是否加入社团*/
-        String associationNumber = activityMapper.selectassociationNumber(number);
-
-        if (associationNumber == null || associationNumber.equals("")) {
-            return "用户请先加入社团后再申请！";
-        }
-
+    public String activityAdd(String number, Integer id) {
         /**社团活动查询人数满了不做后续记录*/
         boolean reuse = activityMapper.selectPeople(id);
-        System.out.println(reuse);
         if (reuse) {
             return "申请活动人数已满！";
         }
 
-        String data = activityMapper.select(number);
+        String data = activityMapper.activityStringID(number);
         int index = -1;
         /**判断是否需要添加*/
         Integer result = 0;
@@ -104,14 +98,31 @@ public class ActivityImplement implements ActivityServer {
 
     /**
      * @param ： number
-     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
-     * Description:查询用户参加的几个活动
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.ActivityBrean>
+     * Description:查询用户是否参加活动
      * @author Predator
-     * @date 2022-7-16 12:27
+     * @date 2022-9-2 21:32
      */
     @Override
-    public List<ActivityBrean> activityAll(String number) {
-        String activityStringID = activityMapper.select(number);
+    public Boolean activityAll(String number) {
+        String activityStringID = activityMapper.activityStringID(number);
+        /**判断没加入社团时显示*/
+        if (activityStringID != null && activityStringID != "" && activityStringID.length() != 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param ： number
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.ActivityBrean>
+     * Description:获取用户参加的几个活动数据
+     * @author Predator
+     * @date 2022-9-7 21:04
+     */
+    @Override
+    public List<ActivityBrean> activityAllSelect(String number) {
+        String activityStringID = activityMapper.activityStringID(number);
         List<ActivityBrean> list = new ArrayList<>();
         /**判断没加入社团时显示*/
         if (activityStringID != null && activityStringID != "" && activityStringID.length() != 0) {
@@ -123,7 +134,6 @@ public class ActivityImplement implements ActivityServer {
             }
             return list;
         }
-
         return list;
     }
 
@@ -133,12 +143,12 @@ public class ActivityImplement implements ActivityServer {
      * @return java.lang.String
      * Description:做用户退出活动申请操作
      * @author Predator
-     * @date 2022-7-16 12:50
+     * @date 2022-9-2 21:32
      */
     @Override
     public String activitysignOut(String number, Integer id) {
 
-        String data = activityMapper.select(number);
+        String data = activityMapper.activityStringID(number);
         String[] str = data.split("-");
         System.out.println(data);
 
@@ -163,50 +173,51 @@ public class ActivityImplement implements ActivityServer {
      * @return java.lang.Boolean
      * Description:活动的发布请求
      * @author Predator
-     * @date 2022-7-14 18:16
+     * @date 2022-9-2 21:32
      */
     @Override
-    public Boolean ActivityRequest(Integer number, Map<String, Object> data) {
-        Integer result = activityMapper.ActivityRequest(number, data);
+    public String ActivityRequest(ActivityBrean activityBrean) {
+
+        Integer result = activityMapper.ActivityRequest(activityBrean);
         if (result > 0) {
-            return true;
+            return "成功！";
         }
-        return false;
+        return "失败！";
     }
 
     /**
-     * @param ： number
+     * @param index
+     * @param hostAssociactionID
      * @return com.github.pagehelper.PageInfo
-     * Description:
+     * Description:社团活动历史数据获取
+     * @title ActivityHistorySelect
      * @author Predator
-     * @date 2022-7-17 15:23
+     * @date 2022-9-15 17:37
      */
     @Override
-    public PageInfo ActivityHistory(Integer index, String number,String[] data) {
+    public PageInfo ActivityHistorySelect(Integer index, String hostAssociactionID, String key, String value) {
         PageHelper.startPage(index, 6);
-
-        List<Map<String, Object>> list = activityMapper.selectActivity(number,data);
-        PageInfo pageInfo = new PageInfo<>(list, 50);
-
-
-        return pageInfo;
+        if (value == null || "".equals(value)) {
+            return new PageInfo<>(activityMapper.activityHistorySelectNo(hostAssociactionID), 50);
+        }else {
+            return new PageInfo<>(activityMapper.activityHistorySelectCondition(hostAssociactionID,key,value.trim()), 50);
+        }
     }
 
     /**
-     * @param ： id
+     * @param ： ID
      * @return java.lang.String
      * Description:删除活动申请的历史记录
      * @author Predator
-     * @date 2022-7-17 15:53
+     * @date 2022-9-2 21:33
      */
     @Override
     public String ActivityHistoryDel(Integer ID) {
         int result = activityMapper.delete(ID);
-        /**查询删除原因*/
 
-        String resu = activityMapper.ActivityHistorySelect(ID);
+        String resu = activityMapper.ActivityHistoryDel(ID);
 
-        if("正在进行".equals(resu)){
+        if ("正在进行".equals(resu)) {
             return resu;
         }
 
@@ -215,17 +226,5 @@ public class ActivityImplement implements ActivityServer {
         }
 
         return "删除失败";
-    }
-
-    /**
-     * @author Predator
-     * @date 2022-8-8 15:10
-     * @param ：
-     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean>
-     * Description:社团公告
-     */
-    @Override
-    public List<AnnouncementBean> announcement() {
-        return activityMapper.announcement();
     }
 }

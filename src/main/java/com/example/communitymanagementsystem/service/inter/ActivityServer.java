@@ -16,19 +16,19 @@ import java.util.Map;
  */
 public interface ActivityServer {
 
-    PageInfo activity(Integer index,String[] data);
+    PageInfo selectActivity(Integer index,String key, String value);
 
-    Boolean ActivityRequest(Integer number, Map<String, Object> data);
+    String activityAdd(String number, Integer id);
 
-    String updata(String number, Integer id);
+    String ActivityRequest(ActivityBrean activityBrean);
 
-    List<ActivityBrean> activityAll(String number);
+    Boolean activityAll(String number);
+
+    List<ActivityBrean> activityAllSelect(String number);
 
     String activitysignOut(String number, Integer id);
 
-    PageInfo ActivityHistory(Integer index,String number,String[] data);
+    PageInfo ActivityHistorySelect(Integer index, String hostAssociactionID,String key,String value);
 
     String ActivityHistoryDel(Integer ID);
-
-    List<AnnouncementBean> announcement();
 }

@@ -13,13 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class JumpController {
 
-    /********几个内页面的显示**********************************************/
-
-    @RequestMapping("MyClubStatus/CommunityPersonnelManagement")
-    public String first2() {
-       return "html/CommunityPersonnelManagement";
-    }
-
     @RequestMapping("MyClubStatus/2")
     public String firs2() {
         return "html/2";

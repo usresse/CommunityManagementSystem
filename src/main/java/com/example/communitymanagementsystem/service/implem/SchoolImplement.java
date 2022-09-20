@@ -1,5 +1,6 @@
 package com.example.communitymanagementsystem.service.implem;
 
+import com.example.communitymanagementsystem.Mapper.brean.SchoolMajorBean;
 import com.example.communitymanagementsystem.mybatis.mappers.SchoolMapper;
 import com.example.communitymanagementsystem.service.inter.SchoolServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +22,33 @@ public class SchoolImplement implements SchoolServer {
     @Autowired
     private SchoolMapper schoolMapper;
 
+    /**
+     * @author Predator
+     * @date 2022-9-2 19:21
+     * @param ： map
+     * @return java.lang.Boolean
+     * Description:
+     */
     @Override
     public Boolean login(Map<String, Object> map) {
         Map<String, Object> result = schoolMapper.login(map.get("number"));
-
-        //for(String key :result.keySet()){
-        //    System.out.println(key +"=="+result.get(key));
-        //}
-
 
         if (result != null && result.get("Password").equals(map.get("password"))) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @author Predator
+     * @date 2022-9-2 19:21
+     * @param ：
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * Description:设置页面中查询专业
+     */
+    @Override
+    public List<SchoolMajorBean> selectschoolMajor() {
+        return schoolMapper.selectAll();
     }
 
     /**

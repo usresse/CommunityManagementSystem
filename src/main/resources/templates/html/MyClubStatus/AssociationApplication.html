@@ -103,13 +103,13 @@
             text-decoration: none;
             color: #ffffff;
             position: relative;
-            left: 120px;
+            left: 240px;
             top: 2px
         }
 
         .springnumber {
             position: relative;
-            left: 0px;
+            left: 120px;
             top: -27px;
             display: inline-block;
             color: #ffffff;
@@ -140,38 +140,59 @@
             top: 100px;
             left: 100px;
         }
+
     </style>
     <script type="text/javascript">
-        /**数据模块js*/
+        var _personalBean = parent.window.personalBean;
+
+        var _AssociationBean = {};
+
+        var _data = {};
+
         $(function () {
-            var data = "[[${data}]]";
-            let association = data.substring(1, data.length - 1).split(", ");
-            for (let i = 0; i < association.length; i++) {
-                let ass = association[i].split("=");
-
-                /**添加介绍：宗旨，介绍，特色活动的内容*/
-                if (ass[0] == "associationIntroduce") {
-                    let className = [".purpose", ".introduction", ".featured"]
-                    for (let j = 0; j < ass[1].split("-").length; j++) {
-                        $(className[j]).append($("<text>" + ass[1].split("-")[j] + "</text>"));
-                    }
+            /**获取社团编号*/
+            _data.associationID = location.href.split("?")[1].split("=")[1].trim();
+            $.ajax({
+                url: "AssociationApplicationSelect",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    _AssociationBean = data;
                 }
-
-                /**图片处理*/
-                if (ass[0] == "associationBlob") {
-                    let divImg = $(".display");
-                    for (let j = 0; j < ass[1].split("-").length; j++) {
-                        let string = "<div class='img-slide'><img src='/img/association/" + $(".associationID").text() + "/" + ass[1].split("-")[j] + "'alt='"+ass[1].split("-")[j]+ "'></div>";
-                        divImg.append($(string));
-                    }
-
-                    /**添加效果js函数*/
-                    effect();
-                }
-            }
-
+            });
+            /**数据初始化*/
+            init()
+            /**添加效果js函数*/
+            effect();
 
         });
+
+        function init() {
+
+            $(".associationID").text(_AssociationBean["associationID"]);
+            $(".associationName").text(_AssociationBean["associationName"]);
+            $(".associationProprieter").text(_AssociationBean["associationProprieter"]);
+
+
+            /**添加介绍：宗旨，介绍，特色活动的内容*/
+            let className = [".purpose > text", ".introduction > text", ".featured > text"]
+            let Introduce = _AssociationBean["associationIntroduce"].split("-");
+            for (let j = 0; j < className.length; j++) {
+                $(className[j]).text("");
+                $(className[j]).text(Introduce[j]);
+            }
+            let divImg = $(".display");
+
+            divImg.html("");
+
+            let Bold = typeof (_AssociationBean["associationBlob"]) == "object" ? "" : _AssociationBean["associationBlob"].split("-")
+            for (let j = 0; j < Bold.length; j++) {
+                let string = "<div class='img-slide'>" +
+                    "<img src='/img/association/" + _AssociationBean["associationID"] + "/" + Bold[j] + "'alt='" + Bold[j] + "'>" +
+                    "</div>";
+                divImg.append($(string));
+            }
+        }
 
         /**效果模块js*/
         function effect() {
@@ -191,51 +212,55 @@
             let display = $(".display");
             let displayImg = $(".display > .img-slide");
             // prepend
-            displayImg.eq(displayImg.length-1).animate({
+            displayImg.eq(displayImg.length - 1).animate({
                 width: "0px"
             }, 1000, function () {
-                display.prepend(displayImg.eq(displayImg.length-1));
-                displayImg.eq(displayImg.length-1).attr("style", "width: 300px;");
+                display.prepend(displayImg.eq(displayImg.length - 1));
+                displayImg.eq(displayImg.length - 1).attr("style", "width: 300px;");
             });
         }
 
         /**社团详情的移动*/
         function moveAssociation(direction) {
-            let associationID = $(".associationID").text();
-            let url = window.location.href;
+            _data.associationID = _AssociationBean["associationID"];
 
             if (direction > 0) {
-                associationID = "1:" + associationID
+                _data.index = 1;
             } else {
-                associationID = "0:" + associationID
+                _data.index = 0;
             }
-            if (url.indexOf("move") > 0) {
-                window.location.href = url.split("?")[0] + "?associationID=" + associationID;
-            } else {
-                window.location.href = url.split("?")[0] + "/move?associationID=" + associationID;
-            }
+
+            $.ajax({
+                url: "AssociationApplicationMove",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    if (data.length != 0) {
+                        _AssociationBean = data;
+                        init();
+                    }
+                }
+            })
         }
 
         /**提交发送函数*/
         function apply(ID) {
-            /**获取第一行编号*/
-            let number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
-
             if ($(".springnumbertext").val() == "") {
                 alert("个人介绍不能为空！");
                 return;
             }
-            console.log(window.location.href);
-            let data = ID + ":" + number + ":" + $(".springnumbertext").val();
-            console.log(data);
+            _data.number = _personalBean["number"];
+            _data.applyIntroduction = $(".springnumbertext").val();
+            _data.applyAssociation = _AssociationBean["associationID"];
+
             $.ajax({
-                    url: window.location.href.split("MyClubStatus/")[0] +
-                        "MyClubStatus/AddOrganization/apply/" + data,
+                    url: "AddOrganization/apply",
+                    data: _data,
                     success: function (dex) {
                         alert(dex);
                         if (dex == "申请成功！") {
                             /**地址刷新，地址替代*/
-                            window.location.replace(window.location.href.substring(0, window.location.href.indexOf("AddOrganization/")) + number);
+                            history.go(-1);
                         }
                     }
                 }
@@ -265,8 +290,8 @@
         }
 
         /**页面返回*/
-        function ReturnDIV(){
-            window.location.href = window.location.href.split("AssociationApplication")[0] +"AddOrganization/1/null";
+        function ReturnDIV() {
+            window.location.replace("AddOrganization");
         }
     </script>
 </head>
@@ -280,24 +305,27 @@
 
     <div class="Title">
         <div class="title">
-            <!--/*@thymesVar id="data" type=""*/-->
-            <div style="display: none" class="associationID" th:text="${data.associationID}"></div>
-            <!--/*@thymesVar id="data" type=""*/-->
-            <text th:text="${data.associationName}"></text>
+            <div style="display: none" class="associationID"></div>
+            <text class="associationName"></text>
         </div>
         <div class="name">社长:
-            <!--/*@thymesVar id="data" type=""*/-->
-            <text th:text="${data.associationProprieter}"></text>
+            <text class="associationProprieter"></text>
         </div>
     </div>
 
     <div class="neirong">
 
-        <div class="purpose">宗旨：</div>
+        <div class="purpose">宗旨：
+            <text></text>
+        </div>
         <br>
-        <div class="introduction">简介：</div>
+        <div class="introduction">简介：
+            <text></text>
+        </div>
         <br>
-        <div class="featured ">特色活动：</div>
+        <div class="featured ">特色活动：
+            <text></text>
+        </div>
 
         <div class="bu">
             <button onclick="openDiv()">申请</button>
@@ -319,6 +347,7 @@
     <div class="springclose">
         <a href="javascript:void(0)" onclick="closePop()">关闭</a>
     </div>
+
     <div class="springnumber">申请理由</div>
     <div>
         <textarea class="springnumbertext"></textarea>

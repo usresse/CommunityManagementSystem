@@ -41,50 +41,76 @@
 
     </style>
     <script type="text/javascript" th:inline="javascript">
+
         /**社团编号*/
-        var associationID = [[${associationID}]];
-        /**每页展示的数据条数*/
-        let pageindex = 6;
-        /**获取数据*/
-        let data = [[${data}]];
-        /**获取数据的条数*/
-        let index = data.length;
-        /**获取数据的页数*/
-        let pagenumber = Math.ceil(index / pageindex);
+        var associationID = parent.window.personalBean["associationNumber"];
 
-        function localresh() {
-            $(".tab tr").eq(1).nextAll().remove();
-            $(".pagenumber").text("总页数：" + pagenumber);
+        var _list = {};
 
-            let page = $(".page > input").val();
+        var _data = {};
 
-            for (let i = 0; i < pageindex; i++) {
-                let index = (Number(page)-1) * pageindex + i;
-                let tr = $("<tr></tr>").append($("<td>" + data[index].number + "</td>")).append($("<td>" + data[index].Name + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
-                $(".tab").append(tr);
+        $(function () {
+            _data.index = 1;
+            _data.associationNumber = associationID;
+
+            $.ajax({
+                url: "/MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect",
+                data: _data,
+                type: "get",
+                async: false,
+                success: function (data) {
+                    _list = data;
+                }
+            });
+
+            console.log(_list);
+            init();
+        });
+
+
+        function init() {
+
+            $(".tab > tbody").html("")
+
+            $(".pagenumber").text("总页数：" + _list["pages"]);
+            $(".page > input").val(_list["pageNum"]);
+
+            for (let i = 0; i < _list["size"]; i++) {
+                let data = _list["list"][i];
+                let tr = $("<tr></tr>").append($("<td>" + data["number"] + "</td>")).append($("<td>" + data["name"] + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
+                $(".tab > tbody").append(tr);
             }
         }
 
-        /**页面加载的初始数据*/
-        $(function () {
-            $(".pagenumber").text("总页数：" + pagenumber);
-            $(".page > input").val(1);
-            for (let i = 0; i < pageindex; i++) {
-                let tr = $("<tr></tr>").append($("<td>" + data[i].number + "</td>")).append($("<td>" + data[i].Name + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
-                $(".tab").append(tr);
-            }
-        });
+        /**数据更新*/
+        function updateData(){
+            $.ajax({
+                url: "/MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect",
+                data: _data,
+                type: "get",
+                async: false,
+                success: function (data) {
+                    _list = data;
+                    init();
+                }
+            });
+        }
+
+        /**查询指定条件的社团人*/
+        function select() {
+           _data.key = $(".select").val();
+           _data.value = $(".data").val();
+           updateData();
+        }
 
         /**进行社长移交操作*/
         function Handover(button) {
-            let number = $(button).closest("tr").find("td").eq(0).text();
-            let data = {};
-            data.number = number;
-            data.associationID = associationID;
+            _data.number = $(button).closest("tr").find("td").eq(0).text();;
+            _data.associationID = associationID;
 
             $.ajax({
-                url: window.location.href.split(associationID)[0] + "update",
-                data: data,
+                url: "Handover/update",
+                data: _data,
                 success: function (dex) {
                     if (dex == "成功！") {
                         alert("移交成功！");
@@ -96,53 +122,37 @@
             });
         }
 
-        /**查询指定条件的社团人*/
-        function select() {
-            let data = {};
-            data.select = associationID + ":" + $(".select").val() + ":" + $(".data").val();
-            $.ajax({
-                url: window.location.href.split(associationID)[0] + "select",
-                data: data,
-                success: function (dex) {
-                    if (dex == "查询没有结果！") {
-                        alert("没有该账号！")
-                    } else if (dex == "查询全部！") {
-                        window.location.reload();
-                    } else {
-                        let result = dex.split(":");
-                        $(".tab tr").eq(1).nextAll().remove();
-
-                        let tr = $("<tr></tr>").append($("<td>" + result[0] + "</td>")).append($("<td>" + result[1] + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
-                        $(".tab").append(tr);
-                    }
-                }
-            });
-        }
-
+        /**上下页按钮*/
         function page(condition) {
-            let pag = $(".page > input").val();
+            let pag = _list["pageNum"];
+            let input = $(".page > input");
+
             if (condition == "left" && pag > 1) {
-                $(".page > input").val(Number(pag) - 1);
-                localresh();
-            } else if (condition == "right" && pag < pagenumber) {
-                $(".page > input").val(Number(pag) + 1);
-                localresh();
+                input.val(pag - 1);
+                _data.index = pag - 1;
+                updateData()
+            } else if (condition == "right" && pag < _list["pages"]) {
+                input.val(Number(pag) + 1);
+                _data.index = pag + 1;
+                updateData()
             }
         }
+
 
         /**input页面标签的数量样式*/
         function pageinput(input) {
             let value = $(input).val();
             if (value < 1) {
                 $(input).val(1);
-            } else if (value > pagenumber) {
-                $(input).val(pagenumber);
+            } else if (value > _list["pages"]) {
+                $(input).val(_list["pages"]);
             }
         }
     </script>
 </head>
 <body>
 <table class="tab" border="1px">
+    <thead>
     <tr>
         <td>
             <select class="select">
@@ -160,6 +170,10 @@
         <td>姓名</td>
         <td>操作</td>
     </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
 </table>
 
 <button class="left" onclick="page('left')"> <</button>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <title>ToExamine</title>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-    <style type="text/css">
+    <style>
         tr {
             height: 50px;
         }
@@ -18,82 +18,74 @@
         }
     </style>
     <script type="text/javascript">
+        var personalBean = parent.window.personalBean;
 
-        function judge(button, param) {
-            /**获取被点击的按钮同行的第一个数据*/
-            let number = $(button).closest("tr").find("div").eq(0).text();
-            let applyAssociation = $(".applyAssociation")[0].innerText;
-            console.log(applyAssociation);
+        var _data = {};
 
-            /**创建数据对象*/
-            let data = {};
-            data.applyAssociation = applyAssociation;
-            data.number = number;
-
-            console.log(window.location.href.split("ToExamine/")[0]);
-            let url = window.location.href.split("ToExamine/")[0] + "ToExamine/" + "judge/" + param;
-
-            $.ajax({
-                url: url,
-                data: data,
-                success: function (dex) {
-                    if (dex == "操作成功！") {
-                        window.location.reload();
-                    }
-                }
-            })
-        }
-
+        var _list;
 
         $(function () {
-            let data = [(${data})];
-            console.log(data);
+            _data.associationNumber = personalBean["associationNumber"];
+            $.ajax({
+                url: "ToExamine/ReviewedApplyInformationBeanSelect",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    _list = data;
+                }
+            });
 
-            let list = data["list"];
-            console.log(list);
+            let table = $(".table > tbody");
 
-            let applyAssociation = list[0].applyAssociation;
-            $(".applyAssociation")[0].innerText = applyAssociation;
-
-            let table = $(".table");
-
-            for (let i = 0; i < list.length; i++) {
-                const {applyNumber, Name, schoolmajorName, applyIntroduction} = list[i]
+            for (let index in _list) {
+                let ApplyInformationBean = _list[index];
 
                 let tr = $("<tr></tr>");
 
-                let div = $("<div></div>").attr("style", "display:none").text(applyNumber);
-                let td = $("<td></td>");
-                let td1 = $("<td></td>");
-                let td2 = $("<td></td>");
-                let td3 = $("<td><button onclick='judge(this,1)'>通过</button><button onclick='judge(this,0)'>拒绝</button></td>");
+                let td = [];
+                for (let i = 0; i < 3; i++) {
+                    td[i] = $("<td></td>");
+                }
 
+                td[0].text(ApplyInformationBean.applyNumber);
+                td[1].text(ApplyInformationBean.applyIntroduction);
+                td[2] = $("<td><button onclick='judge(this,true)'>通过</button><button onclick='judge(this,false)'>拒绝</button></td>");
 
-                td.text(Name);
-                td1.text(schoolmajorName);
-                td2.text(applyIntroduction);
-
-                tr.append(div);
-                tr.append(td);
-                tr.append(td1);
-                tr.append(td2);
-                tr.append(td3);
+                for (let i = 0; i < 4; i++) {
+                    tr.append(td[i])
+                }
 
                 table.append(tr);
             }
-        })
+        });
+
+        /**操作*/
+        function judge(button, param) {
+            _data.result = param;
+            let number = $(button).closest("tr").find("td").eq(0).text();
+            /**获取申请信息的编号*/
+            for(let key in _list){
+                if(_list[key].applyNumber == number){
+                    _data.ID =_list[key].number;
+                }
+            }
+            $.ajax({
+                url: "ToExamine/judge",
+                data: _data,
+                success: function () {
+                    $(button).closest("tr").remove();
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
-<!--保存社团编号-->
-<div class="applyAssociation" style="display: none"></div>
 <table class="table" border="1">
+    <thead>
     <tr>
         <td>
-            申请人
-        </td>
-        <td>
-            申请人专业
+            申请账号
         </td>
         <td>
             申请信息
@@ -102,6 +94,10 @@
             操作
         </td>
     </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
 </table>
 
 </body>

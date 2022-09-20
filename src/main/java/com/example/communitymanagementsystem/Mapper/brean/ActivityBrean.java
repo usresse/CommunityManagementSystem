@@ -1,5 +1,6 @@
 package com.example.communitymanagementsystem.Mapper.brean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,18 +31,22 @@ public class ActivityBrean {
     /**
      * 发布时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date releaseDate;
     /**
      * 地点
      */
+
     private String Place;
     /**
      * 开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
     /**
      * 结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
     /**
      * 报名人数
@@ -52,6 +57,10 @@ public class ActivityBrean {
      */
     private Integer MAXPeople;
     /**
+     * 主办社团ID
+     */
+    private String hostAssociactionID;
+    /**
      * 状态
      */
     private String State;
@@ -59,12 +68,4 @@ public class ActivityBrean {
      * 备注
      */
     private String Remark;
-    /**
-     * 主办社团ID
-     */
-    private String hostAssociactionID;
-    /**
-     * 社团名
-     */
-    private String associationName;
 }

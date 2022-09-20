@@ -8,7 +8,6 @@ function sub() {
         alert("两次密码不一样！");
         return;
     }
-    // data.mailbox = $("#mailbox")[0].value;
     data.telephone = $("#telephone")[0].value;
 
     /*保证数据不为空  || data.mailbox == ""  */
@@ -18,7 +17,6 @@ function sub() {
         if (/[\d]{6,8}/.test(data.number)){
             if (/^.{6,8}/.test(data.password)) {
                 if (/^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/.test(data.telephone)) {
-                    // if (/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(data.mailbox)) {
                         $.ajax({
                                 url: "insert",
                                 data: data,
@@ -27,9 +25,6 @@ function sub() {
                                 }
                             }
                         );
-                    // }else {
-                    //     alert("请输入正确邮箱的格式！");
-                    // }
                 }else {
                     alert("请输入正确电话号码的格式！");
                 }

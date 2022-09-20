@@ -10,7 +10,7 @@
         }
 
         td {
-            width: 600px;
+            width: 400px;
         }
 
         table {
@@ -18,49 +18,97 @@
         }
     </style>
     <script type="text/javascript">
-        var number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
+        /**获取用户的ID*/
+        var personalBean = parent.window.personalBean;
+
+        var _data = {};
+
+        var _schoolAgreeAssociationBean = {};
+
         $(function () {
-            console.log(number);
+            _data.number = personalBean.number;
+            $.ajax({
+                url: "ApplyAssociation/select",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    _schoolAgreeAssociationBean = data;
+                    initApplyAssociation();
+                }
+            });
         });
 
-        function ApplyClick(){
-            let data = {};
-            data.associationID = "IS-" + $(".associationID").val();
-            data.associationName = $(".associationName").val();
-            data.associationIntroduce = $(".associationIntroduce").val();
+        /**申请按钮*/
+        function ApplyClick() {
+            _data.associationID = "IS-" + $(".associationID").val();
+            _data.associationProprieterNumber = personalBean["number"];
+            _data.associationProprieter = personalBean["name"];
+            _data.associationName = $(".associationName").val();
+            _data.associationIntroduce = $(".purpose").val() + "-" + $(".introduction").val() + "-" + $(".featured").val();
+            _data.associationReason = $(".reason").val();
 
-            for(key in data){
-                console.log(key +":" +data[key]);
+            /**判断数据不能为空*/
+            for (let key in _data) {
+                if (_data[key] == "" || _data[key] == null || _data[key] == "--") {
+                    alert("申请社团信息不能为空！");
+                    return 0;
+                }
             }
 
-            console.log(window.location.href);
-
             $.ajax({
-                url:window.location.href +"/create",
-                data:data,
-                success:function (dex){
+                url: "ApplyAssociation/create",
+                data: _data,
+                success: function (dex) {
                     alert(dex);
+                    if (dex == "成功！") {
+                        _schoolAgreeAssociationBean = _data;
+                        initApplyAssociation();
+                    }
                 }
-            })
+            });
+        }
+
+        function initApplyAssociation() {
+            $("<text>"+_schoolAgreeAssociationBean.associationID.substring(3)+"</text>").replaceAll($(".associationID"));
+            $("<text>"+_schoolAgreeAssociationBean.associationName+"</text>").replaceAll($(".associationName"));
+            $("<text>"+_schoolAgreeAssociationBean.associationIntroduce.split("-")[0]+"</text>").replaceAll($(".purpose"));
+            $("<text>"+_schoolAgreeAssociationBean.associationIntroduce.split("-")[1]+"</text>").replaceAll($(".introduction"));
+            $("<text>"+_schoolAgreeAssociationBean.associationIntroduce.split("-")[2]+"</text>").replaceAll($(".featured"));
+            $("<text>"+_schoolAgreeAssociationBean.associationReason+"</text>").replaceAll($(".reason"));
+
+            $(".ApplyClick").hide();
+            $(".ApplyClick").parent().append($("<div>审核中</div>"));
         }
     </script>
 </head>
 <body>
 <table border="1">
     <tr>
-        <td>社团编号：IS-<input class="associationID" type="number" oninput="if(value.length>4) value=value.slice(0,4)">
-        </td>
+        <td>社团编号：</td>
+        <td>IS-<input class="associationID" type="number" oninput="if(value.length>4) value=value.slice(0,4)"></td>
     <tr>
-        <td>社团名：<input class="associationName" type="text" minlength="2" maxlength="8">
-        </td>
+        <td>社团名：</td>
+        <td><input class="associationName" type="text" minlength="2" maxlength="8"></td>
     </tr>
     <tr>
-        <td>社团介绍：<input class="associationIntroduce" type="text">
-        </td>
+        <td>宗旨：</td>
+        <td><input class="purpose"></td>
     </tr>
     <tr>
-        <td>
-            <button onclick="ApplyClick()">申请</button>
+        <td>简介：</td>
+        <td><textarea class="introduction"></textarea></td>
+    </tr>
+    <tr>
+        <td>特色活动：</td>
+        <td><textarea class="featured"></textarea></td>
+    </tr>
+    <tr>
+        <td>申请理由：</td>
+        <td><textarea class="reason"></textarea></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <button class="ApplyClick" onclick="ApplyClick()">申请</button>
         </td>
     </tr>
 </table>

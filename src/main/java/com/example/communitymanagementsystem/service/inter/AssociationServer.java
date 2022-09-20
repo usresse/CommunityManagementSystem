@@ -1,8 +1,12 @@
 package com.example.communitymanagementsystem.service.inter;
 
+import com.example.communitymanagementsystem.Mapper.brean.ApplyInformationBean;
 import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
 import com.example.communitymanagementsystem.Mapper.brean.NoticeBean;
+import com.example.communitymanagementsystem.Mapper.brean.SchoolAgreeAssociationBean;
 import com.github.pagehelper.PageInfo;
+import net.sf.jsqlparser.statement.create.table.Index;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
@@ -15,41 +19,49 @@ import java.util.Map;
  * \
  */
 public interface AssociationServer {
+    ModelAndView MyClubStatus(String number);
+
+    AssociationBean MyClubStatusSelectAssociationBean(String number);
+
+    ApplyInformationBean MyClubStatusSelectApplyInformationBean(String applyAssociation);
+
+    Boolean DeleteApplyInformation(Integer number);
+
     PageInfo selectAll(Integer index);
 
-    PageInfo select(Integer index ,String[] data);
+    String create(String applyAssociation,String number ,String applyIntroduction);
 
-    String create(String[] data);
+    List<ApplyInformationBean> reviewedApplyInformationBeanSelect(String associationNumber);
 
-    Map<String,Object> select(String number);
+    void judge(Integer ID,Boolean result);
 
-    Boolean delete(Integer number);
+    SchoolAgreeAssociationBean AssociationSelect(String number);
 
-    PageInfo reviewed(String number,Integer index);
-
-    Boolean judge(Integer index, String applyAssociation, String number);
-
-    String Create(String number, Map<String, Object> data);
+    String CreateAssociation(SchoolAgreeAssociationBean schoolAgreeAssociationBean);
 
     String KickOut(String number);
 
-    Map<String, Object> AssociationApplication(String associationID);
+    AssociationBean AssociationApplicationSelect(String associationID);
 
-    Map<String, Object> MoveAssociationApplication(String[] data);
+    AssociationBean MoveAssociationApplication(Integer index,String associationID);
 
-    AssociationBean CommunityInformationMaintenance(String number);
+    AssociationBean CommunityInformationMaintenanceSelect(String number);
 
     void CommunityInformationImg(String associationID, String fileName);
 
-    List<Map<String, Object>> CommunityInformationHandover(String associationID);
-
     String CommunityInformationHandoverUpdate(String number, String associationID);
-
-    String CommunityInformationHandoverselect(String data);
 
     String CommunityInformationMaintenanceIntroduce(String associationID, String introduce);
 
     String CommunityInformationImgDelete(String associationID, String imgName);
 
     List<NoticeBean> noticeSelect(String number);
+
+    String noticeAdd(NoticeBean noticeBean,String number);
+
+    String noticeDelete(String id);
+
+    PageInfo CommunityPersonSelect(String associationNumber,Integer index,String key,String value);
+
+    PageInfo AddOrganizationSelect(Integer index, String key, String value);
 }

@@ -8,7 +8,7 @@
         from personal ,association
         where personal.associationNumber = association.associationID
         <if test="number != null and number != ''">
-            and number = "${number}"
+            and number = #{number}
         </if>
     </select>
 
@@ -16,7 +16,7 @@
     <select id="selectAll" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
         select *
         from personal
-        where number = "${number}"
+        where number = #{number}
     </select>
 
     <!--查询一条或者所有数据-->
@@ -25,72 +25,72 @@
         from personal,
              association
         where personal.associationNumber = association.associationID
-          and personal.associationNumber in (select associationNumber from personal where number = "${number}")
+          and personal.associationNumber in (select associationNumber from personal where number = #{number})
     </select>
 
-    <!--查询一条或者所有数据-->
-    <select id="conditionQuery" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
+    <select id="CommunityPersonSelectNO" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
         select *
         from personal
-        <where>
-            <if test="condition == 'number'">number = "${value}"</if>
-            <if test="condition == 'name'">Name ="${value}"</if>
-            <if test="condition == 'sex'">sex = ${value}</if>
-            <if test="condition == 'dateOfBirth'">dateOfBirth = "${value}"</if>
-            <if test="condition == 'major'">major = "${value}"</if>
-            <if test="condition == 'telephone'">Telephone = ${value}</if>
-            <if test="condition == 'dateOfRegistration'">dateOfRegistration = "${value}"</if>
-        </where>
-        and associationNumber in (select associationNumber from personal where number = ${number})
+        where associationNumber = #{associationNumber}
+    </select>
+
+    <select id="CommunityPersonSelectCondition"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
+        select *
+        from personal
+        where associationNumber = #{associationNumber}
+          and ${key} = #{value}
     </select>
 
     <!--插入一条数据-->
     <insert id="insert" parameterType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
         insert into personal (number, password, Telephone, dateOfRegistration)
-        values ("${personalBean.number}", "${personalBean.password}",
-                ${personalBean.Telephone}, "${dateRegistration}");
+        values (#{number}, #{password}, #{Telephone},#{dateOfRegistration});
     </insert>
 
     <!--头像更新-->
     <update id="updataBold">
         update personal
-        set bold="${bold}"
-        where number = "${number}"
+        set bold=#{bold}
+        where number = #{number}
     </update>
 
     <!--更新数据-->
-    <update id="updata" parameterType="java.util.Map">
+    <update id="updata" parameterType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
         update personal
         set
-        <if test="nickName != null and nickName != ''">nickName = "${nickName}",</if>
-        <if test="studentNumber != null and studentNumber != ''">studentNumber = ${studentNumber},</if>
-        <if test="dateOfBirth != null and dateOfBirth != ''">dateOfBirth = "${dateOfBirth}",</if>
-        <if test="name != null and name != ''">Name = "${name}",</if>
-        <if test="schoolMajor != null and schoolMajor != ''">schoolMajor = "${schoolMajor}",</if>
-        <if test="Telephone != null and Telephone != ''">Telephone = ${Telephone},</if>
-        <if test="mailbox != null and mailbox != ''">mailbox = "${mailbox}",</if>
-        sex = ${sex},
-        password = "${password}"
-        where number = "${number}";
+        <if test="nickName != null and nickName != ''">
+            nickName =#{nickName},
+        </if>
+        <if test="studentNumber != null and studentNumber != ''">
+            studentNumber =#{studentNumber},
+        </if>
+        <if test="dateOfBirth != null">
+            dateOfBirth = #{dateOfBirth},
+        </if>
+        <if test="name != null and name != ''">
+            Name = #{Name},
+        </if>
+        <if test="schoolMajor != null and schoolMajor != ''">
+            schoolMajor = #{schoolMajor},
+        </if>
+        <if test="Telephone != null and Telephone != ''">
+            Telephone = #{Telephone},
+        </if>
+        <if test="mailbox != null and mailbox != ''">
+            mailbox = #{mailbox},
+        </if>
+        <if test="sex != null and sex != ''">
+            sex = #{sex},
+        </if>
+        password = #{password}
+        where number = #{number};
     </update>
-
-
-    <select id="reviewed" resultType="map">
-        select *
-        from personal
-        where number = "${number}"
-    </select>
 
     <update id="judgeUpdate">
         update personal
         set associationNumber = "${applyAssociation}",
-            major             = "成员"
-        where number = "${number}"
+            major             = "3"
+        where number = #{number};
     </update>
-
-    <select id="noticeSelect" resultType="string">
-        select associationNumber
-        from personal
-        where number = "${number}"
-    </select>
 </mapper>

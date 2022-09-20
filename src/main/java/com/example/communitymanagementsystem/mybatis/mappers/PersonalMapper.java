@@ -1,5 +1,6 @@
 package com.example.communitymanagementsystem.mybatis.mappers;
 
+import com.example.communitymanagementsystem.Mapper.brean.AssociationBean;
 import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -55,12 +56,23 @@ public interface PersonalMapper {
 
     /**
      * @author Predator
-     * @date 2022-7-4 20:40
-     * @param ： number
-     * @return com.example.communitymanagementsystem.Mapper.brean.PersonalBean
-     * Description:查询指定number的数据
+     * @date 2022-9-8 11:08
+     * @param ： associationNumber
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.PersonalBean>
+     * Description:根据社团编号查询同社团的成员
      */
-    List<PersonalBean> conditionQuery(String condition,Object value,String number);
+    List<PersonalBean> CommunityPersonSelectNO(String associationNumber);
+
+    /**
+     * @author Predator
+     * @date 2022-9-8 13:30
+     * @param ： associationNumber
+     * @param ： key
+     * @param ： value
+     * @return java.util.List<com.example.communitymanagementsystem.Mapper.brean.PersonalBean>
+     * Description:根据条件查询同社团的成员
+     */
+    List<PersonalBean> CommunityPersonSelectCondition(String associationNumber, String key, String value);
 
     /**
      * @author Predator
@@ -69,7 +81,7 @@ public interface PersonalMapper {
      * @return int
      * Description:插入数据
      */
-    int insert(PersonalBean personalBean,String dateRegistration);
+    int insert(PersonalBean personalBean);
 
     /**
      * @author Predator
@@ -78,7 +90,7 @@ public interface PersonalMapper {
      * @return int
      * Description:
      */
-    int updata(Map<String, Object> map);
+    int updata(PersonalBean personalBean);
 
 
 
@@ -96,28 +108,9 @@ public interface PersonalMapper {
      * @author Predator
      * @date 2022-7-13 15:10
      * @param ： number
-     * @return java.util.Map<java.lang.String, java.lang.Object>
-     * Description:查找personal的指定一条数据
-     */
-    Map<String,Object> reviewed(String number);
-
-    /**
-     * @author Predator
-     * @date 2022-7-13 15:10
-     * @param ： number
      * @param ： applyAssociation
      * @return java.lang.Boolean
      * Description:修改personal的社团信息
      */
     Integer judgeUpdate(String number, String applyAssociation);
-
-
-    /**
-     * @author Predator
-     * @date 2022-8-11 14:02
-     * @param ： number
-     * @return java.lang.String
-     * Description:
-     */
-    String noticeSelect(String number);
 }

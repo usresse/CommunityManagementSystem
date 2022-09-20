@@ -30,17 +30,15 @@
         .Place,
         .startDate,
         .endDate,
-        .numberOfPeople,
+        .MAXPeople,
         .Remark {
             background: rgba(0, 0, 0, 0);
         }
     </style>
     <script type="text/javascript">
-        var number = window.parent.document.getElementsByClassName("quan")[0].innerHTML;
+        var personalBean = parent.window.personalBean;
 
-        $(function () {
-
-        });
+        var _data = {};
 
         function Reset() {
             $(".Title").val("");
@@ -52,31 +50,30 @@
         }
 
         function Submit() {
-            let data = {};
-
             /**获取数据*/
-            data.Title = $(".Title").val();
-            data.Place = $(".Place").val();
-            data.startDate = $(".startDate").val();
-            data.endDate = $(".endDate").val();
-            data.MAXPeople = $(".MAXPeople").val();
-            data.Remark = $(".Remark").val();
+            _data.Title = $(".Title").val();
+            _data.Place = $(".Place").val();
+            _data.hostAssociactionID = personalBean["associationNumber"];
+            _data.startDate = new Date($(".startDate").val());
+            console.log($(".startDate").val())
+            console.log(_data.startDate)
+            _data.endDate =  new Date($(".endDate").val());
+            _data.MAXPeople = $(".MAXPeople").val();
+            _data.Remark = $(".Remark").val();
 
             /**对js对象的属性遍历*/
-            for (let key in data) {
-                if(data[key] == "" || data[key] == null){
+            for (let key in _data) {
+                if(_data[key] == "" || _data[key] == null){
                     alert("有活动参数为空！");
                     return;
                 }
             }
 
-            console.log(data);
-
             /**ajax发送请求*/
             $.ajax({
+                url: "/ActivityRequest/apply",
                 type: "post",
-                url: window.location.href.split("ActivityRequest/")[0] + "/" + number,
-                data: data,
+                data: _data,
                 success: function (dex) {
                     console.log(dex);
                 }

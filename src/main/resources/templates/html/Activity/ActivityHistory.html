@@ -34,154 +34,159 @@
     </style>
 
     <script type="text/javascript">
-        var number = $(window.parent.document.getElementsByClassName("quan")[0]).text();
+        var personalBean = parent.window.personalBean;
 
-        /*================添加数据===========================*/
+        var _data = {};
+
+        var _list = {};
+
         $(function () {
-            let table = $(".table")[0];
+            _data.index = 1;
+            _data.hostAssociactionID = personalBean["associationNumber"];
 
-            /*获取到对象结果会将JSON字符串自动转换成js对象*/
-            let data = [(${data})];
-            console.log(data);
+            updateData();
 
-            /*添加总页数*/
-            $(".totalNumber")[0].innerText = data["pages"];
+            /**查询点击事件*/
+            $(".button").on("click", function () {
+                _data.value = $(".select").val();
+                _data.key = $(".sel").val();
 
-            /*获取josn中的list中的数据*/
-            let list = data["list"]
-            console.log(list);
-
-            /*创建表中的对象标签*/
-            for (let i = 0; i < 6; i++) {
-                if (i < list.length) {
-                    /*提取Object对象中的属性提取出*/
-                    const {
-                        ID,
-                        Title,
-                        releaseDate,
-                        Place,
-                        startDate,
-                        endDate,
-                        numberOfPeople,
-                        State,
-                        Remark,
-                        associationName
-                    } = list[i];
-
-                    let tr = $("<tr></tr>");
-
-                    let td1 = $("<td></td>");
-                    let td2 = $("<td></td>");
-                    let td3 = $("<td></td>");
-                    let td4 = $("<td></td>");
-                    let td5 = $("<td></td>");
-                    let td6 = $("<td></td>");
-                    let td7 = $("<td></td>");
-                    let td8 = $("<td></td>");
-                    let td9 = $("<td></td>");
-                    let td10 = $("<td><button onclick='apply(this)'>删除记录</button></td>");
-
-                    let div = $("<div></div>").attr("style", "display: none;").text(ID);
-                    td1[0].innerText = Title;
-                    td2[0].innerText = associationName;
-                    td3[0].innerText = dateFormat(new Date(releaseDate), 'yyyy-MM-dd');
-                    td4[0].innerText = Place;
-                    td5[0].innerText = dateFormat(new Date(startDate), 'yyyy-MM-dd');
-                    if (endDate == null) {
-                        td6[0].innerText = "null";
-                    } else {
-                        td6[0].innerText = dateFormat(new Date(endDate), 'yyyy-MM-dd');
+                $.ajax({
+                    url: "ActivityHistory/select",
+                    data: _data,
+                    async: false,
+                    success: function (data) {
+                        _list = data;
+                        console.log(data);
+                        init();
                     }
-                    td7[0].innerText = numberOfPeople;
-                    td8[0].innerText = State;
-                    td9[0].innerText = Remark;
+                });
+            });
 
-                    tr.append(div);
-                    tr.append(td1);
-                    tr.append(td2);
-                    tr.append(td3);
-                    tr.append(td4);
-                    tr.append(td5);
-                    tr.append(td6);
-                    tr.append(td7);
-                    tr.append(td8);
-                    tr.append(td9);
-                    tr.append(td10);
-
-                    table.append(tr[0]);
-                }
-            }
         });
 
-        /**删除记录的点击事件*/
-        function apply(button) {
-            let ID = $(button).closest("tr").find("div").eq(0).text();
+        function updateData() {
             $.ajax({
-                url: window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/" + ID,
-                success: function (dex) {
-                    alert(dex);
-                    window.location.reload();
+                url: "ActivityHistory/select",
+                data: _data,
+                async: false,
+                success: function (data) {
+                    _list = data;
+                    init()
                 }
             });
         }
 
-        $(function () {
-            /**初始页面页码*/
-            let input = $("input[class=inp]");
-            let url = window.location.href.toString();
-            /*分解地址获取到请求地址的页数*/
-            let dex = url.toString().substring(url.indexOf("ActivityHistory/") + 15, url.length).split("/")[1];
-            input.val(Number(dex));
+        function init() {
+            let table = $(".table > tbody");
 
-            /**查询点击事件*/
-            $(".button").on("click", function () {
-                let input = $(".select").val();
-                let select = $(".sel").val();
-                let va = select + ":" + input;
-                window.location.href = window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/1/" + number + "/" + va;
-            });
+            table.html("");
 
+            $(".totalNumber").text(_list["pages"]);
+            $(".inp").val(Number(_list["pageNum"]));
 
-            /**防止查询后，刷新页面数据消失*/
-            let data = "[(${condition})]";
-            let condition = data.split(":")
-            if (condition.length == 2) {
-                $(".select").attr("value", condition[1]);
-                let name = "select>option[value=" + condition[0] + "]";
-                console.log(name);
-                $(name).attr("selected", true);
+            let list = _list["list"];
+            /*创建表中的对象标签*/
+            for (let i = 0; i < 6; i++) {
+                if (i < list.length) {
+                    let activityBean = list[i];
+
+                    let tr = $("<tr></tr>");
+                    let td = [];
+                    for (let j = 0; j < 10; j++) {
+                        td[j] = $("<td></td>");
+                    }
+
+                    let div = $("<div></div>").attr("style", "display: none;").text(activityBean["id"]);
+
+                    td[0].text(activityBean["title"]);
+                    _data.associationNumber = activityBean["hostAssociactionID"];
+
+                    $.ajax({
+                        url: "associationNumber",
+                        data: _data,
+                        success: function (data) {
+                            td[1].text(data);
+                        }
+                    });
+                    td[2].text(dateFormat(new Date(activityBean["releaseDate"]), 'yyyy-MM-dd'));
+
+                    td[3].text(activityBean["place"]);
+                    td[4].text(dateFormat(new Date(activityBean["startDate"]), 'yyyy-MM-dd'));
+                    if (activityBean["endDate"] == null) {
+                        td[5].text("null");
+                    } else {
+                        td[5].text(dateFormat(new Date(activityBean["endDate"]), 'yyyy-MM-dd'));
+                    }
+                    td[6].text(activityBean["numberOfPeople"]);
+                    td[7].text(activityBean["state"]);
+                    td[8].text(activityBean["remark"]);
+
+                    let str;
+
+                    if (activityBean["state"] == "申请中") {
+                        str = "<td><button onclick='apply(this)'>撤销申请</button></td>";
+                    } else if (activityBean["state"] == "正在进行") {
+                        str = "<td>正在进行中</td>";
+                    } else {
+                        str = "<td><button onclick='apply(this)'>删除记录</button></td>";
+                    }
+
+                    td[9] = $(str);
+
+                    tr.append(div);
+                    for (let j = 0; j < 10; j++) {
+                        tr.append(td[j]);
+                    }
+
+                    table.append(tr);
+                }
             }
-        });
+        }
+
+        /**删除记录的点击事件*/
+        function apply(button) {
+            _data.ID = $(button).closest("tr").find("div").eq(0).text();
+            $.ajax({
+                url: "ActivityHistory/delete",
+                data: _data,
+                success: function (dex) {
+                    if ("删除成功！" == dex) {
+                        alert("删除成功！")
+                        $(button).closest("tr").remove();
+                    } else {
+                        alert("删除失败！")
+                    }
+                }
+            });
+        }
 
         /**分页事件*/
         function shu(num) {
-
-            let val = $(".select").val();
-            let select = $(".sel").val();
-
-            let va = select + ":" + val;
-
-            /*总页数数*/
-            let total = Number($(".totalNumber")[0].innerText);
+            _data.value = $(".select").val();
+            _data.key = $(".sel").val();
 
             /*输入框对象*/
             let input = $("input[class=inp]");
-            console.log(input.val());
+
             /*获取输入框的数字*/
-            let index = Number(input.val());
+            let index = _list["pageNum"];
 
             if (num == "button1" && index > 1) {
                 input.val(index - 1);
-                window.location.href = window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/" + (index - 1) + "/" + number + "/" + va;
-            } else if (num == "button2" && index < total) {
+                _data.index = index - 1;
+                updateData();
+            } else if (num == "button2" && index < _list["pages"]) {
                 input.val(index + 1);
-                window.location.href = window.location.href.split("ActivityHistory/")[0] + "ActivityHistory/" + (index + 1) + "/" + number + "/" + va;
+                _data.index = index + 1;
+                updateData();
             }
         }
     </script>
 </head>
 <body>
 <table class="table" border="1">
+    <thead>
     <tr>
         <td>
             <select class="sel" style="background: rgba(0, 0, 0, 0); font-size: 20px;width: 100px;">
@@ -210,6 +215,11 @@
         <td>备注</td>
         <td>操作</td>
     </tr>
+    </thead>
+
+    <tbody>
+
+    </tbody>
 </table>
 
 <div class="Jump">

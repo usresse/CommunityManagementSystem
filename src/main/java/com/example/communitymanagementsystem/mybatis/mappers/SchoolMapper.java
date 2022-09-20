@@ -1,5 +1,6 @@
 package com.example.communitymanagementsystem.mybatis.mappers;
 
+import com.example.communitymanagementsystem.Mapper.brean.SchoolMajorBean;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -22,6 +23,24 @@ public interface SchoolMapper {
      * Description:校方登录
      */
     Map<String, Object> login(Object number);
+
+    /**
+     * @author Predator
+     * @date 2022-7-10 14:08
+     * @param ：
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * Description：查询所有专业
+     */
+    List<SchoolMajorBean> selectAll();
+
+    /**
+     * @author Predator
+     * @date 2022-7-10 14:00
+     * @param ： name
+     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * Description:查询
+     */
+    Integer select(String name);
 
     /**
      * @author Predator
