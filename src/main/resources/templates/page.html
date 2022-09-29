@@ -37,16 +37,61 @@
     </form>
     <div>
 
-        <div class="user" >昵称:</div>
+        <div class="user">昵称:</div>
 
         <div class="quan">账号:</div>
     </div>
 
-    <iframe id="caidan" scrolling="no" src="caidan"></iframe>
+    <!--    <iframe id="caidan" scrolling="no" src="caidan"></iframe>-->
+    <div class="caidan">
+        <div class="da">
+            <div class="ti2 stair" onclick="toggleshow('tem2')">我的社团</div>
+            <div class="tem2 stair2">
 
+                <div>
+                    <div onclick="JumpHtmlAndNumber('MyClubStatus')">我的社团状态</div>
+                </div>
+                <div>
+                    <div class="nul" onclick="JumpHtml('ApplyAssociation')">申请创建社团</div>
+                </div>
+                <div>
+                    <div onclick="JumpHtml('activity')">参加社团活动</div>
+                </div>
+                <div>
+                    <div onclick="JumpHtmlAndNumber('activityAll')">参加的活动</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="da">
+            <div class="ti3 stair" onclick="toggleshow('tem3')">社团管理</div>
+            <div class="tem3 stair2">
+                <div>
+                    <div onclick="JumpHtml('ToExamine')">审核信息</div>
+                </div>
+
+                <div>
+                    <div onclick="JumpHtml('ActivityRequest')">活动发布申请</div>
+                </div>
+
+                <div>
+                    <div onclick="JumpHtml('ActivityHistory')">活动历史记录</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="da">
+            <div class="ti4 stair" onclick="JumpHtml('announcement')">公告</div>
+        </div>
+
+        <div class="da">
+            <div class="ti5 stair" onclick="JumpHtml('setting')">设置</div>
+        </div>
+
+    </div>
 </div>
 
-<div>
+<div class="nei">
     <iframe id="nei" th:src="nei"></iframe>
 </div>
 

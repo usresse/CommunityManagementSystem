@@ -49,12 +49,13 @@ iframe{
 }
 
 #nei{
-	float: left;
+	float: right;
+	right: 0%;
 	margin-top: 0px;
 	width: 86%;
 	height: 640px;
-	position: relative;
-	left: -20px;
+	/*position: relative;*/
+	/*left: -20px;*/
 }
 .img{
 	float: left;
@@ -85,3 +86,45 @@ td {
 	text-align: center;
 }
 
+/*******************菜单*************************************/
+.ti1,
+.ti2,
+.ti3,
+.ti4,
+.ti5 {
+	/* 字间距 */
+	/* letter-spacing:10px; */
+	font-size: 20px;
+	position: relative;
+	width: 212px;
+	height: 50px;
+	text-align: center;
+	/* 设置行间的距离（行高） */
+	line-height: 50px;
+	border-bottom: 1px #ffffff ridge;
+	background-color: aqua;
+}
+
+.stair2 {
+	display: none;
+}
+
+.stair2 >div >div {
+
+	position: relative;
+	width: 212px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	border-bottom: 1px #ffffff ridge;
+	background-color: #27eaff;
+}
+
+.da {
+	text-align: left;
+}
+
+.caidan{
+	position: relative;
+	top: 2px;
+}
