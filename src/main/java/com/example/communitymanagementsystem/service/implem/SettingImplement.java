@@ -61,4 +61,9 @@ public class SettingImplement implements SettingServer {
         }
         return null;
     }
+
+    @Override
+    public PersonalBean personal_number(String number) {
+        return settingMapper.personal(number);
+    }
 }

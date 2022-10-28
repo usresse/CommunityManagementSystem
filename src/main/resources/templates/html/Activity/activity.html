@@ -104,7 +104,7 @@
                     _data.associationNumber = activity["hostAssociactionID"];
 
                     $.ajax({
-                        url: "/associationNumber",
+                        url: "/Community/get/associationNumber",
                         data: _data,
                         type: "get",
                         success: function (data) {
@@ -143,11 +143,14 @@
             _data.number = number;
             _data.ID = ID;
             $.ajax({
-                url: "/activityAdd",
+                url: "activityAdd",
                 type: "get",
                 data: _data,
                 success: function (dex) {
                     alert(dex);
+                    if(dex =="申请成功!"){
+                        $(button).closest("tr").find("td").eq(6).text(parseInt($(button).closest("tr").find("td").eq(6).text()) + 1);
+                    }
                 }
             })
         }
@@ -189,7 +192,7 @@
 
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <table class="table" border="1">
     <thead>
     <tr>
@@ -198,8 +201,6 @@
                 <option value="Title">标题</option>
                 <option value="hostAssociactionID">主办社团</option>
                 <option value="Place">地点</option>
-                <option value="startDate">开始日期</option>
-                <option value="endDate">结束日期</option>
             </select>
         </td>
         <td colspan="8"><input class="select" style="width: 1000px; height: 30px;font-size: 20px;"/></td>

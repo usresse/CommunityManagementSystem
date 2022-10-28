@@ -2,24 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.communitymanagementsystem.mybatis.mappers.AssociationMapper">
 
-    <select id="select" resultType="map">
-        select *
-        from association
-        <where>
-            <if test="key == 'associationID'">associationID = #{value}</if>
-            <if test="key == 'associationName'">associationName = #{value}</if>
-            <if test="key == 'associationProprieter'">associationProprieter = #{value}</if>
-        </where>
-    </select>
+    <!--    <select id="select" resultType="map">-->
+    <!--        select *-->
+    <!--        from association-->
+    <!--        <where>-->
+    <!--            <if test="key == 'associationID'">associationID = #{value}</if>-->
+    <!--            <if test="key == 'associationName'">associationName = #{value}</if>-->
+    <!--            <if test="key == 'associationProprieter'">associationProprieter = #{value}</if>-->
+    <!--        </where>-->
+    <!--    </select>-->
 
-    <select id="selectInformation" resultType="map">
-        select Number, applyAssociation, applyResult, associationName, associationProprieter
-        from applyinformation,
-             association
-        where applyinformation.applyAssociation = association.associationID
-          and applyNumber = #{number}
-          and applyT = 1
-    </select>
+    <!--    <select id="selectInformation" resultType="map">-->
+    <!--        select Number, applyAssociation, applyResult, associationName, associationProprieter-->
+    <!--        from applyinformation,-->
+    <!--             association-->
+    <!--        where applyinformation.applyAssociation = association.associationID-->
+    <!--          and applyNumber = #{number}-->
+    <!--          and applyT = 1-->
+    <!--    </select>-->
 
     <select id="selectAll" resultType="map">
         select *
@@ -107,7 +107,20 @@
         where number = #{number}
     </update>
 
-    <select id="MoveAssociationApplication" resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
+    <select id="selectMajor" resultType="java.lang.String">
+        select major
+        from personal
+        where number = #{number}
+    </select>
+
+    <update id="administrator">
+        update personal
+        set major = #{major}
+        where number = #{number}
+    </update>
+
+    <select id="MoveAssociationApplication"
+            resultType="com.example.communitymanagementsystem.Mapper.brean.AssociationBean">
         select *
         from association
         where associationID =(

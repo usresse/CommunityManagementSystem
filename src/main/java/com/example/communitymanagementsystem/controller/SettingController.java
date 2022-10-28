@@ -1,9 +1,11 @@
 package com.example.communitymanagementsystem.controller;
 
+import com.example.communitymanagementsystem.Mapper.brean.PersonalBean;
 import com.example.communitymanagementsystem.service.inter.SettingServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * \* Description:
  * \
  */
+@RequestMapping("/get")
 @Controller
 public class SettingController {
 
@@ -39,7 +42,7 @@ public class SettingController {
      * @return java.lang.String
      * Description:获取用户社团职位
      */
-    @GetMapping("major")
+    @GetMapping("/major")
     @ResponseBody
     public String major(String major) {
         return settingServer.major(major);
@@ -54,10 +57,18 @@ public class SettingController {
      * @author Predator
      * @date 2022-9-12 22:02
      */
-    @GetMapping("personal")
+    @GetMapping("/personal")
     @ResponseBody
     public String personal(String number,String key) {
         return settingServer.personal(key,number);
     }
+
+    @GetMapping("/personal_number")
+    @ResponseBody
+    public PersonalBean personal(String number){
+        return settingServer.personal_number(number);
+    }
+
+
 
 }

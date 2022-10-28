@@ -266,6 +266,8 @@
 
         /*开启弹窗事件*/
         function openDiv(button) {
+            let nei = $(window.parent.document).find(".nei");
+
             //获取页面的实际高度和宽度
             var hei = $(window.parent.document).height();
             var wid = $(window.parent.document).width();
@@ -282,13 +284,12 @@
         /**详情页面的展示*/
         function Details(button) {
             _data.associationID = $(button).closest("tr").find("td").eq(0).text();
-
             /**页面跳转*/
             window.location.replace("AssociationApplication?associationID=" + _data.associationID);
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <div class="springyemain"></div>
 
 <table border="1" class="table">

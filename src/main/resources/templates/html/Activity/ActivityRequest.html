@@ -71,18 +71,18 @@
 
             /**ajax发送请求*/
             $.ajax({
-                url: "/ActivityRequest/apply",
+                url: "ActivityRequest/apply",
                 type: "post",
                 data: _data,
                 success: function (dex) {
-                    console.log(dex);
+                    alert(dex);
                 }
             });
 
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <table border="1" align="center">
     <tr>
         <td>

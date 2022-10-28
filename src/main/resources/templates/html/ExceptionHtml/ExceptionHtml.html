@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>访问异常</title>
+    <script type="text/javascript" src="../Community/js/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .wai {
+            overflow: hidden;
+            width: 100%;
+            height: 760px;
+            vertical-align: middle;
+        }
+
+        .nei {
+            padding: 10% 30%;
+        }
+
+        .img {
+            margin-bottom: 30px;
+            width: 80px;
+            height: 80px;
+        }
+
+        .zi {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        .ziz {
+            margin-bottom: 20px;
+        }
+
+        .button {
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+<div class="wai">
+    <div class="nei">
+        <img class="img" src="../Community/img/Exception.png">
+        <div class="zi">无法访问此网站</div>
+        <div class="ziz">请检查
+            <!--/*@thymesVar id="url" type=""*/-->
+            <text class="url"></text>
+            <script>
+                function url(){
+                    $(".url").text(window.location.href);
+                }
+
+                url();
+            </script>
+            中是否有拼写错误。
+        </div>
+        <div class="ziz">如果拼写无误，请尝试运行 Windows 网络诊断。</div>
+        <div class="Exception" style="display: none" th:text="${Exception}"></div>
+        <div class="Exception1 ziz"></div>
+        <script>
+            function Exception(){
+                if($(".Exception").text() != ""){
+                    $(".Exception1").text("如果网络诊断正常，请前往官网查看服务器是否正常。");
+                }
+            }
+            Exception();
+        </script>
+        <div>
+            <button class="button" onclick="refresh()">重新加载</button>
+            <script>
+                function refresh(){
+                    window.location.reload();
+                }
+            </script>
+        </div>
+    </div>
+</div>
+</body>
+</html>

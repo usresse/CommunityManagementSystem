@@ -42,7 +42,7 @@ public class AssociationImplement implements AssociationServer {
     @Override
     public ModelAndView MyClubStatus(String number) {
         ModelAndView modelAndView = new ModelAndView();
-        PersonalBean personalBean = personalMapper.selectAll(number);
+        PersonalBean personalBean = personalMapper.select(number);
 
         if (personalBean.getAssociationNumber() != null
                 && personalBean.getAssociationNumber() != ""
@@ -205,9 +205,9 @@ public class AssociationImplement implements AssociationServer {
 
     /**
      * @param number
-     * @title AssociationSelect
      * @return java.lang.String
      * Description:
+     * @title AssociationSelect
      * @author Predator
      * @date 2022-9-14 13:36
      */
@@ -227,7 +227,7 @@ public class AssociationImplement implements AssociationServer {
     @Override
     public String CreateAssociation(SchoolAgreeAssociationBean schoolAgreeAssociationBean) {
         Integer result = associationMapper.CreateAssociation(schoolAgreeAssociationBean);
-        if(result == 1){
+        if (result == 1) {
             return "成功！";
         }
         return "失败！";
@@ -251,10 +251,37 @@ public class AssociationImplement implements AssociationServer {
     }
 
     /**
+     * @param number
+     * @return java.lang.String
+     * Description:社长设置管理员权限
+     * @title administrator
+     * @author Predator
+     * @date 2022-10-18 22:58
+     */
+    @Override
+    public String administrator(String number) {
+        boolean result = false;
+        String major = associationMapper.selectMajor(number);
+
+        if (major.equals("2")) {
+            major = "3";
+        } else if (major.equals("3")) {
+            major = "2";
+        }
+
+        result = associationMapper.administrator(number, major);
+
+        if (result) {
+            return "设置成功！";
+        }
+        return "设置失败！";
+    }
+
+    /**
      * @param associationID
-     * @title AssociationApplicationSelect
      * @return com.example.communitymanagementsystem.Mapper.brean.AssociationBean
      * Description:社团详情数据获取
+     * @title AssociationApplicationSelect
      * @author Predator
      * @date 2022-9-17 16:15
      */
@@ -271,8 +298,8 @@ public class AssociationImplement implements AssociationServer {
      * @date 2022-7-23 12:37
      */
     @Override
-    public AssociationBean MoveAssociationApplication(Integer index,String associationID) {
-        return associationMapper.MoveAssociationApplication(index,associationID);
+    public AssociationBean MoveAssociationApplication(Integer index, String associationID) {
+        return associationMapper.MoveAssociationApplication(index, associationID);
     }
 
     /**
@@ -385,7 +412,7 @@ public class AssociationImplement implements AssociationServer {
      */
     @Override
     public List<NoticeBean> noticeSelect(String number) {
-        String noticeID = personalMapper.selectAll(number).getAssociationNumber();
+        String noticeID = personalMapper.select(number).getAssociationNumber();
         List<NoticeBean> list = associationMapper.noticeSelect(noticeID);
         return list;
     }
@@ -404,7 +431,7 @@ public class AssociationImplement implements AssociationServer {
         /**获取注册时间*/
         noticeBean.setNoticeDate(UtilsServer.DateOfString(new Date()));
         /**查找社团编号*/
-        noticeBean.setNoticeID(personalMapper.selectAll(number).getAssociationNumber());
+        noticeBean.setNoticeID(personalMapper.select(number).getAssociationNumber());
 
         int result = associationMapper.noticeAdd(noticeBean);
 

@@ -17,4 +17,5 @@ public interface SettingMapper {
     String selectMajor(String major);
 
     PersonalBean personal(String number);
+
 }

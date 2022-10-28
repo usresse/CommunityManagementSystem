@@ -1,7 +1,6 @@
 package com.example.communitymanagementsystem.service.implem;
 
 import com.example.communitymanagementsystem.Mapper.brean.ActivityBrean;
-import com.example.communitymanagementsystem.Mapper.brean.AnnouncementBean;
 import com.example.communitymanagementsystem.mybatis.mappers.ActivityMapper;
 import com.example.communitymanagementsystem.service.inter.ActivityServer;
 import com.example.communitymanagementsystem.service.utils.UtilsServer;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * \* @author: Predator
@@ -35,15 +33,18 @@ public class ActivityImplement implements ActivityServer {
      * @date 2022-9-6 16:09
      */
     @Override
-    public PageInfo selectActivity(Integer index, String key, String value) {
+    public PageInfo<ActivityBrean> selectActivity(Integer index, String key, String value) {
         PageHelper.startPage(index, 6);
         List<ActivityBrean> list = null;
         if (value == null || "".equals(value)) {
             list = activityMapper.selectActivityNO();
         } else {
+            if("hostAssociactionID".equals(key)){
+                value = activityMapper.selectID(value);
+            }
             list = activityMapper.selectActivityCondition(key, value);
         }
-        PageInfo pageInfo = new PageInfo<>(list, 50);
+        PageInfo<ActivityBrean> pageInfo = new PageInfo<>(list, 50);
         return pageInfo;
     }
 
@@ -72,6 +73,10 @@ public class ActivityImplement implements ActivityServer {
         if (data != null && data != "" && data.length() != 0) {
             String[] split = data.split("-");
 
+            if (split.length == 6) {
+                return "你申请加入活动已达上限！";
+            }
+
             /**使用自写的工具类判断*/
             index = UtilsServer.IDExists(split, id);
 
@@ -83,6 +88,7 @@ public class ActivityImplement implements ActivityServer {
             data = id.toString();
             result = activityMapper.updata(number, data);
         }
+
 
         /**结果返回*/
         if (index != -1) {
@@ -107,10 +113,12 @@ public class ActivityImplement implements ActivityServer {
     public Boolean activityAll(String number) {
         String activityStringID = activityMapper.activityStringID(number);
         /**判断没加入社团时显示*/
-        if (activityStringID != null && activityStringID != "" && activityStringID.length() != 0) {
-            return false;
+        //activityStringID != null && activityStringID != "" && activityStringID.length() != 0
+        if (activityStringID == null || activityStringID.isEmpty()) {
+            return true;
         }
-        return true;
+        return false;
+
     }
 
     /**
@@ -150,12 +158,9 @@ public class ActivityImplement implements ActivityServer {
 
         String data = activityMapper.activityStringID(number);
         String[] str = data.split("-");
-        System.out.println(data);
-
         int index = UtilsServer.IDExists(str, id);
 
         data = UtilsServer.CombinationRemove(str, index);
-
         Integer result = activityMapper.updata(number, data);
         /**结果返回*/
         if (result > 0) {
@@ -195,12 +200,12 @@ public class ActivityImplement implements ActivityServer {
      * @date 2022-9-15 17:37
      */
     @Override
-    public PageInfo ActivityHistorySelect(Integer index, String hostAssociactionID, String key, String value) {
+    public PageInfo<ActivityBrean> ActivityHistorySelect(Integer index, String hostAssociactionID, String key, String value) {
         PageHelper.startPage(index, 6);
         if (value == null || "".equals(value)) {
             return new PageInfo<>(activityMapper.activityHistorySelectNo(hostAssociactionID), 50);
-        }else {
-            return new PageInfo<>(activityMapper.activityHistorySelectCondition(hostAssociactionID,key,value.trim()), 50);
+        } else {
+            return new PageInfo<>(activityMapper.activityHistorySelectCondition(hostAssociactionID, key, value.trim()), 50);
         }
     }
 

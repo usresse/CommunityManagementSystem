@@ -35,7 +35,7 @@ public class HandleImplement implements HandleServer {
      */
     @Override
     public PersonalBean select(String number) {
-        PersonalBean personalBean = personalMapper.selectAll(number);
+        PersonalBean personalBean = personalMapper.select(number);
         /**对图片地址的定位*/
         String url = personalBean.getBold();
         personalBean.setBold("..\\img\\" + number + "\\" + url);

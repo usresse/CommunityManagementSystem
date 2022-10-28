@@ -55,7 +55,7 @@ $(function () {
                 //社团ID
                 case "associationNumber":
                     $.ajax({
-                        url:key,
+                        url:"get/"+key,
                         data:personalBean,
                         type:"get",
                         success: function (data){

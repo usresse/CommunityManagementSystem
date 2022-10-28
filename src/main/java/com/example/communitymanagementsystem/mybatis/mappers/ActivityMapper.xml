@@ -93,4 +93,10 @@
              announcement
         where association.associationID = announcement.announcementID
     </select>
+
+    <select id="selectID" resultType="java.lang.String">
+        select associationID
+        from association
+        where associationName = #{value}
+    </select>
 </mapper>

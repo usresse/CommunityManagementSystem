@@ -58,7 +58,6 @@
                 }
             });
 
-            console.log(_list)
             for (let i = 0; i < _list["size"]; i++) {
                 let AnnouncementBean = _list["list"][i];
                 let nei;
@@ -73,7 +72,7 @@
 
                 _data.associationNumber = AnnouncementBean["announcementID"];
                 $.ajax({
-                    url: "associationNumber",
+                    url: "get/associationNumber",
                     data:_data,
                     type:"get",
                     async:false,
@@ -123,7 +122,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <div class="title">公告</div>
 <div class="details">
 </div>

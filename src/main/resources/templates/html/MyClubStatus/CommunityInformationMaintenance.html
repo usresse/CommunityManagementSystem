@@ -195,7 +195,7 @@
                 for (let i = 0; i < imgblod.length; i++) {
                     let picHtml = "<div class='imageDiv' > <img id='" + imgblod[i] + "' /> <div class='cover'><i class='delbtn' onclick='elete(this)'>删除</i></div></div>";
                     $(".picDiv").prepend(picHtml);
-                    $(document.getElementById(imgblod[i])).attr("src", "/img/association/" + _AssociationBean["associationID"] + "/" + imgblod[i]).attr("width", "160px").attr("height", "130px");
+                    $(document.getElementById(imgblod[i])).attr("src", "img/association/" + _AssociationBean["associationID"] + "/" + imgblod[i]).attr("width", "160px").attr("height", "130px");
                 }
             }
         });
@@ -264,7 +264,7 @@
 
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <div class="img">
     <iframe name="iframeform" style="display: none"></iframe>
     <form method="post" action="CommunityInformationMaintenance/Img" id="passForm" enctype="multipart/form-data" multipart="" target="iframeform">

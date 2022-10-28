@@ -32,7 +32,7 @@
     </style>
 </head>
 
-<body>
+<body style="background: rgb(255,255,255)">
 <table border="1" align="left">
     <iframe width=0 height=0 frameborder=0 id="myiframe" name="myiframe"></iframe>
     <tr>
@@ -51,8 +51,8 @@
             <div style="display: none" class="password" ></div>
             <input  class="password" type="text" minlength="6" maxlength="8" style="display: none;">
             <!--小眼睛图片元素-->
-            <img style="display: none;" class="img" onclick="imgclick(this)" src="http://localhost:8080/img/pigsney-open.png">
-            <img style="display: none;" class="img" onclick="imgclick(this)" src="http://localhost:8080/img/pigsney-close.png">
+            <img style="display: none;" class="img" onclick="imgclick(this)" src="img/pigsney-open.png">
+            <img style="display: none;" class="img" onclick="imgclick(this)" src="img/pigsney-close.png">
         </td>
 
         <td>性别:
@@ -110,6 +110,12 @@
         <td>
             <button onclick="tiaozhaun()">编辑</button>
         </td>
+    </tr>
+    <tr>
+        <td>
+           <button onclick="{window.parent.location.href = '/Community/login' }">退出</button>
+        </td>
+
     </tr>
 </table>
 </body>

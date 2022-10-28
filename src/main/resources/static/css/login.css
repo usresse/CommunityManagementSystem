@@ -1,3 +1,6 @@
+body{
+	background-color: #45E8CA;
+}
 /* 标题样式 */
 .ku {
 	font-size: 40px;
@@ -47,6 +50,7 @@ input {
 }
 
 .jinggao{
+	display: none;
 	color: red;
 	font-size: 10px;
 }

@@ -35,7 +35,7 @@
             _data.number = number;
 
             $.ajax({
-                url: "/activityAll/select",
+                url: "select",
                 data: _data,
                 type: "get",
                 async: false,
@@ -71,8 +71,9 @@
                     td[0].text(activity["title"]);
 
                     _data.associationNumber = activity["hostAssociactionID"];
+
                     $.ajax({
-                        url: "/associationNumber",
+                        url: "/Community/get/associationNumber",
                         data: _data,
                         type: "get",
                         success: function (data) {
@@ -108,9 +109,9 @@
         function signOut(button) {
             _data.ID = $(button).closest("tr").find("div").eq(0).text();
             $.ajax({
-                url: "/activityAllSignOut",
+                url: "/Community/activityAllSignOut",
                 data:_data,
-                type:"post",
+                type:"get",
                 success: function (dex) {
                     alert(dex);
                     window.location.reload();
@@ -119,7 +120,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <table class="table" border="1">
     <thead>
     <tr>

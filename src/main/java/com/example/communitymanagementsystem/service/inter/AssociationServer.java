@@ -41,6 +41,8 @@ public interface AssociationServer {
 
     String KickOut(String number);
 
+    String administrator(String number);
+
     AssociationBean AssociationApplicationSelect(String associationID);
 
     AssociationBean MoveAssociationApplication(Integer index,String associationID);

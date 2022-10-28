@@ -16,25 +16,6 @@ import java.util.Map;
  */
 @Mapper
 public interface PersonalMapper {
-
-    /**
-     * @author Predator
-     * @date 2022-7-4 20:40
-     * @param ：
-     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
-     * Description:查询所有personal，associationl连表查询   的数据
-     */
-    List<PersonalBean> select();
-
-    /**
-     * @author Predator
-     * @date 2022-7-4 20:40
-     * @param ： number
-     * @return com.example.communitymanagementsystem.Mapper.brean.PersonalBean
-     * Description:查询指定number，表personal，associationl连表的数据
-     */
-    PersonalBean select(String number);
-
     /**
      * @author Predator
      * @date 2022-7-4 20:40
@@ -42,7 +23,7 @@ public interface PersonalMapper {
      * @return com.example.communitymanagementsystem.Mapper.brean.PersonalBean
      * Description:查询指定number的数据
      */
-    PersonalBean selectAll(String number);
+    PersonalBean select(String number);
 
 
     /**

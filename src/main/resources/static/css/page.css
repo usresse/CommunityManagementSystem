@@ -1,130 +1,175 @@
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-body {}
-
-iframe{
-	/* 去掉iframe显示的边框 */
-	border: medium none;
+body {
 }
 
-#kuang{
-	background-color: #1E6357;
+.schoolBadge{
+    display: inline-block;
+    position: relative;
+    top:20px;
+    margin-left: 100px;
+    margin-right: 10px;
+}
+
+iframe {
+    /* 去掉iframe显示的边框 */
+    border: medium none;
+}
+
+#kuang {
+    /*background-color: #1E6357;*/
+    background-color: #000a64;
 }
 
 #title {
-	display: inline-block;
-	color: white;
-	font-size: 30px;
-	font-weight: 600;
-	margin-top: 1%;
-	margin-left: 3%;
-	margin-bottom: 20px;
-	text-align: left;
+    display: inline-block;
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 35px;
+    /*margin-top: 1%;*/
+    /*margin-bottom: 20px;*/
+    text-align: left;
 }
+
 #quit {
-	display: inline-block;
-	color: white;
-	margin-right: 3px;
-	text-decoration: none;
+    display: inline-block;
+    color: white;
+    margin-right: 3px;
+    text-decoration: none;
 }
 
-.headPortrait{
-	height: 110px;
-	background-color: #00B090;
+.headPortrait {
+    height: 110px;
 }
+
 /* ************************* */
-
-#caidan {
-	padding-top: 10px;
-	float: left;
-	margin-left: 10px;
-	width: 200px;
-	height: 630px;
-	left: -10px;
-	position: relative;
-	background-color: #00B090;
+.nei {
+    position: relative;
+    display: inline-block;
+    float: right;
+    right: 0%;
+    width: 86%;
+    height: 625px;
+    margin-top: 40px;
+    /*background-color: #f8f8f8;*/
 }
 
-#nei{
-	float: right;
-	right: 0%;
-	margin-top: 0px;
-	width: 86%;
-	height: 640px;
-	/*position: relative;*/
-	/*left: -20px;*/
-}
-.img{
-	float: left;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-.user{
-	margin-left: 10px;
-	margin-top: 10px;
-	margin-bottom: 20px;
+#nei {
+    width: 100%;
+    height: 100%;
 }
 
-.quan{
-	margin-left: 10px;
-	margin-bottom: 15px;
+.name {
+    float: right;
+    margin-right: 20px;
+    margin-top: -60px;
+    color: white;
 }
 
-.text{
-	display: none;
+.img {
+    float: right;
+    margin-right: 90px;
+    margin-top: -80px;
+}
+
+.user {
+    margin-bottom: 10px;
+}
+
+.quan {
+    margin-bottom: 10px;
+}
+
+.text {
+    display: none;
 }
 
 tr {
-	height: 40px;
+    height: 40px;
 }
 
 td {
-	width: 600px;
-	text-align: center;
+    width: 600px;
+    text-align: center;
+}
+
+.cai {
+    display: inline-block;
+    position: absolute;
+    float: right;
+    right: 0%;
+    height: 40px;
+    width: 100%;
+    font-size: 15px;
+    line-height: 40px;
+    background-color: #a2a2a2;
+}
+
+.cai > div {
+    display: inline-block;
 }
 
 /*******************菜单*************************************/
-.ti1,
-.ti2,
-.ti3,
-.ti4,
-.ti5 {
-	/* 字间距 */
-	/* letter-spacing:10px; */
-	font-size: 20px;
-	position: relative;
-	width: 212px;
-	height: 50px;
-	text-align: center;
-	/* 设置行间的距离（行高） */
-	line-height: 50px;
-	border-bottom: 1px #ffffff ridge;
-	background-color: aqua;
+/*一级菜单*/
+.ti1, .ti2, .ti3, .ti4, .ti5 {
+    /* 字间距 */
+
+    font-size: 20px;
+    position: relative;
+    width: 212px;
+    height: 50px;
+    text-align: center;
+    /* 设置行间的距离（行高） */
+    line-height: 50px;
+    /*border-bottom: 1px #ffffff ridge;*/
+    background-color: #35B3FC;
+}
+
+.ti1:hover, .ti2:hover, .ti3:hover, .ti4:hover, .ti5:hover{
+    background-color: #000a64;
+    color: white;
 }
 
 .stair2 {
-	display: none;
+    display: none;
 }
 
-.stair2 >div >div {
-
-	position: relative;
-	width: 212px;
-	height: 30px;
-	text-align: center;
-	line-height: 30px;
-	border-bottom: 1px #ffffff ridge;
-	background-color: #27eaff;
+/*二级菜单*/
+.stair2 > div > div {
+    position: relative;
+    width: 212px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    /*border-bottom: 1px #ffffff ridge;*/
+    background-color: #44B5FFFF;
+}
+/*二级菜单==:样式（伪类选择器）*/
+.stair2 > div > div:hover {
+    background-color: #000a64;
+    color: white;
 }
 
 .da {
-	text-align: left;
+    text-align: left;
+    width: 212px;
 }
 
-.caidan{
-	position: relative;
-	top: 2px;
+.caidan {
+    display: inline-block;
+    position: relative;
+    top: 40px;
 }
+
+/**交互样式*/
+.menuInteraction_3 {
+    /**提高权重*/
+    background-color: #2E3573 !important;
+    color: #fff;
+}
+
+

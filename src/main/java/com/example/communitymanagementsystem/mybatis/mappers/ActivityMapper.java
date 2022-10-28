@@ -143,4 +143,14 @@ public interface ActivityMapper {
      * Description:社团公告显示
      */
     List<AnnouncementBean> announcement();
+
+    /**
+     * @param value
+     * @title selectID
+     * @return java.lang.String
+     * Description:根据社团名查询ID
+     * @author Predator
+     * @date 2022-10-27 14:18
+     */
+    String selectID(String value);
 }

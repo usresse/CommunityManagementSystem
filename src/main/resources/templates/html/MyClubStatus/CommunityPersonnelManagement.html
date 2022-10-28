@@ -83,7 +83,7 @@
             /**创建操作表格头*/
             if (_Flag) {
                 $(".TdSelect").attr("colspan", 6);
-                $(".TrTitle").append($("<td>操作</td>"));
+                $(".TrTitle").append($("<td colspan='2'>操作</td>"));
             }
 
             init();
@@ -137,9 +137,9 @@
 
                     if (personal["sex"] == 0) {
                         td[2].text("女");
-                    } else if(personal["sex"] == 1) {
+                    } else if (personal["sex"] == 1) {
                         td[2].text("男");
-                    }else {
+                    } else {
                         td[2].text("");
                     }
 
@@ -153,8 +153,9 @@
 
                     /**获取成员社团职位*/
                     _data.major = personal["major"];
+
                     $.ajax({
-                        url: "/major",
+                        url: "/Community/get/major",
                         data: _data,
                         success: function (data) {
                             td[5].text(data);
@@ -167,9 +168,15 @@
                         tr.append(td[j]);
                     }
 
-                    /**创建社长人员管理按钮*/
                     if (_Flag) {
-                        tr.append($("<td><button onclick='KickOut(this)'>踢出社团</button></td>"));
+                        /**创建社长人员管理按钮*/
+                        if (personal["major"] == "3") {
+                            tr.append($("<td><button onclick='KickOut(this)'>踢出社团</button></td><td><button onclick='administrator(this)'>设为管理员</button></td>"));
+                        } else if (personal["major"] == "2") {
+                            tr.append($("<td><button onclick='KickOut(this)'>踢出社团</button></td><td><button onclick='administrator(this)'>撤销管理员</button></td>"));
+                        } else {
+                            tr.append($("<td><button onclick='wuxiao()'>踢出社团</button></td><td><button onclick='wuxiao()'>设为管理员</button></td>"));
+                        }
                     }
 
                     table.append(tr);
@@ -196,7 +203,7 @@
         }
 
         /**数据更新*/
-        function updateData(){
+        function updateData() {
             $.ajax({
                 url: "CommunityPersonnelManagement/CommunityPersonSelect",
                 data: _data,
@@ -209,7 +216,7 @@
             });
         }
 
-        function select(){
+        function select() {
             _data.key = $(".sel").val();
             _data.value = $(".select").val();
             updateData();
@@ -217,22 +224,38 @@
 
         /**踢出社团的事件函数*/
         function KickOut(button) {
-            let number = $(button).closest("tr").find("td").eq(0).text();
-            let data = {}
-            data.number = number;
-
+            _data.number = $(button).closest("tr").find("td").eq(0).text();
             $.ajax({
                 url: "KickOut",
-                data: data,
+                data: _data,
                 success: function (dex) {
                     alert(dex);
                     window.location.reload();
                 }
             })
         }
+
+        /**操作将对象设置为管理员职务*/
+        function administrator(button) {
+            _data.number = $(button).closest("tr").find("td").eq(0).text();
+            $.ajax({
+                url: "administrator",
+                data: _data,
+                success: function (dex) {
+                    console.log(dex);
+                    alert(dex);
+                    window.location.reload();
+                }
+            })
+        }
+
+        /**将限制操作*/
+        function wuxiao() {
+            alert("不能进行该操作！");
+        }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <table class="table" border="1">
     <thead>
     <tr>
@@ -250,7 +273,7 @@
             <input class="select"/>
         </td>
 
-        <td>
+        <td colspan="2">
             <button class="button" onclick="select()">查询</button>
         </td>
     </tr>

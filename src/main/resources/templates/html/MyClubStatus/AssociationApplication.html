@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>社团</title>
+    <title>AssociationApplication</title>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
     <style type="text/css">
         .jiemian {
-            background-color: #eeeeee;
+            /*background-color: #fff;*/
             width: 86%;
             height: 600px;
             margin: 0 auto;
@@ -188,7 +188,7 @@
             let Bold = typeof (_AssociationBean["associationBlob"]) == "object" ? "" : _AssociationBean["associationBlob"].split("-")
             for (let j = 0; j < Bold.length; j++) {
                 let string = "<div class='img-slide'>" +
-                    "<img src='/img/association/" + _AssociationBean["associationID"] + "/" + Bold[j] + "'alt='" + Bold[j] + "'>" +
+                    "<img src='/Community/img/association/" + _AssociationBean["associationID"] + "/" + Bold[j] + "'alt='" + Bold[j] + "'>" +
                     "</div>";
                 divImg.append($(string));
             }
@@ -295,7 +295,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 
 <div class="jiemian">
 

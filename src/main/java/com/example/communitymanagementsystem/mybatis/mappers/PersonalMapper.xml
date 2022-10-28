@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.communitymanagementsystem.mybatis.mappers.PersonalMapper">
-
-    <!--查询一条或者所有数据-->
-    <select id="select" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
-        select *
-        from personal ,association
-        where personal.associationNumber = association.associationID
-        <if test="number != null and number != ''">
-            and number = #{number}
-        </if>
-    </select>
-
     <!--做登录查询的-->
-    <select id="selectAll" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
+    <select id="select" resultType="com.example.communitymanagementsystem.Mapper.brean.PersonalBean">
         select *
         from personal
         where number = #{number}

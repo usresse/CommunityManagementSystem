@@ -103,7 +103,7 @@
                     _data.associationNumber = activityBean["hostAssociactionID"];
 
                     $.ajax({
-                        url: "associationNumber",
+                        url: "get/associationNumber",
                         data: _data,
                         success: function (data) {
                             td[1].text(data);
@@ -184,7 +184,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <table class="table" border="1">
     <thead>
     <tr>

@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public interface ActivityServer {
 
-    PageInfo selectActivity(Integer index,String key, String value);
+    PageInfo<ActivityBrean> selectActivity(Integer index,String key, String value);
 
     String activityAdd(String number, Integer id);
 
@@ -28,7 +28,7 @@ public interface ActivityServer {
 
     String activitysignOut(String number, Integer id);
 
-    PageInfo ActivityHistorySelect(Integer index, String hostAssociactionID,String key,String value);
+    PageInfo<ActivityBrean> ActivityHistorySelect(Integer index, String hostAssociactionID,String key,String value);
 
     String ActivityHistoryDel(Integer ID);
 }

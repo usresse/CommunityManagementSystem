@@ -88,14 +88,16 @@
                     _list = list;
                     if (list.length >= 3) {
                         index = 3;
+                    }else {
+                        index = list.length;
                     }
                 }
             });
 
             /**影藏发布社团公告按钮*/
-            let major = personalBean["major"];
-            if (major == "" || major == "3") {
-                $(".administration").hide();
+            if (personalBean["major"] == "" || personalBean["major"] == "3") {
+                $(".fabu").hide();
+                $(".delete").hide();
             }
 
             initial();
@@ -146,7 +148,11 @@
 
                 $(".fanhui").show();
 
-                $(".delete").show();
+                if (personalBean["major"] == "" || personalBean["major"] == "3") {
+
+                }else {
+                    $(".delete").show();
+                }
             });
         }
 
@@ -161,7 +167,7 @@
             $(".details").append($(html));
 
             $(".administration > button").attr("onclick", 'release()');
-            $(".administration").append($("<button onclick='fanhui()'>返回</button>"))
+
         }
 
         /**发布通知函数*/
@@ -210,7 +216,7 @@
             _data.ID = $(".ID").text();
 
             $.ajax({
-                url: 'noticeDelete',
+                url: "./noticeDelete",
                 data: _data,
                 success: function (dex) {
                     if (dex == "删除成功！") {
@@ -224,7 +230,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <div class="title">通知</div>
 <div class="details">
 </div>

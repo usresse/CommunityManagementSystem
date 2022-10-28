@@ -201,8 +201,23 @@ public class AssociationController {
      */
     @RequestMapping("MyClubStatus/KickOut")
     @ResponseBody
-    public String KickOut(@RequestParam String number) {
+    public String KickOut(String number) {
         return associationServer.KickOut(number);
+    }
+
+
+    /**
+     * @param number
+     * @title administrator
+     * @return java.lang.String
+     * Description:社长设置成员管理员
+     * @author Predator
+     * @date 2022-10-18 22:52
+     */
+    @RequestMapping("MyClubStatus/administrator")
+    @ResponseBody
+    public String administrator(String number) {
+        return associationServer.administrator(number);
     }
 
 
@@ -457,7 +472,7 @@ public class AssociationController {
      * @author Predator
      * @date 2022-8-31 9:53
      */
-    @RequestMapping("notice/noticeDelete")
+    @RequestMapping("noticeDelete")
     @ResponseBody
     public String noticeDelete(String ID) {
         return associationServer.noticeDelete(ID);

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,41 +26,24 @@ public class LoginImplement implements LoginServer {
     PersonalMapper PersonalMapper;
 
     /**
-     * @param ： number
-     * @param ： password
-     * @return java.lang.String
+     * @param number 账号
+     * @param password 密码
+     * @title Validity
+     * @return com.example.communitymanagementsystem.Mapper.brean.PersonalBean
      * Description:登录效验服务
      * @author Predator
-     * @date 2022-7-3 15:33
+     * @date 2022-10-5 17:12
      */
     @Override
-    public ModelAndView Validity(String number, String password) {
-        PersonalBean personalBean = PersonalMapper.selectAll(number);
-
-        ModelAndView modelAndView = new ModelAndView();
-        /**跳转页面*/
-        StringBuilder view = new StringBuilder();
+    public boolean Validity(String number, String password) {
+        PersonalBean personalBean = PersonalMapper.select(number);
 
         if (personalBean != null && personalBean.getPassword().equals(password.trim())) {
-            view.append("page");
+            return true;
         } else {
-            modelAndView.addObject("data", "账号不存在或密码错误，请重新输入！");
-            view.append("login");
+            return false;
         }
-
-        try {
-            modelAndView.addObject("personalBean",
-                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(personalBean));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        modelAndView.setViewName(view.toString());
-
-        return modelAndView;
     }
-
-
     /**
      * @param ： loginBean
      * @return java.lang.Boolean
@@ -69,7 +53,7 @@ public class LoginImplement implements LoginServer {
      */
     @Override
     public String insert(PersonalBean personalBean) {
-        if (PersonalMapper.selectAll(personalBean.getNumber()) == null) {
+        if (PersonalMapper.select(personalBean.getNumber()) == null) {
             personalBean.setDateOfRegistration(new Date());
 
             int result = PersonalMapper.insert(personalBean);
@@ -84,5 +68,4 @@ public class LoginImplement implements LoginServer {
         }
 
     }
-
 }

@@ -25,14 +25,14 @@ public interface AssociationMapper {
      */
     List<Map<String, Object>> selectAll();
 
-    /**
-     * @param ：
-     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
-     * Description:查询指定社团
-     * @author Predator
-     * @date 2022-7-11 12:00
-     */
-    List<Map<String, Object>> select(String key, String value);
+    ///**
+    // * @param ：
+    // * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+    // * Description:查询指定社团
+    // * @author Predator
+    // * @date 2022-7-11 12:00
+    // */
+    //List<Map<String, Object>> select(String key, String value);
 
 
     /**
@@ -54,14 +54,14 @@ public interface AssociationMapper {
      */
     Integer create(String applyAssociation, String applyNumber, String applyIntroduction);
 
-    /**
-     * @param ： number
-     * @return void
-     * Description:查询指定某个人的申请消息
-     * @author Predator
-     * @date 2022-7-11 21:31
-     */
-    Map<String, Object> selectInformation(String number);
+    ///**
+    // * @param ： number
+    // * @return void
+    // * Description:查询指定某个人的申请消息
+    // * @author Predator
+    // * @date 2022-7-11 21:31
+    // */
+    //Map<String, Object> selectInformation(String number);
 
     /**
      * @param applyAssociation
@@ -144,6 +144,26 @@ public interface AssociationMapper {
      * @date 2022-7-22 15:54
      */
     boolean KickOut(String number);
+
+    /**
+     * @param number
+     * @title selectMajor
+     * @return java.lang.String
+     * Description:查询账号的社团职位
+     * @author Predator
+     * @date 2022-10-19 15:17
+     */
+    String selectMajor(String number);
+
+    /**
+     * @param number
+     * @title administrator
+     * @return boolean
+     * Description:社长设置管理员权限
+     * @author Predator
+     * @date 2022-10-18 22:59
+     */
+    boolean administrator(String number,String major);
 
     /**
      * @param ： data
@@ -276,5 +296,4 @@ public interface AssociationMapper {
      * @date 2022-9-13 22:18
      */
     Integer CreateAssociation(SchoolAgreeAssociationBean schoolAgreeAssociationBean);
-
 }

@@ -50,11 +50,14 @@
         var _data = {};
 
         $(function () {
+            _data.key = $(".select").val();
+            _data.value = $(".data").val();
+
             _data.index = 1;
             _data.associationNumber = associationID;
 
             $.ajax({
-                url: "/MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect",
+                url: "/Community/MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect",
                 data: _data,
                 type: "get",
                 async: false,
@@ -62,8 +65,6 @@
                     _list = data;
                 }
             });
-
-            console.log(_list);
             init();
         });
 
@@ -77,6 +78,9 @@
 
             for (let i = 0; i < _list["size"]; i++) {
                 let data = _list["list"][i];
+                if(data["number"] == parent.window.personalBean["number"]){
+                    continue;
+                }
                 let tr = $("<tr></tr>").append($("<td>" + data["number"] + "</td>")).append($("<td>" + data["name"] + "</td>")).append($("<td><button onclick='Handover(this)'>移交社长</button></td>"))
                 $(".tab > tbody").append(tr);
             }
@@ -85,7 +89,7 @@
         /**数据更新*/
         function updateData(){
             $.ajax({
-                url: "/MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect",
+                url: "/Community/MyClubStatus/CommunityPersonnelManagement/CommunityPersonSelect",
                 data: _data,
                 type: "get",
                 async: false,
@@ -150,7 +154,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background: rgb(255,255,255)">
 <table class="tab" border="1px">
     <thead>
     <tr>

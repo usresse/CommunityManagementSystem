@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
  * \
  */
 public interface LoginServer {
-    ModelAndView Validity(String number, String password);
-
     String insert(PersonalBean personalBean);
+
+    boolean Validity(String number, String password);
 }

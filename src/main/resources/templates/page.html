@@ -3,97 +3,111 @@
 <head>
     <meta charset="utf-8"/>
     <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/layer/3.5.1/layer.js"></script>
     <script type="text/javascript" th:src="@{/js/page.js}"></script>
-
-    <script type="text/javascript">
-        /**获取数据*/
-        var personalBean = {};
-        personalBean = [(${personalBean})];
-    </script>
-
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
     <link type="text/css" th:href="@{/css/page.css}" rel="stylesheet"/>
     <title>社团管理系统</title>
 </head>
 
-<body bgcolor="#45E8CA">
+<body style="background-image: url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.cdivtc.com%2Fdocuments%2F10184%2F12018%2F20210525104511243WCLERKMP.jpg&refer=http%3A%2F%2Fwww.cdivtc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1669269702&t=3760833106b103ea1b6e78d40f92ed10');
+    background-repeat: no-repeat;background-attachment: fixed;background-position: bottom; background-size: 100%;">
 <div id="kuang">
+    <!--校徽-->
+    <div class="schoolBadge">
+        <img src="./img/schoolBadgeBai.png" width="65px" height="65px">
+    </div>
+
     <div id="title">学生社团信息管理系统</div>
+
+    <div class="userKuang">
+
+        <div class="name">
+            <div class="user">昵称:</div>
+            <div class="quan">账号:</div>
+        </div>
+
+        <iframe width=0 height=0 frameborder=0 name="myiframe"></iframe>
+        <!--enctype="multipart/form-data"==>提示提交数据为二进制代码-->
+        <form id="form" method="post" action="settingFile" enctype="multipart/form-data" target="myiframe">
+
+            <input name="file" hidden id="file" accept=".jpg,.png,.jpeg,.pdf,.gif" type="file" class="file">
+
+            <!--/*@thymesVar id="number" type=""*/-->
+            <input hidden style="display: none" class="num" name="number"/>
+
+            <div class="img">
+                <!--/*@thymesVar id="url" type=""*/-->
+                <img style="border-radius:50%; overflow:hidden;" width="50px" height="50px" id="myImage">
+            </div>
+        </form>
+    </div>
 </div>
-<div class="headPortrait">
-    <iframe width=0 height=0 frameborder=0 name="myiframe"></iframe>
-    <!--enctype="multipart/form-data"==>提示提交数据为二进制代码-->
-    <form id="form" method="post" action="settingFile" enctype="multipart/form-data" target="myiframe">
 
-        <input name="file" hidden id="file" accept=".jpg,.png,.jpeg,.pdf,.gif" type="file" class="file">
+<!--导航栏-->
+<div class="cai">
+    <div class="caiNei" style="margin-left: 70px">首页</div>
+    <div style="display: none"> ></div>
+    <div class="caiNei"></div>
+    <div style="display: none"> ></div>
+    <div class="caiNei"></div>
+</div>
 
-        <!--/*@thymesVar id="number" type=""*/-->
-        <input hidden style="display: none" class="num" name="number"/>
+<div class="caidan">
 
-        <div class="img">
-            <!--/*@thymesVar id="url" type=""*/-->
-            <img style="border-radius:50%; overflow:hidden;" width="80px" height="80px" id="myImage">
-        </div>
-    </form>
-    <div>
+<!--            <div class="da">-->
+<!--                <div class="ti1" style="background-color: black; color: #fff">菜单列表</div>-->
+<!--            </div>-->
 
-        <div class="user">昵称:</div>
+    <div class="da">
+        <div class="ti2 stair" onclick="toggleshow(this,'tem2')">我的社团</div>
+        <div class="tem2 stair2">
 
-        <div class="quan">账号:</div>
-    </div>
-
-    <!--    <iframe id="caidan" scrolling="no" src="caidan"></iframe>-->
-    <div class="caidan">
-        <div class="da">
-            <div class="ti2 stair" onclick="toggleshow('tem2')">我的社团</div>
-            <div class="tem2 stair2">
-
-                <div>
-                    <div onclick="JumpHtmlAndNumber('MyClubStatus')">我的社团状态</div>
-                </div>
-                <div>
-                    <div class="nul" onclick="JumpHtml('ApplyAssociation')">申请创建社团</div>
-                </div>
-                <div>
-                    <div onclick="JumpHtml('activity')">参加社团活动</div>
-                </div>
-                <div>
-                    <div onclick="JumpHtmlAndNumber('activityAll')">参加的活动</div>
-                </div>
+            <div>
+                <div onclick="JumpHtmlAndNumber(this,'MyClubStatus')">我的社团状态</div>
+            </div>
+            <div>
+                <div class="nul" onclick="JumpHtml(this,'ApplyAssociation')">申请创建社团</div>
+            </div>
+            <div>
+                <div onclick="JumpHtml(this,'activity')">参加社团活动</div>
+            </div>
+            <div>
+                <div onclick="JumpHtmlAndNumber(this,'activityAll')">参加的活动</div>
             </div>
         </div>
+    </div>
 
-        <div class="da">
-            <div class="ti3 stair" onclick="toggleshow('tem3')">社团管理</div>
-            <div class="tem3 stair2">
-                <div>
-                    <div onclick="JumpHtml('ToExamine')">审核信息</div>
-                </div>
+    <div class="da">
+        <div class="ti3 stair" onclick="toggleshow(this,'tem3')">社团管理</div>
+        <div class="tem3 stair2">
+            <div>
+                <div onclick="JumpHtml(this,'ToExamine')">审核信息</div>
+            </div>
 
-                <div>
-                    <div onclick="JumpHtml('ActivityRequest')">活动发布申请</div>
-                </div>
+            <div>
+                <div onclick="JumpHtml(this,'ActivityRequest')">活动发布申请</div>
+            </div>
 
-                <div>
-                    <div onclick="JumpHtml('ActivityHistory')">活动历史记录</div>
-                </div>
+            <div>
+                <div onclick="JumpHtml(this,'ActivityHistory')">活动历史记录</div>
             </div>
         </div>
-
-        <div class="da">
-            <div class="ti4 stair" onclick="JumpHtml('announcement')">公告</div>
-        </div>
-
-        <div class="da">
-            <div class="ti5 stair" onclick="JumpHtml('setting')">设置</div>
-        </div>
-
     </div>
+
+    <div class="da">
+        <div class="ti4 stair" onclick="JumpHtml(this,'announcement')">公告</div>
+    </div>
+
+    <div class="da">
+        <div class="ti5 stair" onclick="JumpHtml(this,'setting')">设置</div>
+    </div>
+
 </div>
 
 <div class="nei">
-    <iframe id="nei" th:src="nei"></iframe>
+    <iframe id="nei"></iframe>
 </div>
+
 
 </body>
 </html>
